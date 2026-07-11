@@ -7,6 +7,7 @@ Stable facts about MonadMon. Source of truth alongside `AGENTS.md` and `docs/`.
 - Chain: **Monad** (EVM-compatible L1).
 - Genre: On-chain creature-raising + PvP battle.
 - Hook: "My first Monad creature, born on-chain, mine forever."
+- License: **MIT**.
 
 ## Target users (MVP)
 1. **Web3-curious Monad early adopters** — want to participate in Monad's launch with something personal.
@@ -27,8 +28,8 @@ A player can connect a wallet, mint a Genesis Egg, hatch it into a Monster, trai
 
 ## Constraint landscape
 - Demo time budget: short (hackathon-style sprint).
-- Dev machine (L0): Node ≥ 20, pnpm/bun available; **Foundry not pre-installed**.
-- No paid image-gen API budget unless approved.
+- Dev machine (L0): Node ≥ 20, pnpm/bun available.
+- **Budget: zero paid image-gen or paid RPC.** All art via Pollinations free tier.
 - All randomness must be verifiable on Monad (no opaque oracles).
 
 ## Definition of Done (MVP)

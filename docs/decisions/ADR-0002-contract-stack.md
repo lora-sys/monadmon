@@ -1,40 +1,32 @@
 # ADR-0002 — Smart Contract Dev Environment
 
-- Status: **Proposed — pending user decision**
+- Status: **Accepted**
 - Date: 2026-07-11
 - Deciders: @user, @coordinator, @backend
 
 ## Context
-We need to pick between Foundry (Forge/Anvil/Cast) and Hardhat as the smart contract dev environment. The dev machine does **not** have Foundry pre-installed (`forge`, `foundry`, `anvil` are all absent). It does have Node 20+, pnpm, bun.
-
-## Options
-
-### Option A — Foundry (recommended)
-- **Pros:** fast Solidity-native test runner; great fuzz testing (we need it for rarity distribution); gas snapshots; Solidity-native scripting.
-- **Cons:** not installed; requires curl | sh install (~2 min, but adds setup step); team must learn Forge conventions.
-- Install: `curl -L https://foundry.paradigm.xyz | bash && foundryup`.
-
-### Option B — Hardhat
-- **Pros:** zero-install (npm install); huge plugin ecosystem; familiar to most Web3 devs.
-- **Cons:** slower Solidity compile; fuzz is via plugin (`hardhat-fuzzer` is limited); less idiomatic for Solidity testing.
-- Install: `pnpm add -D hardhat @nomicfoundation/hardhat-toolbox`.
-
-### Option C — Both
-- Foundry for tests, Hardhat for plugin-heavy tasks (e.g. mainnet forking, verify).
-- **Cons:** cognitive overhead; we don't need this in MVP.
+We need a Solidity dev environment that supports the MVP test surface, including 10k-sample fuzz testing on hatch rarity distribution (AC3.1).
 
 ## Decision
-**TBD — awaiting user decision.**
+**Foundry (Forge + Anvil + Cast).** Install via the standard one-liner:
+```
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
 
-Coordinator recommendation: **Option A (Foundry).** The reason is concrete: we need **10k fuzz runs on rarity distribution** in `MonsterNFT.hatch` (per AC3.1), and Forge's native fuzz is far stronger than Hardhat's. Also matches Monad community norms (Monad's own dev docs lean Foundry).
-
-If install is a blocker, Option B is a fine fallback — the harness scaffolds either way.
+## Why
+- **Native fuzz.** `forge test` runs thousands of fuzz cases per assertion. Hardhat's fuzz path requires a plugin and is slower / less ergonomic.
+- **Speed.** Forge compiles and tests in seconds.
+- **Monad community alignment.** Monad's own dev docs lean Foundry.
 
 ## Consequences
-- `contracts/foundry.toml` (Option A) or `contracts/hardhat.config.ts` (Option B).
-- `forge test` (Option A) or `pnpm hardhat test` (Option B) in CI.
-- `contracts/script/Deploy.s.sol` (Option A) or `contracts/scripts/deploy.ts` (Option B).
-- `ENGINEERING.md` §1 references updated.
+- `contracts/foundry.toml`, `contracts/src/`, `contracts/test/`, `contracts/script/`.
+- CI runs `forge fmt --check`, `forge build`, `forge test`, `forge coverage`.
+- `ENGINEERING.md` §1 reflects Foundry.
+- Local Anvil (`anvil --chain-id 31337`) for FE integration. Testnet deploys go directly to Monad testnet RPC.
+
+## Fallback
+If install fails on the user's machine, ADR can be amended to Hardhat. Not the current plan.
 
 ## References
 - `docs/architecture/smart-contract.md`

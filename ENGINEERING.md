@@ -7,7 +7,7 @@ How we build MonadMon. Updated by Coordinators after each ADR. Read alongside `A
 |------------------|---------------------------------|-------|
 | Contracts        | Solidity ^0.8.24                | 0002  |
 | Contracts deps   | OpenZeppelin v5, forge-std      | 0002  |
-| Contracts test   | Foundry (Forge) — preferred, Hardhat fallback if env lacks Foundry | 0002 |
+| Contracts test   | Foundry (forge)                 | 0002  |
 | Frontend lang    | TypeScript strict               | 0003  |
 | Frontend runtime | Node ≥ 20, pnpm                 | 0003  |
 | Frontend framework | Next.js 14 (App Router)      | 0003  |
@@ -18,6 +18,7 @@ How we build MonadMon. Updated by Coordinators after each ADR. Read alongside `A
 | Tests (FE)       | Vitest + Playwright             | 0003  |
 | Lint (FE)        | ESLint v9 (flat) + Prettier     | 0003  |
 | Off-chain store  | IPFS via Pinata; SQLite for indexer | 0006  |
+| Art generation   | Pollinations.ai (`flux`), zero API key, batch via `scripts/generate-monsters.mjs` | 0001 |
 
 ## 2. Folder rules
 - `contracts/src/` — Solidity. One file per contract. Library in `contracts/src/lib/`.
@@ -28,7 +29,9 @@ How we build MonadMon. Updated by Coordinators after each ADR. Read alongside `A
 - `frontend/lib/` — pure TS (no React). `viem`, math, types.
 - `frontend/hooks/` — React hooks.
 - `frontend/public/assets/monsters/` — generated monster art (per `docs/design/monster-system.md`).
+- `frontend/public/data/species.json` — canonical 12-species catalog. Source of truth for art + base stats.
 - `backend/` — Phase 2+ indexer in TypeScript (viem + SQLite + better-sqlite3).
+- `scripts/` — Node 20 helpers, no third-party deps unless approved by an ADR.
 
 ## 3. Git rules
 - Default branch: `main`. Protected.
@@ -48,8 +51,8 @@ How we build MonadMon. Updated by Coordinators after each ADR. Read alongside `A
 ## 5. API & contract design
 - Solidity: keep contracts small and composable. Inherit interfaces, not implementations, where possible.
 - All external functions `revert CustomError()` — no string reverts.
-- All token mint/burn restricted by `Ownable` (Phase 1) or `AccessControl` (Phase 2).
-- All randomness via `IRandomSource` interface; concrete impl = commit-reveal (Phase 1), see ADR-0004.
+- All token mint/burn restricted by `Ownable2Step` (OZ v5). Phase 2 may move to `AccessControl`.
+- All randomness via `IRandomSource` interface; concrete impl = `BlockPrevRandaoSource` for MVP (ADR-0004).
 - Frontend reads via viem; never instantiates raw RPC.
 
 ## 6. Review rules
@@ -74,7 +77,7 @@ How we build MonadMon. Updated by Coordinators after each ADR. Read alongside `A
 
 ## 9. Deploy
 - Testnet only for MVP. Mainnet after audit (out of scope for MVP).
-- Deploy via `forge script` against `MONAD_TESTNET_RPC`. Save broadcast under `contracts/broadcast/<contract>.s.sol/<chainId>/run-latest.json`.
+- Deploy via `forge script script/Deploy.s.sol --rpc-url $MONAD_TESTNET_RPC --broadcast`.
 - Frontend deployed to Vercel (project default).
 
 ## 10. References

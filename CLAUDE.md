@@ -17,25 +17,27 @@ Each player connects a wallet, mints a **Genesis Egg**, hatches it into a **Mons
 
 ## 3. Repo map (L0)
 ```
-AGENTS.md, CLAUDE.md          — this file (mirrored)
-DESIGN.md                     — brand, tokens, UI patterns, monster system
-ENGINEERING.md                — frontend/backend/contract/db/git/review rules
-TESTING.md                    — test strategy, evidence format
-CONTRIBUTING.md               — how to propose changes (Issue-first)
-PROJECT_STATUS.md             — live kanban
-docs/INDEX.md                 — master index of every doc
+LICENSE                           — MIT
+AGENTS.md, CLAUDE.md              — this file (mirrored)
+DESIGN.md                         — brand, tokens, UI patterns, monster system
+ENGINEERING.md                    — frontend/backend/contract/db/git/review rules
+TESTING.md                        — test strategy, evidence format
+CONTRIBUTING.md                   — Issue-first workflow
+PROJECT_STATUS.md                 — live kanban
+docs/INDEX.md                     — master index of every doc
 docs/product/{prd,mvp,roadmap,user-stories}.md, docs/product/feature-specs/*.md
-docs/architecture/{system,frontend,backend,smart-contract,monad,security,deploy,glossary}.md
+docs/architecture/{system,frontend,backend,smart-contract,monad,storage,security,deploy,glossary}.md
 docs/design/{brand,tokens,components,motion,ui-patterns,monster-system}.md
-docs/decisions/ADR-*.md       — one file per decision
-docs/evidence/<issue>/        — change-summary.md, test-results/, screenshots/, review-report.md
-docs/sessions/                — per-session logs of multi-agent runs
-memory/                       — project-memory, architecture-memory, decisions, lessons
-contracts/                    — Solidity (Foundry or Hardhat — see ADR-0002)
-frontend/                     — web app (Next.js — see ADR-0003)
-backend/                      — optional indexer/API (Phase 2+)
-scripts/                      — bash helpers
-skills/                       — project-local skills
+docs/design/battle-formula.md
+docs/decisions/ADR-*.md           — one file per decision
+docs/evidence/<issue>/            — change-summary.md, test-results/, screenshots/, review-report.md
+docs/sessions/                    — per-session logs of multi-agent runs
+memory/                           — project-memory, architecture-memory, decisions, lessons
+contracts/                        — Solidity (Foundry — see ADR-0002)
+frontend/                         — web app (Next.js + wagmi + RainbowKit — see ADR-0003)
+backend/                          — optional indexer/API (Phase 2+)
+scripts/                          — bash + Node helpers (e.g. generate-monsters.mjs)
+skills/                           — project-local skills
 ```
 
 ## 4. Hard constraints
@@ -53,14 +55,15 @@ skills/                       — project-local skills
 - Touch files outside your allow-list in an Issue.
 - Auto-resolve multi-agent conflicts.
 
-## 6. Stack snapshot (see ENGINEERING.md for detail)
-- **Chain:** Monad testnet (EVM-compatible). RPC: `https://testnet-rpc.monad.xyz`. Chain ID: see `docs/architecture/monad.md`.
-- **Contracts:** Solidity ^0.8.24, OpenZeppelin v5, Foundry or Hardhat (decided in ADR-0002).
-- **Frontend:** Next.js 14 (App Router) + TypeScript + Tailwind + viem + RainbowKit/Reown AppKit.
-- **Wallet UX:** RainbowKit v2 + wagmi v2 + viem v2 (preferred) — `wagmi` covers Monad because it's plain EVM.
-- **RNG:** commit-reveal using `block.prevrandao` on Monad (no Chainlink VRF on testnet as of 2026-Q1) — see ADR-0004.
-- **Storage of metadata:** off-chain JSON on IPFS (Pinata) or self-hosted, referenced by `tokenURI`. Spec lives at `docs/architecture/storage.md`.
-- **Art:** TBD — see ADR-0001 (12 species × 3 stages, generation method under discussion).
+## 6. Stack snapshot (locked)
+- **License:** MIT.
+- **Chain:** Monad testnet (EVM-compatible L1). RPC + chain ID pinned in `docs/architecture/monad.md` at start of Phase 1.
+- **Contracts:** Solidity ^0.8.24, OpenZeppelin v5, **Foundry** (forge/anvil/cast) — ADR-0002.
+- **Frontend:** Next.js 14 (App Router) + TypeScript strict + Tailwind v3 + framer-motion v11 — ADR-0003.
+- **Web3:** wagmi v2 + viem v2 + RainbowKit v2.
+- **RNG:** single-tx hatch using `block.prevrandao`, behind `IRandomSource` for Phase 2 swap — ADR-0004.
+- **Art pipeline:** Pollinations.ai (`flux` model), no API key, deterministic seeds, batch via `scripts/generate-monsters.mjs` — ADR-0001.
+- **Metadata storage:** IPFS via Pinata for tokens; SQLite for indexer (Phase 2+) — `docs/architecture/storage.md`.
 
 ## 7. Issue workflow
 1. Pick or create an Issue. Read it. Read linked docs.

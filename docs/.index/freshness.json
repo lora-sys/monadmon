@@ -4,6 +4,8 @@
   "files": {
     "AGENTS.md": "2026-07-11",
     "CLAUDE.md": "2026-07-11",
+    "LICENSE": "2026-07-11",
+    "README.md": "2026-07-11",
     "ENGINEERING.md": "2026-07-11",
     "TESTING.md": "2026-07-11",
     "CONTRIBUTING.md": "2026-07-11",
@@ -12,8 +14,31 @@
     "docs/product/prd.md": "2026-07-11",
     "docs/product/mvp.md": "2026-07-11",
     "docs/product/roadmap.md": "2026-07-11",
+    "docs/product/user-stories.md": "2026-07-11",
     "docs/architecture/system.md": "2026-07-11",
-    "docs/design/monster-system.md": "2026-07-11"
+    "docs/architecture/frontend.md": "2026-07-11",
+    "docs/architecture/backend.md": "2026-07-11",
+    "docs/architecture/smart-contract.md": "2026-07-11",
+    "docs/architecture/monad.md": "2026-07-11",
+    "docs/architecture/storage.md": "2026-07-11",
+    "docs/architecture/security.md": "2026-07-11",
+    "docs/architecture/deploy.md": "2026-07-11",
+    "docs/architecture/glossary.md": "2026-07-11",
+    "docs/design/brand.md": "2026-07-11",
+    "docs/design/tokens.md": "2026-07-11",
+    "docs/design/components.md": "2026-07-11",
+    "docs/design/ui-patterns.md": "2026-07-11",
+    "docs/design/monster-system.md": "2026-07-11",
+    "docs/design/battle-formula.md": "2026-07-11",
+    "docs/decisions/ADR-0001-monster-art.md": "2026-07-11",
+    "docs/decisions/ADR-0002-contract-stack.md": "2026-07-11",
+    "docs/decisions/ADR-0003-frontend-stack.md": "2026-07-11",
+    "docs/decisions/ADR-0004-rng-source.md": "2026-07-11",
+    "memory/project-memory.md": "2026-07-11",
+    "memory/architecture-memory.md": "2026-07-11",
+    "memory/decisions.md": "2026-07-11",
+    "memory/lessons.md": "2026-07-11",
+    "scripts/generate-monsters.mjs": "2026-07-11"
   },
-  "notes": "Bootstrap seed. Will be regenerated on each doc change."
+  "notes": "Bootstrap complete. All four ADRs resolved. MIT license. Pollinations + Foundry + block.prevrandao locked."
 }
