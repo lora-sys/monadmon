@@ -1,26 +1,33 @@
 # Monad Network
 
-Monad-specific facts the team needs. Update at start of Phase 1.
+Monad-specific facts the team needs. Pinned at start of Phase 1.
 
 ## Network
 - Chain: Monad (EVM-compatible L1).
-- Testnet RPC: `https://testnet-rpc.monad.xyz` (verify at start of Phase 1; multiple public RPCs exist).
-- Block time: ~400 ms.
-- Finality: single-slot.
+- Testnet RPC: `https://testnet-rpc.monad.xyz` (verified 2026-07-11, returns `eth_chainId = 0x279f`, `eth_blockNumber`, `eth_gasPrice`, `web3_clientVersion`).
+- Backup RPC: `https://monad-testnet.drpc.org` (same chain ID, secondary endpoint).
+- Client: `Monad/0.15.0`.
+- Block time target: ~400 ms (single-slot finality).
 - EVM: full bytecode compatibility; behaves like Ethereum post-merge.
 
 ## Chain ID
-- **TODO at Phase 1 start:** pin the testnet chain ID from `https://chainlist.org/chain/monad` or `https://docs.monad.xyz`. Add here and to `wagmi` config.
+- **Chain ID: 10143 (0x279f).** Testnet only.
+- Faucet: try the official faucet at `https://faucet.monad.xyz` or `https://docs.monad.xyz` (re-verify at deploy time; URLs change between testnet phases).
 
 ## Gas & fees
 - Gas units priced in **wei**, paid in **MON** (native token).
-- MVP deploys from a faucet-funded test wallet. No mainnet.
-- Each action should log gas used in the Evidence pack.
+- Observed gas price on 2026-07-11: ~101 gwei (`0x17bfac7c00`).
+- MVP deploys from a faucet-funded test wallet.
+- Each action logs gas used in its Evidence pack.
+
+## Wallet for deploy
+- A throwaway deployer EOA is generated locally; private key lives in `.env` (gitignored).
+- Address and balance recorded in `docs/evidence/<deploy-id>/deployer.json` after first deploy.
 
 ## Tooling compatibility
 - All standard EVM tooling works: Hardhat, Foundry (Forge/Anvil/Cast), viem, ethers.
-- Chainlink VRF: **not deployed on Monad testnet as of 2026-Q1.** We use commit-reveal (see ADR-0004).
-- The Graph: hosted service not officially on Monad; we use a simple indexer instead.
+- Chainlink VRF: **not deployed on Monad testnet as of 2026-Q1.** We use `block.prevrandao` directly (ADR-0004).
+- The Graph: hosted service not officially on Monad; we use a simple indexer instead (Phase 2).
 
 ## Wallets
 - MetaMask works (custom RPC).
@@ -28,7 +35,11 @@ Monad-specific facts the team needs. Update at start of Phase 1.
 - WalletConnect-compatible wallets via Reown AppKit / RainbowKit.
 
 ## Block explorers
-- Testnet explorer URL TBD at Phase 1 start. Record here.
+- Testnet explorer candidates (2026-07-11): `monadscan.com` (returns 200), `monadvision.com` (returns 403 to bots, may work in browser).
+- Final explorer URL pinned at deploy time.
 
 ## Faucet
-- Testnet faucet URL TBD at Phase 1 start. Record here.
+- Try `https://faucet.monad.xyz` (verify at deploy time).
+
+## Re-verification log
+- 2026-07-11: chain ID 0x279f confirmed; RPC live; gas price ~101 gwei.
