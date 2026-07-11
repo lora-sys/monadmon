@@ -1,0 +1,59 @@
+# Node / JS
+node_modules/
+.pnpm-store/
+.yarn/cache/
+.bun/
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Solidity
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/out/
+contracts/broadcast/
+coverage/
+coverage.json
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+*.pem
+*.key
+wallet.json
+
+# Logs / state
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Editor / OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# Tests / cache
+.playwright-cache/
+playwright-report/
+test-results/
+.playwright-mcp/
+
+# Codex / harness
+.codex/cache/
+.codex/sessions/cache/
+sessions/.worktrees/
+.worktrees/
+
+# Generated
+docs/.index/*.local.json

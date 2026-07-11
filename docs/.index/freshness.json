@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-07-11T00:00:00Z",
+  "generator": "bootstrap",
+  "files": {
+    "AGENTS.md": "2026-07-11",
+    "CLAUDE.md": "2026-07-11",
+    "ENGINEERING.md": "2026-07-11",
+    "TESTING.md": "2026-07-11",
+    "CONTRIBUTING.md": "2026-07-11",
+    "PROJECT_STATUS.md": "2026-07-11",
+    "docs/INDEX.md": "2026-07-11",
+    "docs/product/prd.md": "2026-07-11",
+    "docs/product/mvp.md": "2026-07-11",
+    "docs/product/roadmap.md": "2026-07-11",
+    "docs/architecture/system.md": "2026-07-11",
+    "docs/design/monster-system.md": "2026-07-11"
+  },
+  "notes": "Bootstrap seed. Will be regenerated on each doc change."
+}
