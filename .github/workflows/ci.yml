@@ -67,11 +67,11 @@ jobs:
         working-directory: frontend
         run: cd "$GITHUB_WORKSPACE/frontend" && npm ci --no-audit --no-fund
       - name: Type check
-        run: cd frontend && ./node_modules/.bin/tsc --noEmit
+        run: cd "${GITHUB_WORKSPACE}/frontend" && ./node_modules/.bin/tsc --noEmit
       - name: Lint
-        run: cd frontend && npm run lint
+        run: cd "${GITHUB_WORKSPACE}/frontend" && npm run lint
       - name: Build
-        run: cd frontend && npm run build
+        run: cd "${GITHUB_WORKSPACE}/frontend" && npm run build
 
   backend:
     name: Backend (type-check + build)
@@ -85,6 +85,6 @@ jobs:
         working-directory: backend
         run: cd "$GITHUB_WORKSPACE/backend" && npm ci --no-audit --no-fund
       - name: Type check
-        run: cd backend && ./node_modules/.bin/tsc --noEmit
+        run: cd "${GITHUB_WORKSPACE}/backend" && ./node_modules/.bin/tsc --noEmit
       - name: Build
-        run: cd backend && ./node_modules/.bin/tsc -p tsconfig.json
+        run: cd "${GITHUB_WORKSPACE}/backend" && ./node_modules/.bin/tsc -p tsconfig.json
