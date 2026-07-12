@@ -63,7 +63,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
       - name: Install
         working-directory: frontend
         run: cd "$GITHUB_WORKSPACE/frontend" && npm ci --no-audit --no-fund
@@ -82,7 +81,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
       - name: Install
         working-directory: backend
         run: cd "$GITHUB_WORKSPACE/backend" && npm ci --no-audit --no-fund
