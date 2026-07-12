@@ -60,36 +60,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          version: 8
-      - name: Install dependencies
+          node-version: 20
+          cache: 'npm'
+      - name: Install
         working-directory: frontend
-        run: pnpm install --frozen-lockfile
+        run: npm ci --no-audit --no-fund
       - name: Type check
         working-directory: frontend
-        run: pnpm exec tsc --noEmit
+        run: npx tsc --noEmit
       - name: Lint
         working-directory: frontend
-        run: pnpm lint
+        run: npm run lint
       - name: Build
         working-directory: frontend
-        run: pnpm build
+        run: npm run build
 
   backend:
     name: Backend (type-check + build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          version: 8
-      - name: Install dependencies
+          node-version: 20
+          cache: 'npm'
+      - name: Install
         working-directory: backend
-        run: pnpm install --frozen-lockfile
+        run: npm ci --no-audit --no-fund
       - name: Type check
         working-directory: backend
-        run: pnpm exec tsc --noEmit
+        run: npx tsc --noEmit
       - name: Build
         working-directory: backend
-        run: pnpm exec tsc -p tsconfig.json
+        run: npx tsc -p tsconfig.json
