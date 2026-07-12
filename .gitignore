@@ -71,3 +71,10 @@ replay__*.png
 trace_*.zip
 # CodeGraph local index (regenerate via codegraph index)
 .codegraph/
+
+# Backend (Phase 2 indexer)
+backend/node_modules/
+backend/dist/
+backend/pnpm-lock.yaml
+backend/.env
+backend/data/
