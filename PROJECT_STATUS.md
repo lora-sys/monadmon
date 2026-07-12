@@ -2,64 +2,74 @@
 
 _Last updated: 2026-07-12 by @coordinator_
 
-## Now (in progress)
-- Pollinations art batch completing in background (EmberFox done; 11 species to go).
-- Final polish + demo script.
+## MVP STATUS: ✅ Done on local Anvil. Pending testnet deploy (Issue #24).
+
+All MVP acceptance criteria (AC1.x through AC8.x) are verified on local
+Anvil via cast + agent-browser screenshots. The remaining work for the
+public demo is the testnet deploy (#24), which needs a user-funded wallet.
+
+## Recently Merged (this session)
+- 26bb752 feat(art): FlameBird partial — 11/48 images so far
+- 3ba8c1b feat(art): FlameBird partial — 3/12 species in progress
+- 953bdf8 feat(art): MagmaTurtle full hero set
+- 46e52d2 docs: DEMO.md walkthrough + art-detached wrapper
+- afccb00 feat(art): EmberFox full hero set
+- 0843cf5 docs: ISSUE-0018 local Anvil E2E (#23)
+- f8bd4a9 feat(frontend): full Next.js MVP (#21)
+- f9c9e49 feat(contracts): MonsterNFT + GenesisMinter + Battle + libs (#20)
+- 38937a9 feat(contracts): ISSUE-0001 Foundry workspace init (#18)
+- 88b415a docs(architecture): pin Monad testnet chain id 10143
+- 4afc00a feat(bootstrap): accept 3 ADRs, add Pollinations driver, MIT
+- 913aae0 chore(bootstrap): harness scaffold + PRD + MVP
 
 ## Backlog
-- ISSUE-0019 — Deploy to Monad testnet (gated on funded wallet — user action).
-- ISSUE-0016 — CI workflow (.github/workflows/{lint,test,build}.yml).
-- ISSUE-0017 — Battle branch coverage fuzz (per PR #20 review).
-- ISSUE-0020 — Phase 2 indexer for Leaderboard + Profile ownership history.
-
-## Blocked (Waiting for Approval / external)
-- (none)
-
-## Recently Merged
-- PR #23 — ISSUE-0018 local Anvil deploy + agent-browser E2E (merged 2026-07-12)
-- PR #21 — Frontend MVP (all 7 pages) (merged 2026-07-11)
-- PR #20 — Contract suite (MonsterNFT + GenesisMinter + Battle + libs) (merged 2026-07-11)
-- PR #18 — ISSUE-0001 Foundry workspace init (merged 2026-07-11)
+- #24 — Deploy to Monad testnet (gated on funded wallet — user action required).
+- #16 — CI workflow (.github/workflows/{lint,test,build}.yml).
+- #17 — Battle branch coverage fuzz.
+- #20 — Phase 2 indexer for Leaderboard + Profile ownership history.
+- (NEW) — Complete Pollinations art batch (in progress; 11/48 images done).
 
 ## Open Reviewer Threads
-- (none — all PRs merged with full evidence)
+- (none)
 
 ## Phase
 - Phase 0 — Bootstrap — **Done**
 - Phase 1 — Core shell (repo + deploy + wallet) — **Done**
 - Phase 2 — Genesis Egg + Hatch — **Done** (verified on Anvil)
 - Phase 3 — Training + Monster detail — **Done** (verified on Anvil)
-- Phase 4 — PvP Battle + Leaderboard — **Done** (verified on Anvil; indexer in Phase 2)
+- Phase 4 — PvP Battle + Leaderboard — **Done** (verified on Anvil)
 - Phase 5 — Polish & demo — **In Progress**
 
 ## Health
 - Tests: 37 passing (PR #20 contracts), 0 failing
-- CI: not configured yet (ISSUE-0016)
+- CI: not configured yet (#16)
 - Docs freshness: see docs/.index/freshness.json
 - Memory: in memory/
 - Coverage: contracts 85% line / 93% function; FE build clean
 
-## MVP Acceptance Criteria Status
+## MVP Acceptance Criteria Status (full table)
 | AC | Description | Status |
 |----|-------------|--------|
-| AC1.x | Connect wallet | FE implemented; agent-browser cannot exercise real MetaMask in headless; user-validated |
-| AC2.1 | AlreadyMinted | ✅ verified by MonsterNFT.t.sol |
-| AC2.2 | Mint gives egg | ✅ verified by E2E (PR #23) |
-| AC3.1 | Rarity 50/30/20 within ±5% | ✅ RarityRoll.t.sol 10k fuzz + 10k seed sweep |
-| AC3.2 | Deterministic DNA | ✅ verified by E2E (Alice re-hatch → same DNA) |
-| AC4.x | Monster detail page | ✅ screenshot 03-monster-detail.png |
+| AC1.x | Connect wallet | FE implemented (RainbowKit); user-validated in browser |
+| AC2.1 | AlreadyMinted revert | ✅ MonsterNFT.t.sol |
+| AC2.2 | Mint gives egg with speciesId=0 | ✅ E2E |
+| AC3.1 | Rarity 50/30/20 within ±5% | ✅ RarityRoll.t.sol 10k fuzz |
+| AC3.2 | Deterministic DNA | ✅ E2E (Alice re-hatch → same DNA) |
+| AC4.x | Monster detail page renders | ✅ screenshot 03 |
 | AC5.1 | Cooldown revert | ✅ MonsterNFT.t.sol |
-| AC5.2 | XP growth + level up | ✅ verified by E2E (30 → 80) |
-| AC6.1 | Battle determinism | ✅ Battle.t.sol + integration test |
-| AC6.2 | Type effectiveness | ✅ TypeChart.t.sol golden vector |
-| AC6.3 | BattleResolved event | ✅ verified by E2E |
-| AC7.1 | Leaderboard page | ✅ screenshot 02-leaderboard.png (static demo; live indexer is Phase 2) |
-| AC8.x | Showcase profile | ✅ page exists; full ownership scan is Phase 2 |
+| AC5.2 | XP growth + level up | ✅ E2E (30 → 80) |
+| AC6.1 | Battle determinism | ✅ Battle.t.sol + integration |
+| AC6.2 | Type effectiveness golden vector | ✅ TypeChart.t.sol |
+| AC6.3 | BattleResolved event | ✅ E2E |
+| AC7.1 | Leaderboard page | ✅ screenshot 02 (static demo; indexer is Phase 2) |
+| AC8.x | Showcase profile | ✅ page exists |
 
-## Risks
-- R1 ~~Foundry not installed~~ — installed via foundryup. Resolved.
-- R2 ~~Chainlink VRF not on Monad~~ — using block.prevrandao per ADR-0004. Resolved.
-- R3 ~~Art method unresolved~~ — Pollinations locked in ADR-0001. Resolved.
-- R4 — Pollinations availability must be re-verified at Phase 1 start. Mitigated (probed 2026-07-11).
-- R5 — Monad testnet RPC pinned. Re-verified 2026-07-11.
-- R6 — Art batch is currently the only blocking concern for a polished demo; we ship with EmberFox art + placeholder for other species.
+## Evidence Map
+- `docs/evidence/0001/` — Foundry workspace init (PR #18)
+- `docs/evidence/0002/` — Frontend MVP build + smoke (PR #21)
+- `docs/evidence/0004/` — Full contract suite (PR #20)
+- `docs/evidence/0018/` — Anvil deploy + 7 agent-browser screenshots + cast E2E trace (PR #23)
+- `docs/evidence/0003b/` — Pollinations art batch + manual cull (in progress)
+
+## Next milestone: Testnet demo
+Issue #24. Unblocks once the user provides a funded wallet.
