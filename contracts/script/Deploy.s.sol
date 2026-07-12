@@ -9,7 +9,16 @@ import {Battle} from "../src/Battle.sol";
 import {BlockPrevRandaoSource} from "../src/lib/BlockPrevRandaoSource.sol";
 
 contract Deploy is Script {
-    function run() external returns (MonsterNFT nft, ItemNFT items, GenesisMinter minter, Battle battle, BlockPrevRandaoSource rng) {
+    function run()
+        external
+        returns (
+            MonsterNFT nft,
+            ItemNFT items,
+            GenesisMinter minter,
+            Battle battle,
+            BlockPrevRandaoSource rng
+        )
+    {
         uint256 pk = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address deployer = vm.addr(pk);
 

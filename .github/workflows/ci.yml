@@ -22,7 +22,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly
+          version: stable
 
       - name: Show toolchain
         run: forge --version
@@ -33,13 +33,18 @@ jobs:
           path: |
             contracts/lib
             contracts/cache
+            contracts/out
           key: ${{ runner.os }}-forge-${{ hashFiles('contracts/foundry.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-forge-
 
       - name: Install dependencies
         working-directory: contracts
         run: |
-          forge install foundry-rs/forge-std --no-git
-          forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 --no-git
+          if [ ! -d lib/openzeppelin-contracts ]; then
+            forge install foundry-rs/forge-std --no-git
+            forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 --no-git
+          fi
 
       - name: Format check
         working-directory: contracts
@@ -71,7 +76,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: 'pnpm'
           cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
@@ -80,7 +85,7 @@ jobs:
 
       - name: Type check
         working-directory: frontend
-        run: npx tsc --noEmit
+        run: pnpm exec tsc --noEmit
 
       - name: Lint
         working-directory: frontend
@@ -90,10 +95,32 @@ jobs:
         working-directory: frontend
         run: pnpm build
 
-      - name: Cache build artifacts
-        uses: actions/upload-artifact@v4
+  backend:
+    name: Backend (type-check + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
         with:
-          name: next-build
-          path: frontend/.next
-          retention-days: 7
-          if-no-files-found: ignore
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          pnpm config set --location=project ignored-build-approaches "[]" || true
+          pnpm install --frozen-lockfile
+
+      - name: Type check
+        working-directory: backend
+        run: pnpm exec tsc --noEmit
+
+      - name: Build
+        working-directory: backend
+        run: pnpm exec tsc -p tsconfig.json

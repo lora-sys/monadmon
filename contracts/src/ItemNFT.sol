@@ -8,7 +8,10 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 /// @notice ERC-1155 scaffold for MonadMon items (stones, candies, cores).
 ///         No mint functions in Phase 1; Phase 2 wires drops + crafting.
 contract ItemNFT is ERC1155, Ownable {
-    constructor(address initialOwner, string memory baseUri) ERC1155(baseUri) Ownable(initialOwner) {}
+    constructor(address initialOwner, string memory baseUri)
+        ERC1155(baseUri)
+        Ownable(initialOwner)
+    {}
 
     function setURI(string memory newUri) external onlyOwner {
         _setURI(newUri);

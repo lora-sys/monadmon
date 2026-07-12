@@ -11,13 +11,13 @@ contract TypeChartTest is Test {
     function test_EffectivenessMatrix() public view {
         //                  Fire def  Water def  Nature def  Electric def
         // Attacker Fire     [   1.0  ,    0.5  ,    1.5   ,    1.0    ]
-        uint16[4] memory fireRow     = [uint16(10_000), 5_000, 15_000, 10_000];
+        uint16[4] memory fireRow = [uint16(10_000), 5_000, 15_000, 10_000];
         // Attacker Water    [   1.5  ,    1.0  ,    0.5   ,    0.5    ]
         //   W beats F; W weak to N (N beats W); W weak to E (E beats W).
-        uint16[4] memory waterRow    = [uint16(15_000), 10_000, 5_000, 5_000];
+        uint16[4] memory waterRow = [uint16(15_000), 10_000, 5_000, 5_000];
         // Attacker Nature   [   0.5  ,    1.5  ,    1.0   ,    1.0    ]
         //   N weak to F; N beats W; N vs E is neutral.
-        uint16[4] memory natureRow   = [uint16(5_000), 15_000, 10_000, 10_000];
+        uint16[4] memory natureRow = [uint16(5_000), 15_000, 10_000, 10_000];
         // Attacker Electric [   1.0  ,    1.5  ,    0.5   ,    1.0    ]
         //   E vs F neutral; E beats W; E weak to N.
         uint16[4] memory electricRow = [uint16(10_000), 15_000, 5_000, 10_000];
@@ -59,9 +59,8 @@ contract TypeChartTest is Test {
         defender = defender % 4;
         uint16 bps = TypeChart.effectiveness(attacker, defender);
         assertTrue(
-            bps == TypeChart.NORMAL_BPS ||
-            bps == TypeChart.SUPER_BPS ||
-            bps == TypeChart.RESISTED_BPS,
+            bps == TypeChart.NORMAL_BPS || bps == TypeChart.SUPER_BPS
+                || bps == TypeChart.RESISTED_BPS,
             "only NORMAL/SUPER/RESISTED allowed"
         );
     }

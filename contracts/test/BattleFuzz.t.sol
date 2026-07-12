@@ -42,7 +42,8 @@ contract BattleFuzzTest is Test {
     }
 
     function _seed(
-        address /* owner */,
+        address,
+        /* owner */
         uint256 tokenId,
         uint16 speciesId,
         uint16 hp,
@@ -51,26 +52,19 @@ contract BattleFuzzTest is Test {
         uint16 spd
     ) internal {
         bytes32 w0 = bytes32(
-            (uint256(speciesId))              |
-            (uint256(uint16(1))      << 16)    | // level
-            (uint256(uint32(0))      << 32)    | // xp
-            (uint256(uint8(1))       << 64)    | // stage
-            (uint256(uint8(0))       << 72)    | // _r0
-            (uint256(uint16(0))      << 80)    | // _r1
-            (uint256(uint64(0xdeadbeef00 | tokenId)) << 96) |
-            (uint256(hp)             << 160)   |
-            (uint256(atk)            << 176)   |
-            (uint256(def)            << 192)   |
-            (uint256(spd)            << 208)
+            (uint256(speciesId)) | (uint256(uint16(1)) << 16) // level
+                | (uint256(uint32(0)) << 32) // xp
+                | (uint256(uint8(1)) << 64) // stage
+                | (uint256(uint8(0)) << 72) // _r0
+                | (uint256(uint16(0)) << 80) // _r1
+                | (uint256(uint64(0xdeadbeef00 | tokenId)) << 96) | (uint256(hp) << 160)
+                | (uint256(atk) << 176) | (uint256(def) << 192) | (uint256(spd) << 208)
         );
         bytes32 slot = keccak256(abi.encode(tokenId, MONSTERS_SLOT));
         vm.store(address(nft), slot, w0);
     }
 
-    function _forge(
-        uint256 tokenA,
-        uint256 tokenB
-    ) internal returns (Battle.Challenge memory) {
+    function _forge(uint256 tokenA, uint256 tokenB) internal returns (Battle.Challenge memory) {
         vm.prank(alice);
         uint256 cid = battle.challenge(tokenA, bob, tokenB);
         vm.prank(bob);
@@ -115,8 +109,8 @@ contract BattleFuzzTest is Test {
     /// @notice 1.5x super-effective. Fire vs Nature. Few hits to kill.
     function test_SuperEffectiveDamage() public {
         _mintBoth();
-        _seed(alice, 1, 1, 1000, 100, 0, 100);  // Fire
-        _seed(bob, 2, 7, 1000, 1, 0, 50);       // Nature
+        _seed(alice, 1, 1, 1000, 100, 0, 100); // Fire
+        _seed(bob, 2, 7, 1000, 1, 0, 50); // Nature
         Battle.Challenge memory c = _forge(1, 2);
         assertFalse(c.draw, "alice one-shots via 1.5x bonus");
         assertEq(c.winnerTokenId, 1);
@@ -126,8 +120,8 @@ contract BattleFuzzTest is Test {
     ///         With small HP+ATK, the battle resolves (not a draw).
     function test_ResistedDamage() public {
         _mintBoth();
-        _seed(alice, 1, 4, 500, 100, 0, 100);  // Water
-        _seed(bob, 2, 10, 500, 1, 0, 50);      // Electric
+        _seed(alice, 1, 4, 500, 100, 0, 100); // Water
+        _seed(bob, 2, 10, 500, 1, 0, 50); // Electric
         Battle.Challenge memory c = _forge(1, 2);
         // 0.5x reduces damage but 100 ATK vs 500 HP is still fast enough
         // to kill in a few turns.
@@ -186,8 +180,14 @@ contract BattleFuzzTest is Test {
 
     /// @notice Fuzz: random stats. Output always valid (winner in {1,2}, no overflow, turns<=50).
     function testFuzz_BattleOutputAlwaysValid(
-        uint16 hpA, uint16 atkA, uint16 defA, uint16 spdA,
-        uint16 hpB, uint16 atkB, uint16 defB, uint16 spdB
+        uint16 hpA,
+        uint16 atkA,
+        uint16 defA,
+        uint16 spdA,
+        uint16 hpB,
+        uint16 atkB,
+        uint16 defB,
+        uint16 spdB
     ) public {
         hpA = uint16(bound(hpA, 1, 5000));
         atkA = uint16(bound(atkA, 1, 500));

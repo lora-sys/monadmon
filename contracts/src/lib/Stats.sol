@@ -16,7 +16,11 @@ library Stats {
     /// @notice Applies the DNA tilt + level curve to a base stat. Result is
     ///         floored to uint16. Tilt is in [0.9, 1.1]; level bonus is +2%
     ///         per level (capped at level 50 → +100%).
-    function computeStat(uint16 base, uint64 dna, uint8 salt, uint16 level) internal pure returns (uint16) {
+    function computeStat(uint16 base, uint64 dna, uint8 salt, uint16 level)
+        internal
+        pure
+        returns (uint16)
+    {
         uint256 r = rand01(dna, salt); // 0..999_999
         // tilt ∈ [0.9, 1.1]  = 0.9 + (r / 999_999) * 0.2
         // To stay in integer math: tiltBps = 9_000 + (r * 20_000) / 999_999

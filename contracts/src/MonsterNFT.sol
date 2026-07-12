@@ -2,7 +2,9 @@
 pragma solidity ^0.8.24;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import {
+    ERC721URIStorage
+} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IRandomSource} from "./interfaces/IRandomSource.sol";
@@ -55,7 +57,9 @@ contract MonsterNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     event EggMinted(address indexed to, uint256 indexed tokenId);
     event MonsterHatched(uint256 indexed tokenId, uint16 speciesId, uint64 dna, uint8 rarity);
     event Trained(uint256 indexed tokenId, uint32 newXp, uint16 newAtk, uint64 trainedAt);
-    event BattleResolved(uint256 indexed winnerTokenId, uint256 indexed loserTokenId, bool draw, uint8 turns);
+    event BattleResolved(
+        uint256 indexed winnerTokenId, uint256 indexed loserTokenId, bool draw, uint8 turns
+    );
 
     error AlreadyMinted();
     error NotEgg();
@@ -64,7 +68,10 @@ contract MonsterNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     error OnCooldown();
     error MaxLevelReached();
 
-    constructor(address _randomSource, address initialOwner) ERC721("MonadMon", "MONMON") Ownable(initialOwner) {
+    constructor(address _randomSource, address initialOwner)
+        ERC721("MonadMon", "MONMON")
+        Ownable(initialOwner)
+    {
         require(_randomSource != address(0), "MonsterNFT: zero RNG");
         randomSource = IRandomSource(_randomSource);
     }
@@ -201,7 +208,11 @@ contract MonsterNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         return _monsters[tokenId];
     }
 
-    function battleView(uint256 tokenId) external view returns (uint16 hp, uint16 atk, uint16 def, uint16 spd, uint8 element) {
+    function battleView(uint256 tokenId)
+        external
+        view
+        returns (uint16 hp, uint16 atk, uint16 def, uint16 spd, uint8 element)
+    {
         Monster memory m = _monsters[tokenId];
         return (m.hp, m.atk, m.def, m.spd, SpeciesRegistry.elementOf(m.speciesId));
     }
@@ -215,22 +226,30 @@ contract MonsterNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         return keccak256(abi.encode(tokenId, _MONSTERS_SLOT));
     }
 
-    function _defaultTokenURI(uint16 speciesId, uint8 stage, uint64 dna) internal pure returns (string memory) {
-        return string(
-            abi.encodePacked(
-                "monadmon://", _u(speciesId), "/", _u(stage), "/", _hex(dna)
-            )
-        );
+    function _defaultTokenURI(uint16 speciesId, uint8 stage, uint64 dna)
+        internal
+        pure
+        returns (string memory)
+    {
+        return
+            string(abi.encodePacked("monadmon://", _u(speciesId), "/", _u(stage), "/", _hex(dna)));
     }
 
     function _u(uint16 v) private pure returns (string memory) {
         if (v == 0) return "0";
         uint256 j = v;
         uint256 len;
-        while (j != 0) { len++; j /= 10; }
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
         bytes memory b = new bytes(len);
         j = v;
-        while (j != 0) { len -= 1; b[len] = bytes1(uint8(48 + j % 10)); j /= 10; }
+        while (j != 0) {
+            len -= 1;
+            b[len] = bytes1(uint8(48 + j % 10));
+            j /= 10;
+        }
         return string(b);
     }
 
@@ -244,11 +263,21 @@ contract MonsterNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         return string(b);
     }
 
-    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
         return super.tokenURI(tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721URIStorage) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }

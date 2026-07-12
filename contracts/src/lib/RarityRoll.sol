@@ -7,9 +7,9 @@ pragma solidity ^0.8.24;
 ///         band deterministically.
 library RarityRoll {
     enum Rarity {
-        Common,    // 0 — 50% target
-        Rare,      // 1 — 30% target
-        Legendary  // 2 — 20% target
+        Common, // 0 — 50% target
+        Rare, // 1 — 30% target
+        Legendary // 2 — 20% target
     }
 
     uint256 internal constant COMMON_TARGET_BPS = 5_000;
@@ -18,9 +18,11 @@ library RarityRoll {
     function _common() private pure returns (uint16[8] memory list) {
         list = [uint16(1), 2, 4, 5, 7, 8, 10, 11];
     }
+
     function _rare() private pure returns (uint16[3] memory list) {
         list = [uint16(3), 9, 12];
     }
+
     function _legendary() private pure returns (uint16[1] memory list) {
         list = [uint16(6)];
     }

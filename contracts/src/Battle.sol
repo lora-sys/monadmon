@@ -22,7 +22,12 @@ contract Battle is Ownable, ReentrancyGuard {
         uint8 element;
     }
 
-    enum State { None, Pending, Resolved }
+    enum State {
+        None,
+        Pending,
+        Resolved
+    }
+
     struct Challenge {
         address challenger;
         uint256 challengerTokenId;
@@ -45,9 +50,21 @@ contract Battle is Ownable, ReentrancyGuard {
         return challenges[challengeId];
     }
 
-    event ChallengeCreated(uint256 indexed challengeId, address indexed challenger, uint256 challengerTokenId, address indexed opponent, uint256 opponentTokenId);
+    event ChallengeCreated(
+        uint256 indexed challengeId,
+        address indexed challenger,
+        uint256 challengerTokenId,
+        address indexed opponent,
+        uint256 opponentTokenId
+    );
     event ChallengeAccepted(uint256 indexed challengeId);
-    event ChallengeResolved(uint256 indexed challengeId, uint256 winnerTokenId, uint256 loserTokenId, bool draw, uint8 turns);
+    event ChallengeResolved(
+        uint256 indexed challengeId,
+        uint256 winnerTokenId,
+        uint256 loserTokenId,
+        bool draw,
+        uint8 turns
+    );
 
     error NotInvolved();
     error WrongState();
@@ -55,14 +72,19 @@ contract Battle is Ownable, ReentrancyGuard {
     error SameOwner();
     error InvalidMonster();
 
-    constructor(MonsterNFT _nft, IRandomSource _randomSource, address initialOwner) Ownable(initialOwner) {
+    constructor(MonsterNFT _nft, IRandomSource _randomSource, address initialOwner)
+        Ownable(initialOwner)
+    {
         require(address(_nft) != address(0), "Battle: zero nft");
         require(address(_randomSource) != address(0), "Battle: zero RNG");
         nft = _nft;
         randomSource = _randomSource;
     }
 
-    function challenge(uint256 myTokenId, address opponent, uint256 oppTokenId) external returns (uint256 challengeId) {
+    function challenge(uint256 myTokenId, address opponent, uint256 oppTokenId)
+        external
+        returns (uint256 challengeId)
+    {
         if (nft.ownerOf(myTokenId) != msg.sender) revert InvalidMonster();
         if (nft.ownerOf(oppTokenId) != opponent) revert InvalidMonster();
         if (nft.ownerOf(myTokenId) == opponent) revert SameOwner();
@@ -149,10 +171,19 @@ contract Battle is Ownable, ReentrancyGuard {
             loserTokenId = tokenB;
         } else {
             draw = true;
-            if (a.hp > b.hp) { winnerTokenId = tokenA; loserTokenId = tokenB; }
-            else if (b.hp > a.hp) { winnerTokenId = tokenB; loserTokenId = tokenA; }
-            else if (a.spd >= b.spd) { winnerTokenId = tokenA; loserTokenId = tokenB; }
-            else { winnerTokenId = tokenB; loserTokenId = tokenA; }
+            if (a.hp > b.hp) {
+                winnerTokenId = tokenA;
+                loserTokenId = tokenB;
+            } else if (b.hp > a.hp) {
+                winnerTokenId = tokenB;
+                loserTokenId = tokenA;
+            } else if (a.spd >= b.spd) {
+                winnerTokenId = tokenA;
+                loserTokenId = tokenB;
+            } else {
+                winnerTokenId = tokenB;
+                loserTokenId = tokenA;
+            }
         }
         turns = turn;
     }
