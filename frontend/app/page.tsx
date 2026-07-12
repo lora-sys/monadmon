@@ -1,85 +1,145 @@
+import Image from "next/image";
 import Link from "next/link";
-import { species } from "@/lib/species";
 
 export default function HomePage() {
-  const featured = species.slice(0, 6);
-
   return (
-    <div className="space-y-16">
-      <section className="text-center py-12 space-y-6">
-        <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+    <div className="space-y-24 -mt-4">
+      {/* ===================== HERO (Poster 1) ===================== */}
+      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="relative w-full overflow-hidden">
+          <Image
+            src="/assets/marketing/poster-hero.png"
+            alt="MonadMon — The first living creatures on Monad"
+            width={1122}
+            height={1402}
+            priority
+            className="w-full h-auto"
+          />
+        </div>
+      </section>
+
+      {/* ===================== TAGLINE ===================== */}
+      <section className="text-center max-w-3xl mx-auto space-y-6">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
           The first living creatures on{" "}
-          <span className="text-[#7AF0BA]">Monad</span>
+          <span className="bg-gradient-to-r from-[#7AF0BA] to-[#C9A7FF] bg-clip-text text-transparent">
+            Monad
+          </span>
         </h1>
-        <p className="text-lg text-[#B5BAC8] max-w-2xl mx-auto">
+        <p className="text-lg text-[#B5BAC8]">
           Connect your wallet. Mint a Genesis Egg. Hatch a Monster that is
           truly yours — born on-chain, mine forever.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
           <Link
             href="/mint"
-            className="px-6 py-3 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors"
+            className="px-8 py-4 bg-gradient-to-r from-[#7AF0BA] to-[#5cd891] text-[#0B0D14] font-bold rounded-md hover:scale-105 transition-transform shadow-lg shadow-[#7AF0BA]/20"
           >
             Mint my Genesis Egg
           </Link>
           <Link
             href="/leaderboard"
-            className="px-6 py-3 border border-[#232839] hover:border-[#7AF0BA] rounded-md transition-colors"
+            className="px-8 py-4 border border-[#232839] hover:border-[#7AF0BA] rounded-md transition-colors"
           >
             View Leaderboard
           </Link>
         </div>
       </section>
 
-      <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Twelve species. One Monad. Yours.</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          {featured.map((s) => (
-            <div
-              key={s.id}
-              className="bg-[#11141D] border border-[#232839] rounded-md p-3 text-center hover:border-[#7AF0BA] transition-colors"
-            >
-              <div className="aspect-square bg-[#1A1E2A] rounded mb-2 flex items-center justify-center text-4xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={s.stages[1].art} alt={s.name} className="w-full h-full object-cover rounded" />
-              </div>
-              <div className="text-sm font-semibold">{s.name}</div>
-              <div className="text-xs text-[#6E7589]">{s.element}</div>
-            </div>
-          ))}
-        </div>
-        <p className="text-center text-sm text-[#6E7589]">
-          + 6 more species waiting in the wild.
-        </p>
+      {/* ===================== ARENA (Poster 2) ===================== */}
+      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+        <Image
+          src="/assets/marketing/poster-arena.png"
+          alt="MonadMon Arena — Onchain monster battles on Monad"
+          width={1122}
+          height={1402}
+          className="w-full h-auto"
+        />
       </section>
 
-      <section className="grid md:grid-cols-3 gap-6">
-        <Step
-          n={1}
-          title="Mint"
-          desc="One Genesis Egg per wallet. Free on testnet."
+      {/* ===================== HOW IT WORKS ===================== */}
+      <section className="max-w-5xl mx-auto space-y-10">
+        <header className="text-center space-y-2">
+          <h2 className="text-3xl md:text-4xl font-bold">How it works</h2>
+          <p className="text-[#B5BAC8]">Three steps. Five minutes. Yours forever.</p>
+        </header>
+        <div className="grid md:grid-cols-3 gap-6">
+          <Step
+            n={1}
+            title="Mint"
+            desc="One Genesis Egg per wallet. Free on testnet."
+            href="/mint"
+            cta="Mint an Egg"
+          />
+          <Step
+            n={2}
+            title="Hatch"
+            desc="A species + DNA + stats are derived on-chain from Monad's randomness. Truly unique."
+            href="/train"
+            cta="Train your Monster"
+          />
+          <Step
+            n={3}
+            title="Battle"
+            desc="Challenge other players. Type chart, level curve, real stakes."
+            href="/arena"
+            cta="Enter the Arena"
+          />
+        </div>
+      </section>
+
+      {/* ===================== TEAM (Poster 3) ===================== */}
+      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+        <Image
+          src="/assets/marketing/poster-team.png"
+          alt="MonadMon — Build your team"
+          width={1122}
+          height={1402}
+          className="w-full h-auto"
         />
-        <Step
-          n={2}
-          title="Hatch"
-          desc="A species + DNA + stats are derived on-chain from Monad's randomness. Truly unique."
-        />
-        <Step
-          n={3}
-          title="Battle"
-          desc="Challenge other players. Type chart, level curve, real stakes."
-        />
+      </section>
+
+      {/* ===================== FINAL CTA ===================== */}
+      <section className="text-center space-y-6 pb-12">
+        <h2 className="text-3xl md:text-4xl font-bold">Your first Monad creature awaits.</h2>
+        <Link
+          href="/mint"
+          className="inline-block px-10 py-5 bg-gradient-to-r from-[#7AF0BA] to-[#C9A7FF] text-[#0B0D14] font-bold rounded-md hover:scale-105 transition-transform shadow-lg shadow-[#7AF0BA]/30"
+        >
+          Mint your Genesis Egg
+        </Link>
+        <p className="text-xs text-[#6E7589]">
+          One per wallet · On Monad testnet · Forever yours
+        </p>
       </section>
     </div>
   );
 }
 
-function Step({ n, title, desc }: { n: number; title: string; desc: string }) {
+function Step({
+  n,
+  title,
+  desc,
+  href,
+  cta,
+}: {
+  n: number;
+  title: string;
+  desc: string;
+  href: string;
+  cta: string;
+}) {
   return (
-    <div className="bg-[#11141D] border border-[#232839] rounded-md p-6">
-      <div className="text-[#7AF0BA] text-sm font-mono mb-2">STEP {n}</div>
-      <div className="text-xl font-semibold mb-2">{title}</div>
-      <div className="text-[#B5BAC8] text-sm">{desc}</div>
+    <div className="bg-[#11141D] border border-[#232839] rounded-lg p-6 hover:border-[#7AF0BA] transition-colors group">
+      <div className="text-[#7AF0BA] text-sm font-mono mb-3">STEP {n}</div>
+      <div className="text-2xl font-bold mb-2">{title}</div>
+      <div className="text-[#B5BAC8] text-sm mb-4">{desc}</div>
+      <Link
+        href={href}
+        className="text-sm font-semibold text-[#7AF0BA] group-hover:underline"
+      >
+        {cta} →
+      </Link>
     </div>
   );
 }
