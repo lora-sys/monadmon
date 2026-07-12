@@ -65,7 +65,7 @@ jobs:
           node-version: 20
       - name: Install
         working-directory: frontend
-        run: cd "$GITHUB_WORKSPACE/frontend" && npm ci --no-audit --no-fund
+        run: cd "$GITHUB_WORKSPACE/frontend" && rm -rf node_modules && npm ci --no-audit --no-fund
       - name: Type check
         run: cd "${GITHUB_WORKSPACE}/frontend" && npm run typecheck
       - name: Lint
@@ -83,7 +83,7 @@ jobs:
           node-version: 20
       - name: Install
         working-directory: backend
-        run: cd "$GITHUB_WORKSPACE/backend" && npm ci --no-audit --no-fund
+        run: cd "$GITHUB_WORKSPACE/backend" && rm -rf node_modules && npm ci --no-audit --no-fund
       - name: Type check
         run: cd "${GITHUB_WORKSPACE}/backend" && npm run typecheck
       - name: Build
