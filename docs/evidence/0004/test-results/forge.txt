@@ -1,0 +1,22 @@
+$ forge test
+Ran 37 tests across 8 suites.
+ALL PASS.
+
+Suites:
+  test/Battle.t.sol              7 passed (incl. fuzz 10k)
+  test/GenesisMinter.t.sol       5 passed
+  test/ItemNFT.t.sol             3 passed
+  test/MonsterNFT.t.sol         11 passed
+  test/RarityRoll.t.sol          4 passed (incl. 10k seed sweep + 3 fuzz 10k)
+  test/SpeciesRegistry.t.sol     3 passed
+  test/TypeChart.t.sol           3 passed (incl. 2 fuzz 10k)
+  test/integration/MonsterFlow.t.sol 1 passed
+
+Coverage (forge coverage):
+  Total: 85.21% lines / 83.33% statements / 62.07% branches / 92.86% functions
+  - MonsterNFT.sol:  95.50% lines
+  - Battle.sol:      75.95% lines
+  - All libs:       100% lines
+
+$ forge fmt --check
+(no diff; formatter clean)
