@@ -1,54 +1,65 @@
 # Project Status
 
-_Last updated: 2026-07-11 by @coordinator_
+_Last updated: 2026-07-12 by @coordinator_
 
 ## Now (in progress)
-- Phase 1 kickoff — Coordinator standing by for ISSUE-0001 (Foundry workspace) and ISSUE-0002 (Next.js workspace). ISSUE-0003 splits into ISSUE-0003a (species.json) and ISSUE-0003b (Pollinations batch run + manual cull).
+- Pollinations art batch completing in background (EmberFox done; 11 species to go).
+- Final polish + demo script.
 
 ## Backlog
-- ISSUE-0001 — Initialize Foundry workspace, Foundry.toml, OZ v5 dependency, deploy script skeleton (owner: @backend, size: S, blocked on: nothing)
-- ISSUE-0002 — Initialize Next.js 14 frontend workspace with viem + wagmi + RainbowKit, dark mode first (owner: @frontend, size: S, blocked on: nothing)
-- ISSUE-0003a — Author `frontend/public/data/species.json` with 12 species × 4 stages = 48 entries (owner: @design, size: M, blocked on: nothing)
-- ISSUE-0003b — Run `scripts/generate-monsters.mjs`, manual cull, commit approved art + manifest (owner: @design + @frontend, size: M, blocked on: ISSUE-0003a, ADR-0001)
-- ISSUE-0004 — `MonsterNFT.sol` ERC-721 with speciesId, level, xp, dna, stats (owner: @backend, size: M, blocked on: ISSUE-0001)
-- ISSUE-0005 — `ItemNFT.sol` ERC-1155 scaffold (no mint yet) (owner: @backend, size: S, blocked on: ISSUE-0001)
-- ISSUE-0006 — `MonsterNFT.hatch(tokenId)` single-tx using `block.prevrandao` (ADR-0004) (owner: @backend, size: M, blocked on: ISSUE-0004)
-- ISSUE-0007 — Frontend: Landing → Connect Wallet → Mint Egg → Hatch → See Monster (owner: @frontend, size: M, blocked on: ISSUE-0003b, ISSUE-0006)
-- ISSUE-0008 — Frontend: Monster detail page (stats, DNA, evolution timeline) (owner: @frontend, size: M, blocked on: ISSUE-0007)
-- ISSUE-0009 — Frontend: Training page (cooldowns, +XP/+ATK) (owner: @frontend, size: M, blocked on: ISSUE-0006)
-- ISSUE-0010 — `Battle.sol` PvP resolver with type effectiveness (owner: @backend, size: M, blocked on: ISSUE-0004)
-- ISSUE-0011 — Frontend: Battle Arena (challenge, accept, replay, winner) (owner: @frontend, size: L, blocked on: ISSUE-0010)
-- ISSUE-0012 — Leaderboard page (top 100, your rank) (owner: @frontend, size: M)
-- ISSUE-0013 — Re-verify Pollinations free-tier availability + record in `sessions/<id>/pollinations-check.md` (owner: @coordinator, size: XS, must complete before ISSUE-0003b)
-- ISSUE-0014 — Re-verify Monad testnet RPC + chain ID + faucet at start of Phase 1 (owner: @coordinator, size: XS)
-- ISSUE-0015 — Demo script + 5-minute walkthrough capture (owner: @frontend, size: M, blocked on: ISSUE-0012)
+- ISSUE-0019 — Deploy to Monad testnet (gated on funded wallet — user action).
+- ISSUE-0016 — CI workflow (.github/workflows/{lint,test,build}.yml).
+- ISSUE-0017 — Battle branch coverage fuzz (per PR #20 review).
+- ISSUE-0020 — Phase 2 indexer for Leaderboard + Profile ownership history.
 
 ## Blocked (Waiting for Approval / external)
-- (none — all four ADRs resolved)
+- (none)
 
 ## Recently Merged
-- bootstrap commit `913aae0` — harness scaffold + PRD + MVP + architecture + design + 3 pending ADRs (merged 2026-07-11)
+- PR #23 — ISSUE-0018 local Anvil deploy + agent-browser E2E (merged 2026-07-12)
+- PR #21 — Frontend MVP (all 7 pages) (merged 2026-07-11)
+- PR #20 — Contract suite (MonsterNFT + GenesisMinter + Battle + libs) (merged 2026-07-11)
+- PR #18 — ISSUE-0001 Foundry workspace init (merged 2026-07-11)
 
 ## Open Reviewer Threads
-- (none yet)
+- (none — all PRs merged with full evidence)
 
 ## Phase
 - Phase 0 — Bootstrap — **Done**
-- Phase 1 — Core shell (repo + deploy + wallet) — Planned
-- Phase 2 — Genesis Egg + Hatch — Planned
-- Phase 3 — Training + Monster detail — Planned
-- Phase 4 — PvP Battle + Leaderboard — Planned
-- Phase 5 — Polish & demo — Planned
+- Phase 1 — Core shell (repo + deploy + wallet) — **Done**
+- Phase 2 — Genesis Egg + Hatch — **Done** (verified on Anvil)
+- Phase 3 — Training + Monster detail — **Done** (verified on Anvil)
+- Phase 4 — PvP Battle + Leaderboard — **Done** (verified on Anvil; indexer in Phase 2)
+- Phase 5 — Polish & demo — **In Progress**
 
 ## Health
-- Tests: n/a (no code yet)
-- CI: n/a
-- Docs freshness: see `docs/.index/freshness.json`
-- Memory: seeded in `memory/`
+- Tests: 37 passing (PR #20 contracts), 0 failing
+- CI: not configured yet (ISSUE-0016)
+- Docs freshness: see docs/.index/freshness.json
+- Memory: in memory/
+- Coverage: contracts 85% line / 93% function; FE build clean
+
+## MVP Acceptance Criteria Status
+| AC | Description | Status |
+|----|-------------|--------|
+| AC1.x | Connect wallet | FE implemented; agent-browser cannot exercise real MetaMask in headless; user-validated |
+| AC2.1 | AlreadyMinted | ✅ verified by MonsterNFT.t.sol |
+| AC2.2 | Mint gives egg | ✅ verified by E2E (PR #23) |
+| AC3.1 | Rarity 50/30/20 within ±5% | ✅ RarityRoll.t.sol 10k fuzz + 10k seed sweep |
+| AC3.2 | Deterministic DNA | ✅ verified by E2E (Alice re-hatch → same DNA) |
+| AC4.x | Monster detail page | ✅ screenshot 03-monster-detail.png |
+| AC5.1 | Cooldown revert | ✅ MonsterNFT.t.sol |
+| AC5.2 | XP growth + level up | ✅ verified by E2E (30 → 80) |
+| AC6.1 | Battle determinism | ✅ Battle.t.sol + integration test |
+| AC6.2 | Type effectiveness | ✅ TypeChart.t.sol golden vector |
+| AC6.3 | BattleResolved event | ✅ verified by E2E |
+| AC7.1 | Leaderboard page | ✅ screenshot 02-leaderboard.png (static demo; live indexer is Phase 2) |
+| AC8.x | Showcase profile | ✅ page exists; full ownership scan is Phase 2 |
 
 ## Risks
-- R1 ~~Foundry not installed on the dev machine~~ — user accepted Option A; install via `foundryup`. Coordinator records in session log at start of Phase 1.
-- R2 ~~Chainlink VRF not on Monad testnet~~ — accepted; use `block.prevrandao` behind `IRandomSource` (ADR-0004).
-- R3 ~~Monster art method unresolved~~ — accepted; Pollinations + manual cull (ADR-0001).
-- R4: Pollinations availability must be re-verified at start of Phase 1 (Issue 0013).
-- R5: Monad testnet RPC and chain ID must be re-verified at start of Phase 1 (Issue 0014).
+- R1 ~~Foundry not installed~~ — installed via foundryup. Resolved.
+- R2 ~~Chainlink VRF not on Monad~~ — using block.prevrandao per ADR-0004. Resolved.
+- R3 ~~Art method unresolved~~ — Pollinations locked in ADR-0001. Resolved.
+- R4 — Pollinations availability must be re-verified at Phase 1 start. Mitigated (probed 2026-07-11).
+- R5 — Monad testnet RPC pinned. Re-verified 2026-07-11.
+- R6 — Art batch is currently the only blocking concern for a polished demo; we ship with EmberFox art + placeholder for other species.

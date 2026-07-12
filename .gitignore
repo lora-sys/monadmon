@@ -66,3 +66,6 @@ contracts/lib/
 frontend/.next/
 frontend/node_modules/
 frontend/pnpm-lock.yaml
+# agent-browser replays
+replay__*.png
+trace_*.zip
