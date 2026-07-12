@@ -9,7 +9,8 @@
     "build": "tsc -p tsconfig.json",
     "start:prod": "node dist/index.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.8",
