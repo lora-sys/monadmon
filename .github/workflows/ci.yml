@@ -18,15 +18,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: stable
-
       - name: Show toolchain
         run: forge --version
-
       - name: Cache forge libs
         uses: actions/cache@v4
         with:
@@ -37,7 +34,6 @@ jobs:
           key: ${{ runner.os }}-forge-${{ hashFiles('contracts/foundry.toml') }}
           restore-keys: |
             ${{ runner.os }}-forge-
-
       - name: Install dependencies
         working-directory: contracts
         run: |
@@ -45,19 +41,15 @@ jobs:
             forge install foundry-rs/forge-std --no-git
             forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 --no-git
           fi
-
       - name: Format check
         working-directory: contracts
         run: forge fmt --check
-
       - name: Build
         working-directory: contracts
         run: forge build --sizes
-
       - name: Test
         working-directory: contracts
         run: forge test -vv
-
       - name: Coverage
         working-directory: contracts
         run: forge coverage
@@ -68,30 +60,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 20
-
-      - name: Install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9 --activate
-          pnpm --version
-
+          version: 8
       - name: Install dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
-
       - name: Type check
         working-directory: frontend
         run: pnpm exec tsc --noEmit
-
       - name: Lint
         working-directory: frontend
         run: pnpm lint
-
       - name: Build
         working-directory: frontend
         run: pnpm build
@@ -101,26 +81,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 20
-
-      - name: Install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9 --activate
-          pnpm --version
-
+          version: 8
       - name: Install dependencies
         working-directory: backend
         run: pnpm install --frozen-lockfile
-
       - name: Type check
         working-directory: backend
         run: pnpm exec tsc --noEmit
-
       - name: Build
         working-directory: backend
         run: pnpm exec tsc -p tsconfig.json
