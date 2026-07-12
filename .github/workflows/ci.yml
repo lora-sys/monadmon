@@ -85,7 +85,7 @@ jobs:
           cache: 'npm'
       - name: Install
         working-directory: backend
-        run: cd "$GITHUB_WORKSPACE/frontend" && npm ci --no-audit --no-fund
+        run: cd "$GITHUB_WORKSPACE/backend" && npm ci --no-audit --no-fund
       - name: Type check
         run: cd backend && npx tsc --noEmit
       - name: Build
