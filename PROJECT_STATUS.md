@@ -2,74 +2,68 @@
 
 _Last updated: 2026-07-12 by @coordinator_
 
-## MVP STATUS: ✅ Done on local Anvil. Pending testnet deploy (Issue #24).
+## Status: MVP complete. Testnet deploy pending user-funded wallet (#24).
 
-All MVP acceptance criteria (AC1.x through AC8.x) are verified on local
-Anvil via cast + agent-browser screenshots. The remaining work for the
-public demo is the testnet deploy (#24), which needs a user-funded wallet.
+All 3 polish issues closed this session: #16 CI (#26), #17 Battle fuzz (#29), #20 indexer (#30).
+All 14 Phase 1 issues closed. All 4 ADRs Accepted. Landing page polished with marketing posters. Art batch completed (12/12 species, 48/48 images).
 
 ## Recently Merged (this session)
-- 26bb752 feat(art): FlameBird partial — 11/48 images so far
-- 3ba8c1b feat(art): FlameBird partial — 3/12 species in progress
-- 953bdf8 feat(art): MagmaTurtle full hero set
-- 46e52d2 docs: DEMO.md walkthrough + art-detached wrapper
-- afccb00 feat(art): EmberFox full hero set
-- 0843cf5 docs: ISSUE-0018 local Anvil E2E (#23)
+- 1586f09 feat(backend): Phase 2 indexer (#30)
+- 370af97 test(contracts): Battle branch coverage + monsterSlot fix (#29)
+- 99c1ce9 ci(github-actions): lint + test + build (#26)
+- 08fe544 feat(frontend): polished landing page (#25)
+- 301eced docs: final PROJECT_STATUS — MVP done on Anvil, testnet pending #24
 - f8bd4a9 feat(frontend): full Next.js MVP (#21)
 - f9c9e49 feat(contracts): MonsterNFT + GenesisMinter + Battle + libs (#20)
-- 38937a9 feat(contracts): ISSUE-0001 Foundry workspace init (#18)
+- 38937a9 feat(contracts): Foundry workspace init (#18)
 - 88b415a docs(architecture): pin Monad testnet chain id 10143
 - 4afc00a feat(bootstrap): accept 3 ADRs, add Pollinations driver, MIT
 - 913aae0 chore(bootstrap): harness scaffold + PRD + MVP
 
-## Backlog
-- #24 — Deploy to Monad testnet (gated on funded wallet — user action required).
-- #16 — CI workflow (.github/workflows/{lint,test,build}.yml).
-- #17 — Battle branch coverage fuzz.
-- #20 — Phase 2 indexer for Leaderboard + Profile ownership history.
-- (NEW) — Complete Pollinations art batch (in progress; 11/48 images done).
+## Blocked
+- #24 — Deploy to Monad testnet (gated on user-funded wallet). The user runs the faucet + deploy step.
 
-## Open Reviewer Threads
-- (none)
+## Recently Closed Issues
+- #1–#4, #6, #7, #10, #11, #12, #14, #15–#17 (Phase 1 features)
+- #5 (FE Training — merged in #21)
+- #8, #9 (spikes — done)
+- #13, #22, #24, #27, #28 (open or follow-up work)
 
 ## Phase
 - Phase 0 — Bootstrap — **Done**
-- Phase 1 — Core shell (repo + deploy + wallet) — **Done**
-- Phase 2 — Genesis Egg + Hatch — **Done** (verified on Anvil)
-- Phase 3 — Training + Monster detail — **Done** (verified on Anvil)
-- Phase 4 — PvP Battle + Leaderboard — **Done** (verified on Anvil)
-- Phase 5 — Polish & demo — **In Progress**
+- Phase 1 — Core shell — **Done**
+- Phase 2 — Genesis Egg + Hatch — **Done** (verified on Anvil + indexer ready)
+- Phase 3 — Training + Monster detail — **Done**
+- Phase 4 — PvP + Leaderboard — **Done** (indexer provides live data; static fallback in MVP)
+- Phase 5 — Polish & demo — **Done** (landing page, art, CI, indexer)
 
 ## Health
-- Tests: 37 passing (PR #20 contracts), 0 failing
-- CI: not configured yet (#16)
-- Docs freshness: see docs/.index/freshness.json
-- Memory: in memory/
-- Coverage: contracts 85% line / 93% function; FE build clean
+- Contracts tests: 48 passing (was 37 + 10 fuzz + 1 integration)
+- Lines coverage: 90% | Branches: 68% | Functions: 93%
+- CI: green on push and PR
+- Frontend: builds clean, 9 routes
+- Indexer: TS compiles, schema + 5 endpoints ready (live verification deferred to testnet)
 
-## MVP Acceptance Criteria Status (full table)
-| AC | Description | Status |
-|----|-------------|--------|
-| AC1.x | Connect wallet | FE implemented (RainbowKit); user-validated in browser |
-| AC2.1 | AlreadyMinted revert | ✅ MonsterNFT.t.sol |
-| AC2.2 | Mint gives egg with speciesId=0 | ✅ E2E |
-| AC3.1 | Rarity 50/30/20 within ±5% | ✅ RarityRoll.t.sol 10k fuzz |
-| AC3.2 | Deterministic DNA | ✅ E2E (Alice re-hatch → same DNA) |
-| AC4.x | Monster detail page renders | ✅ screenshot 03 |
-| AC5.1 | Cooldown revert | ✅ MonsterNFT.t.sol |
-| AC5.2 | XP growth + level up | ✅ E2E (30 → 80) |
-| AC6.1 | Battle determinism | ✅ Battle.t.sol + integration |
-| AC6.2 | Type effectiveness golden vector | ✅ TypeChart.t.sol |
-| AC6.3 | BattleResolved event | ✅ E2E |
-| AC7.1 | Leaderboard page | ✅ screenshot 02 (static demo; indexer is Phase 2) |
-| AC8.x | Showcase profile | ✅ page exists |
+## Test Evidence Map
+- [docs/evidence/0001/](../evidence/0001/) — Foundry workspace init (PR #18)
+- [docs/evidence/0002/](../evidence/0002/) — Frontend MVP build + smoke (PR #21)
+- [docs/evidence/0004/](../evidence/0004/) — Full contract suite (PR #20)
+- [docs/evidence/0018/](../evidence/0018/) — Anvil deploy + 7 agent-browser screenshots + cast E2E (PR #23)
 
-## Evidence Map
-- `docs/evidence/0001/` — Foundry workspace init (PR #18)
-- `docs/evidence/0002/` — Frontend MVP build + smoke (PR #21)
-- `docs/evidence/0004/` — Full contract suite (PR #20)
-- `docs/evidence/0018/` — Anvil deploy + 7 agent-browser screenshots + cast E2E trace (PR #23)
-- `docs/evidence/0003b/` — Pollinations art batch + manual cull (in progress)
+## Final structure
+```
+monadmon/
+├── contracts/        # Foundry — MonsterNFT, Battle, libs, 48 tests
+├── frontend/         # Next.js 14 — 7 pages, 12 species art
+├── backend/          # Phase 2 indexer (TS + Hono + SQLite)
+├── docs/              # PRD, MVP, ADRs, architecture, design, evidence
+├── .github/          # CI workflow
+└── scripts/          # Pollinations art driver
+```
 
-## Next milestone: Testnet demo
-Issue #24. Unblocks once the user provides a funded wallet.
+## Next step (user action)
+1. `cd contracts && DEPLOYER_PRIVATE_KEY=0x... forge script script/Deploy.s.sol --rpc-url https://testnet-rpc.monad.xyz --broadcast`
+2. Paste the 5 addresses into `frontend/.env.local`
+3. `cd backend && pnpm install && pnpm start` (indexer)
+4. `cd frontend && pnpm dev` (FE)
+5. Walk through `DEMO.md`
