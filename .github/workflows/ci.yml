@@ -66,16 +66,13 @@ jobs:
           cache: 'npm'
       - name: Install
         working-directory: frontend
-        run: npm ci --no-audit --no-fund
+        run: cd "$GITHUB_WORKSPACE/frontend" && npm ci --no-audit --no-fund
       - name: Type check
-        working-directory: frontend
-        run: npx tsc --noEmit
+        run: cd frontend && npx tsc --noEmit
       - name: Lint
-        working-directory: frontend
-        run: npm run lint
+        run: cd frontend && npm run lint
       - name: Build
-        working-directory: frontend
-        run: npm run build
+        run: cd frontend && npm run build
 
   backend:
     name: Backend (type-check + build)
@@ -88,10 +85,8 @@ jobs:
           cache: 'npm'
       - name: Install
         working-directory: backend
-        run: npm ci --no-audit --no-fund
+        run: cd "$GITHUB_WORKSPACE/frontend" && npm ci --no-audit --no-fund
       - name: Type check
-        working-directory: backend
-        run: npx tsc --noEmit
+        run: cd backend && npx tsc --noEmit
       - name: Build
-        working-directory: backend
-        run: npx tsc -p tsconfig.json
+        run: cd backend && npx tsc -p tsconfig.json
