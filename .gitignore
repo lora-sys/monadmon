@@ -61,3 +61,8 @@ docs/.index/*.local.json
 # Foundry-installed deps live in lib/ but shouldn't be committed. Re-run via:
 #   forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 --no-git
 contracts/lib/
+
+# Next.js build output (regenerate on demand)
+frontend/.next/
+frontend/node_modules/
+frontend/pnpm-lock.yaml

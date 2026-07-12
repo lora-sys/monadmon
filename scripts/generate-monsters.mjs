@@ -197,7 +197,7 @@ async function main() {
     console.log(`\n[${sp.id}] ${sp.name} (${sp.element})`);
     for (const stage of sp.stages.map((s) => s.stage)) {
       const seed = heroSeed(sp.id, stage);
-      const out = join(OUT_ROOT, sp.id, `stage${stage}.png`);
+      const out = join(OUT_ROOT, String(sp.id), `stage${stage}.png`);
       const r = await generateOne({ species: sp, stage, variant: null, outPath: out, seed });
       manifest.items.push({ speciesId: sp.id, stage, seed, path: out, bytes: r.bytes ?? null });
 
@@ -206,7 +206,7 @@ async function main() {
         for (let a = 0; a < 4; a++) {
           for (let b = 0; b < 4; b++) {
             const vSeed = variantSeed(sp.id, stage, a, b);
-            const vOut = join(OUT_ROOT, sp.id, `stage${stage}_dna_${a}_${b}.png`);
+            const vOut = join(OUT_ROOT, String(sp.id), `stage${stage}_dna_${a}_${b}.png`);
             const vr = await generateOne({
               species: sp,
               stage,

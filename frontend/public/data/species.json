@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-12",
+  "notes": "Source of truth for the 12 MonadMon species. Must match SpeciesRegistry.sol baseStats. Art paths are relative to /public.",
+  "species": [
+    {
+      "id": 1,
+      "slug": "emberfox",
+      "name": "EmberFox",
+      "element": "Fire",
+      "role": "Fast attacker",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/emberfox/stage0.png" },
+        { "stage": 1, "name": "EmberFox",     "hp": 80,  "atk": 90,  "def": 50,  "spd": 100, "art": "/assets/monsters/emberfox/stage1.png" },
+        { "stage": 2, "name": "FlameFox",     "hp": 110, "atk": 130, "def": 70,  "spd": 130, "art": "/assets/monsters/emberfox/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "InfernoFox",   "hp": 150, "atk": 180, "def": 90,  "spd": 160, "art": "/assets/monsters/emberfox/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "magmaturtle",
+      "name": "MagmaTurtle",
+      "element": "Fire",
+      "role": "Tank",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/magmaturtle/stage0.png" },
+        { "stage": 1, "name": "MagmaTurtle",  "hp": 120, "atk": 70,  "def": 110, "spd": 30,  "art": "/assets/monsters/magmaturtle/stage1.png" },
+        { "stage": 2, "name": "LavaTurtle",   "hp": 170, "atk": 90,  "def": 150, "spd": 40,  "art": "/assets/monsters/magmaturtle/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "VolcanoTurtle","hp": 220, "atk": 110, "def": 200, "spd": 50,  "art": "/assets/monsters/magmaturtle/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "flamebird",
+      "name": "FlameBird",
+      "element": "Fire",
+      "role": "Crit striker",
+      "rarity": "Rare",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/flamebird/stage0.png" },
+        { "stage": 1, "name": "FlameBird",    "hp": 90,  "atk": 130, "def": 60,  "spd": 90,  "art": "/assets/monsters/flamebird/stage1.png" },
+        { "stage": 2, "name": "Phoenix",      "hp": 120, "atk": 170, "def": 80,  "spd": 120, "art": "/assets/monsters/flamebird/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "SunPhoenix",   "hp": 160, "atk": 220, "def": 100, "spd": 150, "art": "/assets/monsters/flamebird/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "aquapup",
+      "name": "AquaPup",
+      "element": "Water",
+      "role": "Support",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/aquapup/stage0.png" },
+        { "stage": 1, "name": "AquaPup",      "hp": 85,  "atk": 75,  "def": 65,  "spd": 110, "art": "/assets/monsters/aquapup/stage1.png" },
+        { "stage": 2, "name": "TidalHound",   "hp": 120, "atk": 100, "def": 90,  "spd": 140, "art": "/assets/monsters/aquapup/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "OceanWolf",    "hp": 160, "atk": 130, "def": 110, "spd": 170, "art": "/assets/monsters/aquapup/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "bubblefish",
+      "name": "BubbleFish",
+      "element": "Water",
+      "role": "Wall",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/bubblefish/stage0.png" },
+        { "stage": 1, "name": "BubbleFish",   "hp": 130, "atk": 60,  "def": 120, "spd": 40,  "art": "/assets/monsters/bubblefish/stage1.png" },
+        { "stage": 2, "name": "CoralGiant",   "hp": 180, "atk": 80,  "def": 160, "spd": 50,  "art": "/assets/monsters/bubblefish/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "ReefTitan",    "hp": 240, "atk": 100, "def": 210, "spd": 60,  "art": "/assets/monsters/bubblefish/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 6,
+      "slug": "oceandragon",
+      "name": "OceanDragon",
+      "element": "Water",
+      "role": "Rare bruiser",
+      "rarity": "Legendary",
+      "stages": [
+        { "stage": 0, "name": "Egg",              "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/oceandragon/stage0.png" },
+        { "stage": 1, "name": "OceanDragon",      "hp": 110, "atk": 140, "def": 85,  "spd": 70,  "art": "/assets/monsters/oceandragon/stage1.png" },
+        { "stage": 2, "name": "TidalWyrm",        "hp": 150, "atk": 180, "def": 110, "spd": 90,  "art": "/assets/monsters/oceandragon/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "Leviathan",        "hp": 200, "atk": 230, "def": 140, "spd": 110, "art": "/assets/monsters/oceandragon/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 7,
+      "slug": "leafrabbit",
+      "name": "LeafRabbit",
+      "element": "Nature",
+      "role": "Healer",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/leafrabbit/stage0.png" },
+        { "stage": 1, "name": "LeafRabbit",   "hp": 95,  "atk": 70,  "def": 75,  "spd": 95,  "art": "/assets/monsters/leafrabbit/stage1.png" },
+        { "stage": 2, "name": "ForestRabbit", "hp": 130, "atk": 95,  "def": 100, "spd": 120, "art": "/assets/monsters/leafrabbit/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "EmeraldHare",  "hp": 170, "atk": 120, "def": 130, "spd": 150, "art": "/assets/monsters/leafrabbit/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 8,
+      "slug": "mossgolem",
+      "name": "MossGolem",
+      "element": "Nature",
+      "role": "Slow wall",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/mossgolem/stage0.png" },
+        { "stage": 1, "name": "MossGolem",    "hp": 140, "atk": 60,  "def": 130, "spd": 25,  "art": "/assets/monsters/mossgolem/stage1.png" },
+        { "stage": 2, "name": "StoneGolem",   "hp": 190, "atk": 80,  "def": 170, "spd": 35,  "art": "/assets/monsters/mossgolem/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "AncientGrove", "hp": 250, "atk": 100, "def": 220, "spd": 45,  "art": "/assets/monsters/mossgolem/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 9,
+      "slug": "forestdeer",
+      "name": "ForestDeer",
+      "element": "Nature",
+      "role": "Balanced",
+      "rarity": "Rare",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/forestdeer/stage0.png" },
+        { "stage": 1, "name": "ForestDeer",   "hp": 100, "atk": 100, "def": 100, "spd": 100, "art": "/assets/monsters/forestdeer/stage1.png" },
+        { "stage": 2, "name": "PrimalStag",   "hp": 140, "atk": 130, "def": 130, "spd": 130, "art": "/assets/monsters/forestdeer/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "WorldTree",    "hp": 180, "atk": 170, "def": 170, "spd": 160, "art": "/assets/monsters/forestdeer/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 10,
+      "slug": "voltcat",
+      "name": "VoltCat",
+      "element": "Electric",
+      "role": "Glass cannon",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/voltcat/stage0.png" },
+        { "stage": 1, "name": "VoltCat",      "hp": 70,  "atk": 110, "def": 50,  "spd": 140, "art": "/assets/monsters/voltcat/stage1.png" },
+        { "stage": 2, "name": "StormCat",     "hp": 95,  "atk": 150, "def": 70,  "spd": 175, "art": "/assets/monsters/voltcat/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "ThunderTiger", "hp": 125, "atk": 200, "def": 90,  "spd": 210, "art": "/assets/monsters/voltcat/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 11,
+      "slug": "sparkmouse",
+      "name": "SparkMouse",
+      "element": "Electric",
+      "role": "Sniper",
+      "rarity": "Common",
+      "stages": [
+        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/sparkmouse/stage0.png" },
+        { "stage": 1, "name": "SparkMouse",   "hp": 60,  "atk": 90,  "def": 40,  "spd": 150, "art": "/assets/monsters/sparkmouse/stage1.png" },
+        { "stage": 2, "name": "BoltRat",      "hp": 80,  "atk": 125, "def": 55,  "spd": 185, "art": "/assets/monsters/sparkmouse/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "LightningSage","hp": 105, "atk": 170, "def": 75,  "spd": 220, "art": "/assets/monsters/sparkmouse/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    },
+    {
+      "id": 12,
+      "slug": "thunderwolf",
+      "name": "ThunderWolf",
+      "element": "Electric",
+      "role": "Legendary",
+      "rarity": "Rare",
+      "stages": [
+        { "stage": 0, "name": "Egg",              "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/thunderwolf/stage0.png" },
+        { "stage": 1, "name": "ThunderWolf",      "hp": 120, "atk": 130, "def": 100, "spd": 110, "art": "/assets/monsters/thunderwolf/stage1.png" },
+        { "stage": 2, "name": "StormfangAlpha",   "hp": 160, "atk": 170, "def": 130, "spd": 140, "art": "/assets/monsters/thunderwolf/stage2.png", "evolvesAtLevel": 20 },
+        { "stage": 3, "name": "ThunderDeity",     "hp": 210, "atk": 220, "def": 170, "spd": 175, "art": "/assets/monsters/thunderwolf/stage3.png", "evolvesAtLevel": 40 }
+      ]
+    }
+  ]
+}

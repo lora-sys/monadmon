@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-0: #0B0D14;
+  --bg-1: #11141D;
+  --bg-2: #1A1E2A;
+  --ink-0: #F5F6FA;
+  --ink-1: #B5BAC8;
+  --ink-2: #6E7589;
+  --line: #232839;
+  --accent: #7AF0BA;
+  --accent-2: #C9A7FF;
+}
+
+html, body {
+  background: var(--bg-0);
+  color: var(--ink-0);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+::selection {
+  background: var(--accent);
+  color: var(--bg-0);
+}
+
+/* Subtle background gradient */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 10%, rgba(122, 240, 186, 0.06), transparent 50%),
+              radial-gradient(circle at 80% 90%, rgba(201, 167, 255, 0.06), transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
