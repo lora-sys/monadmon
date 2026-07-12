@@ -206,8 +206,13 @@ contract MonsterNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         return (m.hp, m.atk, m.def, m.spd, SpeciesRegistry.elementOf(m.speciesId));
     }
 
+    /// @dev Storage slot of the _monsters mapping, as reported by
+    ///      `forge inspect MonsterNFT storage-layout`. Update this if
+    ///      the inheritance order ever changes.
+    uint256 internal constant _MONSTERS_SLOT = 9;
+
     function monsterSlot(uint256 tokenId) external pure returns (bytes32) {
-        return keccak256(abi.encode(tokenId, uint256(0)));
+        return keccak256(abi.encode(tokenId, _MONSTERS_SLOT));
     }
 
     function _defaultTokenURI(uint16 speciesId, uint8 stage, uint64 dna) internal pure returns (string memory) {

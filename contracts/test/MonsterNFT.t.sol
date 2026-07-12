@@ -146,6 +146,6 @@ contract MonsterNFTTest is Test {
     // -------- Helpers --------
 
     function test_MonsterSlotIsStable() public view {
-        assertEq(nft.monsterSlot(7), keccak256(abi.encode(uint256(7), uint256(0))));
+        assertEq(nft.monsterSlot(7), keccak256(abi.encode(uint256(7), uint256(9))));
     }
 }
