@@ -69,3 +69,5 @@ frontend/pnpm-lock.yaml
 # agent-browser replays
 replay__*.png
 trace_*.zip
+# CodeGraph local index (regenerate via codegraph index)
+.codegraph/
