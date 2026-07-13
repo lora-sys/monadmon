@@ -1,19 +1,12 @@
 # Node / JS
 node_modules/
 .pnpm-store/
-.yarn/cache/
-.bun/
-dist/
-build/
-.next/
-out/
-.turbo/
-*.tsbuildinfo
+*.log
+npm-debug.log*
 
-# Solidity
-contracts/artifacts/
+# Foundry
+contracts/lib/
 contracts/cache/
-contracts/typechain-types/
 contracts/out/
 contracts/broadcast/
 coverage/
@@ -28,53 +21,22 @@ coverage.json
 *.key
 wallet.json
 
-# Logs / state
-*.log
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
-.DS_Store
-Thumbs.db
-
-# Editor / OS
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-.idea/
-*.swp
-
-# Tests / cache
+# Test artifacts
 .playwright-cache/
 playwright-report/
 test-results/
 .playwright-mcp/
-
-# Codex / harness
-.codex/cache/
-.codex/sessions/cache/
-sessions/.worktrees/
-.worktrees/
-
-# Generated
-docs/.index/*.local.json
-
-# Foundry-installed deps live in lib/ but shouldn't be committed. Re-run via:
-#   forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 --no-git
-contracts/lib/
-
-# Next.js build output (regenerate on demand)
-frontend/.next/
-frontend/node_modules/
-frontend/pnpm-lock.yaml
-# agent-browser replays
 replay__*.png
 trace_*.zip
-# CodeGraph local index (regenerate via codegraph index)
+
+# Codex
 .codegraph/
 
-# Backend (Phase 2 indexer)
+# Backend indexer
 backend/node_modules/
 backend/dist/
-backend/pnpm-lock.yaml
 backend/.env
 backend/data/
+
+# Frontend
+frontend/.next/
