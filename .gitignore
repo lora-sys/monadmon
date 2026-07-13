@@ -40,3 +40,7 @@ backend/data/
 
 # Frontend
 frontend/.next/
+
+# pnpm artifacts (use npm)
+**/pnpm-lock.yaml
+**/.pnpm-workspace-state-v1.json
