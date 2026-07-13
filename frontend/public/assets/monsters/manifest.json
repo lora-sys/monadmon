@@ -1,344 +1,36 @@
 {
-  "generatedAt": "2026-07-12T05:29:49.618Z",
+  "generatedAt": "2026-07-13T02:32:20.974Z",
   "model": "flux",
   "width": 768,
   "height": 768,
   "items": [
     {
-      "speciesId": 1,
-      "stage": 0,
-      "seed": 344916806,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/1/stage0.png",
-      "bytes": null
-    },
-    {
-      "speciesId": 1,
-      "stage": 1,
-      "seed": 361694425,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/1/stage1.png",
-      "bytes": null
-    },
-    {
-      "speciesId": 1,
-      "stage": 2,
-      "seed": 311361568,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/1/stage2.png",
-      "bytes": null
-    },
-    {
-      "speciesId": 1,
-      "stage": 3,
-      "seed": 328139187,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/1/stage3.png",
-      "bytes": null
-    },
-    {
-      "speciesId": 2,
-      "stage": 0,
-      "seed": 4050280183,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/2/stage0.png",
-      "bytes": 39483
-    },
-    {
-      "speciesId": 2,
-      "stage": 1,
-      "seed": 4033502564,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/2/stage1.png",
-      "bytes": 39319
-    },
-    {
-      "speciesId": 2,
-      "stage": 2,
-      "seed": 4083835421,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/2/stage2.png",
-      "bytes": 59241
-    },
-    {
-      "speciesId": 2,
-      "stage": 3,
-      "seed": 4067057802,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/2/stage3.png",
-      "bytes": 65305
-    },
-    {
-      "speciesId": 3,
-      "stage": 0,
-      "seed": 4207493512,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/3/stage0.png",
-      "bytes": 35952
-    },
-    {
-      "speciesId": 3,
-      "stage": 1,
-      "seed": 4224271131,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/3/stage1.png",
-      "bytes": 50971
-    },
-    {
-      "speciesId": 3,
-      "stage": 2,
-      "seed": 4241048750,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/3/stage2.png",
-      "bytes": 47365
-    },
-    {
-      "speciesId": 3,
-      "stage": 3,
-      "seed": 4257826369,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/3/stage3.png",
-      "bytes": 68429
-    },
-    {
-      "speciesId": 4,
-      "stage": 0,
-      "seed": 1604933937,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/4/stage0.png",
-      "bytes": 31751
-    },
-    {
-      "speciesId": 4,
-      "stage": 1,
-      "seed": 1588156318,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/4/stage1.png",
-      "bytes": 47643
-    },
-    {
-      "speciesId": 4,
-      "stage": 2,
-      "seed": 1571378699,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/4/stage2.png",
-      "bytes": 55628
-    },
-    {
-      "speciesId": 4,
-      "stage": 3,
-      "seed": 1554601080,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/4/stage3.png",
-      "bytes": 52775
-    },
-    {
-      "speciesId": 5,
-      "stage": 0,
-      "seed": 2031869098,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/5/stage0.png",
-      "bytes": 30263
-    },
-    {
-      "speciesId": 5,
-      "stage": 1,
-      "seed": 2048646717,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/5/stage1.png",
-      "bytes": 47376
-    },
-    {
-      "speciesId": 5,
-      "stage": 2,
-      "seed": 1998313860,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/5/stage2.png",
-      "bytes": 42438
-    },
-    {
-      "speciesId": 5,
-      "stage": 3,
-      "seed": 2015091479,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/5/stage3.png",
-      "bytes": 69062
-    },
-    {
-      "speciesId": 6,
-      "stage": 0,
-      "seed": 3052916603,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/6/stage0.png",
-      "bytes": 31777
-    },
-    {
-      "speciesId": 6,
-      "stage": 1,
-      "seed": 3036138984,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/6/stage1.png",
-      "bytes": 60858
-    },
-    {
-      "speciesId": 6,
-      "stage": 2,
-      "seed": 3086471841,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/6/stage2.png",
-      "bytes": 54427
-    },
-    {
-      "speciesId": 6,
-      "stage": 3,
-      "seed": 3069694222,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/6/stage3.png",
-      "bytes": 67608
-    },
-    {
-      "speciesId": 7,
-      "stage": 0,
-      "seed": 3191901436,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/7/stage0.png",
-      "bytes": 48668
-    },
-    {
-      "speciesId": 7,
-      "stage": 1,
-      "seed": 3208679055,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/7/stage1.png",
-      "bytes": 62154
-    },
-    {
-      "speciesId": 7,
-      "stage": 2,
-      "seed": 3225456674,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/7/stage2.png",
-      "bytes": 64763
-    },
-    {
-      "speciesId": 7,
-      "stage": 3,
-      "seed": 3242234293,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/7/stage3.png",
-      "bytes": 85712
-    },
-    {
-      "speciesId": 8,
-      "stage": 0,
-      "seed": 4078472533,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/8/stage0.png",
-      "bytes": 70183
-    },
-    {
-      "speciesId": 8,
-      "stage": 1,
-      "seed": 4061694914,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/8/stage1.png",
-      "bytes": 78544
-    },
-    {
-      "speciesId": 8,
-      "stage": 2,
-      "seed": 4044917295,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/8/stage2.png",
-      "bytes": 74931
-    },
-    {
-      "speciesId": 8,
-      "stage": 3,
-      "seed": 4028139676,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/8/stage3.png",
-      "bytes": 73991
-    },
-    {
-      "speciesId": 9,
-      "stage": 0,
-      "seed": 189652046,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/9/stage0.png",
-      "bytes": 40101
-    },
-    {
-      "speciesId": 9,
-      "stage": 1,
-      "seed": 206429665,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/9/stage1.png",
-      "bytes": 64106
-    },
-    {
-      "speciesId": 9,
-      "stage": 2,
-      "seed": 156096808,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/9/stage2.png",
-      "bytes": 76136
-    },
-    {
-      "speciesId": 9,
-      "stage": 3,
-      "seed": 172874427,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/9/stage3.png",
-      "bytes": 95587
-    },
-    {
-      "speciesId": 10,
-      "stage": 0,
-      "seed": 1760725342,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/10/stage0.png",
-      "bytes": 34208
-    },
-    {
-      "speciesId": 10,
-      "stage": 1,
-      "seed": 1777502961,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/10/stage1.png",
-      "bytes": 54234
-    },
-    {
-      "speciesId": 10,
-      "stage": 2,
-      "seed": 1727170104,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/10/stage2.png",
-      "bytes": 62273
-    },
-    {
-      "speciesId": 10,
-      "stage": 3,
-      "seed": 1743947723,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/10/stage3.png",
-      "bytes": 63115
-    },
-    {
       "speciesId": 11,
       "stage": 0,
-      "seed": 1333790181,
+      "seed": 2738526960,
       "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/11/stage0.png",
-      "bytes": 31121
+      "bytes": 39865
     },
     {
       "speciesId": 11,
       "stage": 1,
-      "seed": 1317012562,
+      "seed": 2581313631,
       "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/11/stage1.png",
-      "bytes": 47031
+      "bytes": 46620
     },
     {
       "speciesId": 11,
       "stage": 2,
-      "seed": 1300234943,
+      "seed": 3707801358,
       "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/11/stage2.png",
-      "bytes": 59317
+      "bytes": 59114
     },
     {
       "speciesId": 11,
       "stage": 3,
-      "seed": 1283457324,
+      "seed": 3301654549,
       "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/11/stage3.png",
-      "bytes": 59152
-    },
-    {
-      "speciesId": 12,
-      "stage": 0,
-      "seed": 770662592,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/12/stage0.png",
-      "bytes": 41825
-    },
-    {
-      "speciesId": 12,
-      "stage": 1,
-      "seed": 787440211,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/12/stage1.png",
-      "bytes": 53340
-    },
-    {
-      "speciesId": 12,
-      "stage": 2,
-      "seed": 804217830,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/12/stage2.png",
-      "bytes": 67926
-    },
-    {
-      "speciesId": 12,
-      "stage": 3,
-      "seed": 820995449,
-      "path": "/home/lora/repos/monadmon/frontend/public/assets/monsters/12/stage3.png",
-      "bytes": 69040
+      "bytes": 76500
     }
   ]
 }

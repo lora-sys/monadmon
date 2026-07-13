@@ -239,16 +239,17 @@ async function handleTrained(client: PublicClient, db: DB, cfg: Omit<IndexerConf
 }
 
 function handleChallengeCreated(db: DB, log: any): void {
-  const { challengeId, challenger, challengerTokenId, opponent, opponentTokenId } =
-    log.args;
-  if (
-    challengeId == null ||
-    !challenger ||
-    challengerTokenId == null ||
-    !opponent ||
-    opponentTokenId == null
-  )
-    return;
+  console2(`[idx] handleChallengeCreated log.args keys=${Object.keys(log.args).join(",")} raw=${JSON.stringify(log.args, (_k, v) => typeof v === "bigint" ? v.toString() : v)}`);
+  const args = (log.args ?? {}) as Record<string, unknown>;
+  const challengeId = args.challengeId as bigint | undefined;
+  const challenger = args.challenger as string | undefined;
+  const opponent = args.opponent as string | undefined;
+  // ChallengeCreated has 5 indexed args; only the first 3 land in topics.
+  // The other two (challengerTokenId, opponentTokenId) are in log.data.
+  const data = ((log.data ?? "0x") as string).slice(2);
+  const challengerTokenId = data ? BigInt("0x" + data.slice(0, 64)).toString() : "0";
+  const opponentTokenId = data ? BigInt("0x" + data.slice(64, 128)).toString() : "0";
+  if (challengeId == null || !challenger || !opponent) return;
   db.prepare(
     `INSERT INTO battles
        (challenge_id, challenger, challenger_token, opponent, opponent_token, winner, loser, turns, draw, block_number, block_timestamp, tx_hash, ingested_at)

@@ -90,3 +90,16 @@ skills/                           — project-local skills
 - Stuck on design → check `docs/INDEX.md`, then ADR log, then `memory/`.
 - Stuck on implementation → check the linked Issue + `docs/architecture/`.
 - Stuck on a library → check `docs/decisions/` and `memory/architecture-memory.md` before recommending a new dep.
+
+<!-- HARNESS:START harness-capabilities -->
+This project uses **ai-engineering-harness v1.8.0**. Key capabilities:
+
+- **Closed loop with CI as a blocking gate.** A red CI must BLOCK review, merge, and Issue-close. See workflows/04-ci-recovery.md.
+- **Adversarial review.** Every PR gets ≥2 cold-start reviewers (Bug Hunter + Behavior Reviewer).
+- **Evidence pack per Issue.** docs/evidence/`<id>`/ holds change-summary, test-results, screenshots, review-report.md.
+- **Compact report (v1.2.0+).** After each Owner Agent finishes, a compact-report.json summarises the work for the Coordinator.
+- **Context bundle (v1.2.0+).** Coordinator dumps docs/evidence/`<id>`/context-bundle.md once per Issue so sub-agents don't each re-explore.
+- **SessionStart hook (v1.1.0+).** Host-level Claude Code hook reads .claude/SESSION.md if it exists. Optional — install with scripts/install-session-hook.sh.
+
+To update the harness: run `npx -y skills update lora-sys/ai-engineering-harness -g` and then `bash scripts/sync-project.sh --apply` in this project.
+<!-- HARNESS:END harness-capabilities -->
