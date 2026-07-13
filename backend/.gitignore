@@ -4,3 +4,5 @@ data/
 *.log
 .env
 .env.local
+backend/test-*.mjs
+backend/test-*.mjs
