@@ -10,7 +10,7 @@ trains + evolves it, and battles other players — all with verifiable state on 
 <table>
 <tr>
   <td rowspan="4" width="60%"><img src="frontend/public/assets/monsters/1/stage3.png" alt="EmberFox stage 3 — InfernoFox, the ascended form" width="100%"/></td>
-  <td align="center" width="20%"><img src="frontend/public/assets/monsters/6/stage3.png" alt="OceanDragon stage 3 — Leviathan" width="100%"/><br/><sub>🔥 Fire</sub></td>
+  <td align="center" width="20%"><img src="frontend/public/assets/monsters/1/stage3.png" alt="InfernoFox" width="100%"/><br/><sub>🔥 Fire</sub></td>
 </tr>
 <tr><td align="center"><img src="frontend/public/assets/monsters/6/stage3.png" alt="Water" width="100%"/><br/><sub>💧 Water</sub></td></tr>
 <tr><td align="center"><img src="frontend/public/assets/monsters/9/stage3.png" alt="Nature" width="100%"/><br/><sub>🌱 Nature</sub></td></tr>
