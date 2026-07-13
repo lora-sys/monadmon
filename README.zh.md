@@ -10,7 +10,7 @@ MonadMon 是一款完全运行在链上的养成 + PvP 对战游戏，部署在 
 <table>
 <tr>
   <td rowspan="4" width="60%"><img src="frontend/public/assets/monsters/1/stage3.png" alt="炎狐 第三阶——烈焰之狐" width="100%"/></td>
-  <td align="center" width="20%"><img src="frontend/public/assets/monsters/6/stage3.png" alt="火系代表" width="100%"/><br/><sub>🔥 火</sub></td>
+  <td align="center" width="20%"><img src="frontend/public/assets/monsters/1/stage3.png" alt="火系代表" width="100%"/><br/><sub>🔥 火</sub></td>
 </tr>
 <tr><td align="center"><img src="frontend/public/assets/monsters/6/stage3.png" alt="水系代表" width="100%"/><br/><sub>💧 水</sub></td></tr>
 <tr><td align="center"><img src="frontend/public/assets/monsters/9/stage3.png" alt="自然系代表" width="100%"/><br/><sub>🌱 自然</sub></td></tr>
