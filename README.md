@@ -16,53 +16,126 @@ trains + evolves it, and battles other players — all with verifiable state on 
 Four elements, three species each. Rarity comes from a deterministic on-chain RNG
 (`block.prevrandao + tokenId + msg.sender`); the same inputs always hatch the same monster.
 
-| | Common (50%) | Common (50%) | Common (50%) | Common (50%) |
-|---|---|---|---|---|
-| 🔥 **Fire** | EmberFox | MagmaTurtle | AquaPup | BubbleFish |
-| 💧 **Water** | AquaPup | MagmaTurtle | OceanDragon | ForestDeer |
-| 🌱 **Nature** | LeafRabbit | MossGolem | ForestDeer | SparkMouse |
-| ⚡ **Electric** | VoltCat | SparkMouse | AquaPup | ThunderWolf |
+| Element | Common (50%) | Common (50%) | Common (50%) | Rare (30%) | Rare (30%) | Legendary (20%) |
+|---|---|---|---|---|---|---|
+| 🔥 **Fire** | EmberFox | MagmaTurtle | AquaPup | FlameBird | — | — |
+| 💧 **Water** | — | AquaPup | BubbleFish | — | ForestDeer | OceanDragon |
+| 🌱 **Nature** | LeafRabbit | MossGolem | — | — | — | — |
+| ⚡ **Electric** | VoltCat | SparkMouse | — | ThunderWolf | — | — |
 
-(*Shuffled by RNG; Common species shown for illustration.*)
-
-### Common (50%)
-
-| Species | Element | Role | Image |
-|---|---|---|---|
-| **EmberFox** | Fire | Fast attacker | ![EmberFox](frontend/public/assets/monsters/1/stage1.png) |
-| **MagmaTurtle** | Fire | Tank | ![MagmaTurtle](frontend/public/assets/monsters/2/stage1.png) |
-| **AquaPup** | Water | Support | ![AquaPup](frontend/public/assets/monsters/4/stage1.png) |
-| **BubbleFish** | Water | Wall | ![BubbleFish](frontend/public/assets/monsters/5/stage1.png) |
-| **LeafRabbit** | Nature | Healer | ![LeafRabbit](frontend/public/assets/monsters/7/stage1.png) |
-| **MossGolem** | Nature | Slow wall | ![MossGolem](frontend/public/assets/monsters/8/stage1.png) |
-| **VoltCat** | Electric | Glass cannon | ![VoltCat](frontend/public/assets/monsters/10/stage1.png) |
-| **SparkMouse** | Electric | Sniper | ![SparkMouse](frontend/public/assets/monsters/11/stage1.png) |
-
-### Rare (30%)
-
-| Species | Element | Role | Image |
-|---|---|---|---|
-| **FlameBird** | Fire | Crit striker | ![FlameBird](frontend/public/assets/monsters/3/stage1.png) |
-| **ForestDeer** | Nature | Balanced | ![ForestDeer](frontend/public/assets/monsters/9/stage1.png) |
-| **ThunderWolf** | Electric | Legendary | ![ThunderWolf](frontend/public/assets/monsters/12/stage1.png) |
-
-### Legendary (20%)
-
-| Species | Element | Role | Image |
-|---|---|---|---|
-| **OceanDragon** | Water | Rare bruiser | ![OceanDragon](frontend/public/assets/monsters/6/stage1.png) |
+*Each species hatches at stage 1 and evolves to stage 2 at Lv 20, then stage 3 at Lv 40. Stage 0 is the egg.*
 
 ---
 
-## Evolution: from egg to ascended form
+## Full evolution: all 12 species × 4 stages
 
-Every Monster hatches at stage 1 and can evolve to stage 2 at level 20, then stage 3 at level 40.
-The visual changes are dramatic — your cute starter becomes a battle-hardened beast.
+Every Monster goes through the same life cycle. The four stages show
+the visual progression from unhatched egg → juvenile → evolved form
+→ ascended form. Each species has its own unique look at every stage.
 
-![EmberFox evolution: stage0 (egg) → stage1 (juvenile) → stage2 (evolved) → stage3 (ascended)](frontend/public/assets/monsters/1/stage0.png)
-![EmberFox stage 1](frontend/public/assets/monsters/1/stage1.png)
-![EmberFox stage 2](frontend/public/assets/monsters/1/stage2.png)
-![EmberFox stage 3 — InfernoFox](frontend/public/assets/monsters/1/stage3.png)
+### Fire
+
+<table>
+<tr>
+  <th align="center">EmberFox</th>
+  <td align="center"><img src="frontend/public/assets/monsters/1/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/1/stage1.png" width="100"/><br/>EmberFox</td>
+  <td align="center"><img src="frontend/public/assets/monsters/1/stage2.png" width="100"/><br/>FlameFox</td>
+  <td align="center"><img src="frontend/public/assets/monsters/1/stage3.png" width="100"/><br/>InfernoFox</td>
+</tr>
+<tr>
+  <th align="center">MagmaTurtle</th>
+  <td align="center"><img src="frontend/public/assets/monsters/2/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/2/stage1.png" width="100"/><br/>MagmaTurtle</td>
+  <td align="center"><img src="frontend/public/assets/monsters/2/stage2.png" width="100"/><br/>LavaTurtle</td>
+  <td align="center"><img src="frontend/public/assets/monsters/2/stage3.png" width="100"/><br/>VolcanoTurtle</td>
+</tr>
+<tr>
+  <th align="center">FlameBird</th>
+  <td align="center"><img src="frontend/public/assets/monsters/3/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/3/stage1.png" width="100"/><br/>FlameBird</td>
+  <td align="center"><img src="frontend/public/assets/monsters/3/stage2.png" width="100"/><br/>Phoenix</td>
+  <td align="center"><img src="frontend/public/assets/monsters/3/stage3.png" width="100"/><br/>SunPhoenix</td>
+</tr>
+</table>
+
+### Water
+
+<table>
+<tr>
+  <th align="center">AquaPup</th>
+  <td align="center"><img src="frontend/public/assets/monsters/4/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/4/stage1.png" width="100"/><br/>AquaPup</td>
+  <td align="center"><img src="frontend/public/assets/monsters/4/stage2.png" width="100"/><br/>TidalHound</td>
+  <td align="center"><img src="frontend/public/assets/monsters/4/stage3.png" width="100"/><br/>OceanWolf</td>
+</tr>
+<tr>
+  <th align="center">BubbleFish</th>
+  <td align="center"><img src="frontend/public/assets/monsters/5/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/5/stage1.png" width="100"/><br/>BubbleFish</td>
+  <td align="center"><img src="frontend/public/assets/monsters/5/stage2.png" width="100"/><br/>CoralGiant</td>
+  <td align="center"><img src="frontend/public/assets/monsters/5/stage3.png" width="100"/><br/>ReefTitan</td>
+</tr>
+<tr>
+  <th align="center">OceanDragon</th>
+  <td align="center"><img src="frontend/public/assets/monsters/6/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/6/stage1.png" width="100"/><br/>OceanDragon</td>
+  <td align="center"><img src="frontend/public/assets/monsters/6/stage2.png" width="100"/><br/>TidalWyrm</td>
+  <td align="center"><img src="frontend/public/assets/monsters/6/stage3.png" width="100"/><br/>Leviathan</td>
+</tr>
+</table>
+
+### Nature
+
+<table>
+<tr>
+  <th align="center">LeafRabbit</th>
+  <td align="center"><img src="frontend/public/assets/monsters/7/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/7/stage1.png" width="100"/><br/>LeafRabbit</td>
+  <td align="center"><img src="frontend/public/assets/monsters/7/stage2.png" width="100"/><br/>ForestRabbit</td>
+  <td align="center"><img src="frontend/public/assets/monsters/7/stage3.png" width="100"/><br/>EmeraldHare</td>
+</tr>
+<tr>
+  <th align="center">MossGolem</th>
+  <td align="center"><img src="frontend/public/assets/monsters/8/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/8/stage1.png" width="100"/><br/>MossGolem</td>
+  <td align="center"><img src="frontend/public/assets/monsters/8/stage2.png" width="100"/><br/>StoneGolem</td>
+  <td align="center"><img src="frontend/public/assets/monsters/8/stage3.png" width="100"/><br/>AncientGrove</td>
+</tr>
+<tr>
+  <th align="center">ForestDeer</th>
+  <td align="center"><img src="frontend/public/assets/monsters/9/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/9/stage1.png" width="100"/><br/>ForestDeer</td>
+  <td align="center"><img src="frontend/public/assets/monsters/9/stage2.png" width="100"/><br/>PrimalStag</td>
+  <td align="center"><img src="frontend/public/assets/monsters/9/stage3.png" width="100"/><br/>WorldTree</td>
+</tr>
+</table>
+
+### Electric
+
+<table>
+<tr>
+  <th align="center">VoltCat</th>
+  <td align="center"><img src="frontend/public/assets/monsters/10/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/10/stage1.png" width="100"/><br/>VoltCat</td>
+  <td align="center"><img src="frontend/public/assets/monsters/10/stage2.png" width="100"/><br/>StormCat</td>
+  <td align="center"><img src="frontend/assets/monsters/10/stage3.png" width="100"/><br/>ThunderTiger</td>
+</tr>
+<tr>
+  <th align="center">SparkMouse</th>
+  <td align="center"><img src="frontend/public/assets/monsters/11/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/11/stage1.png" width="100"/><br/>SparkMouse</td>
+  <td align="center"><img src="frontend/public/assets/monsters/11/stage2.png" width="100"/><br/>BoltRat</td>
+  <td align="center"><img src="frontend/public/assets/monsters/11/stage3.png" width="100"/><br/>LightningSage</td>
+</tr>
+<tr>
+  <th align="center">ThunderWolf</th>
+  <td align="center"><img src="frontend/public/assets/monsters/12/stage0.png" width="100"/><br/>egg</td>
+  <td align="center"><img src="frontend/public/assets/monsters/12/stage1.png" width="100"/><br/>ThunderWolf</td>
+  <td align="center"><img src="frontend/public/assets/monsters/12/stage2.png" width="100"/><br/>StormfangAlpha</td>
+  <td align="center"><img src="frontend/public/assets/monsters/12/stage3.png" width="100"/><br/>ThunderDeity</td>
+</tr>
+</table>
 
 ---
 
@@ -75,7 +148,7 @@ Connect wallet  →  Mint Egg (1 per wallet)
        ↓
    Train      →  +30 XP, +2 ATK per session (6h cooldown)
        ↓
-  Level up    →  Stage 2 at Lv20, Stage 3 at Lv40
+  Level up    →  Stage 2 at Lv 20, Stage 3 at Lv 40
        ↓
    Battle     →  Pick opponent, accept, deterministic formula resolves on-chain
        ↓
@@ -83,7 +156,7 @@ Connect wallet  →  Mint Egg (1 per wallet)
 ```
 
 ### Battle formula (deterministic)
-For each turn: pick the faster monster, compute damage = `ATK * effectiveness * random(0.85-1.15) * crit(1.5x with 12% chance)`, then `damage *= (1 - DEF/(DEF+200))`. First to 0 HP loses. 50-turn cap → draw. Full spec in `docs/design/battle-formula.md`.
+For each turn: pick the faster monster, compute damage = `ATK * effectiveness * random(0.85-1.15) * crit(1.5x with 12% chance)`, then `damage *= (1 - DEF/(DEF+200))`. First to 0 HP loses. 50-turn cap → draw.
 
 ### Type effectiveness
 
@@ -105,7 +178,7 @@ For each turn: pick the faster monster, compute damage = `ATK * effectiveness * 
 | Frontend | Next.js 14 (App Router) · wagmi v2 · viem v2 · RainbowKit v2 · Tailwind v3 · framer-motion v11 |
 | Indexer | TypeScript · Hono · better-sqlite3 · viem |
 | Art | Pollinations.ai `flux` model, 12 species × 4 stages = 48 hero images |
-| CI | GitHub Actions: forge fmt + test, pnpm typecheck + lint + build |
+| CI | GitHub Actions: forge fmt + test, npm typecheck + lint + build |
 | Tests | 48 contract tests passing · 90% line coverage · 10k fuzz on rarity |
 
 ---
@@ -138,7 +211,7 @@ Full demo walkthrough in [DEMO.md](./DEMO.md).
 ## Project status
 
 - ✅ All 14 Phase-1 issues closed
-- ✅ 8 PRs merged, each with adversarial review
+- ✅ 9 PRs merged, each with adversarial review
 - ✅ CI green on every push
 - ✅ Local Anvil end-to-end proven (cast + 7 agent-browser screenshots)
 - ⏳ Testnet deploy pending user-funded wallet ([#24](https://github.com/lora-sys/monadmon/issues/24))
