@@ -11,10 +11,51 @@
       "role": "Fast attacker",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/emberfox/stage0.png" },
-        { "stage": 1, "name": "EmberFox",     "hp": 80,  "atk": 90,  "def": 50,  "spd": 100, "art": "/assets/monsters/emberfox/stage1.png" },
-        { "stage": 2, "name": "FlameFox",     "hp": 110, "atk": 130, "def": 70,  "spd": 130, "art": "/assets/monsters/emberfox/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "InfernoFox",   "hp": 150, "atk": 180, "def": 90,  "spd": 160, "art": "/assets/monsters/emberfox/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/emberfox/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "EmberFox",
+          "hp": 80,
+          "atk": 90,
+          "def": 50,
+          "spd": 100,
+          "art": "/assets/monsters/emberfox/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "FlameFox",
+          "hp": 110,
+          "atk": 130,
+          "def": 70,
+          "spd": 130,
+          "art": "/assets/monsters/emberfox/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "InfernoFox",
+          "hp": 150,
+          "atk": 180,
+          "def": 90,
+          "spd": 160,
+          "art": "/assets/monsters/emberfox/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Volcanic cliffs and lava rivers of the Burning Peaks",
+      "personality": "Hot-headed but fiercely loyal. Curiosity always outpaces caution.",
+      "moves": [
+        "Flame Tail",
+        "Lava Burst",
+        "Ember Charge"
       ]
     },
     {
@@ -25,10 +66,51 @@
       "role": "Tank",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/magmaturtle/stage0.png" },
-        { "stage": 1, "name": "MagmaTurtle",  "hp": 120, "atk": 70,  "def": 110, "spd": 30,  "art": "/assets/monsters/magmaturtle/stage1.png" },
-        { "stage": 2, "name": "LavaTurtle",   "hp": 170, "atk": 90,  "def": 150, "spd": 40,  "art": "/assets/monsters/magmaturtle/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "VolcanoTurtle","hp": 220, "atk": 110, "def": 200, "spd": 50,  "art": "/assets/monsters/magmaturtle/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/magmaturtle/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "MagmaTurtle",
+          "hp": 120,
+          "atk": 70,
+          "def": 110,
+          "spd": 30,
+          "art": "/assets/monsters/magmaturtle/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "LavaTurtle",
+          "hp": 170,
+          "atk": 90,
+          "def": 150,
+          "spd": 40,
+          "art": "/assets/monsters/magmaturtle/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "VolcanoTurtle",
+          "hp": 220,
+          "atk": 110,
+          "def": 200,
+          "spd": 50,
+          "art": "/assets/monsters/magmaturtle/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Sulfur springs deep in the Emberwilds",
+      "personality": "Patient and slow-burning. Carries the weight of the earth on its back.",
+      "moves": [
+        "Magma Shell",
+        "Eruption",
+        "Stoneskin"
       ]
     },
     {
@@ -39,10 +121,51 @@
       "role": "Crit striker",
       "rarity": "Rare",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/flamebird/stage0.png" },
-        { "stage": 1, "name": "FlameBird",    "hp": 90,  "atk": 130, "def": 60,  "spd": 90,  "art": "/assets/monsters/flamebird/stage1.png" },
-        { "stage": 2, "name": "Phoenix",      "hp": 120, "atk": 170, "def": 80,  "spd": 120, "art": "/assets/monsters/flamebird/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "SunPhoenix",   "hp": 160, "atk": 220, "def": 100, "spd": 150, "art": "/assets/monsters/flamebird/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/flamebird/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "FlameBird",
+          "hp": 90,
+          "atk": 130,
+          "def": 60,
+          "spd": 90,
+          "art": "/assets/monsters/flamebird/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "Phoenix",
+          "hp": 120,
+          "atk": 170,
+          "def": 80,
+          "spd": 120,
+          "art": "/assets/monsters/flamebird/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "SunPhoenix",
+          "hp": 160,
+          "atk": 220,
+          "def": 100,
+          "spd": 150,
+          "art": "/assets/monsters/flamebird/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "High-altitude thermal updrafts above the Sacred Volcano",
+      "personality": "Playful and quick, but fiercely territorial about the sky.",
+      "moves": [
+        "Sky Dive",
+        "Flame Wing",
+        "Searing Peck"
       ]
     },
     {
@@ -53,10 +176,51 @@
       "role": "Support",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/aquapup/stage0.png" },
-        { "stage": 1, "name": "AquaPup",      "hp": 85,  "atk": 75,  "def": 65,  "spd": 110, "art": "/assets/monsters/aquapup/stage1.png" },
-        { "stage": 2, "name": "TidalHound",   "hp": 120, "atk": 100, "def": 90,  "spd": 140, "art": "/assets/monsters/aquapup/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "OceanWolf",    "hp": 160, "atk": 130, "def": 110, "spd": 170, "art": "/assets/monsters/aquapup/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/aquapup/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "AquaPup",
+          "hp": 85,
+          "atk": 75,
+          "def": 65,
+          "spd": 110,
+          "art": "/assets/monsters/aquapup/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "TidalHound",
+          "hp": 120,
+          "atk": 100,
+          "def": 90,
+          "spd": 140,
+          "art": "/assets/monsters/aquapup/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "OceanWolf",
+          "hp": 160,
+          "atk": 130,
+          "def": 110,
+          "spd": 170,
+          "art": "/assets/monsters/aquapup/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Shallow tide pools and warm reefs along the Singing Coast",
+      "personality": "Loyal, eager, always looking up at you with bright eyes.",
+      "moves": [
+        "Aqua Howl",
+        "Tidal Wave",
+        "Water Pulse"
       ]
     },
     {
@@ -67,10 +231,51 @@
       "role": "Wall",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/bubblefish/stage0.png" },
-        { "stage": 1, "name": "BubbleFish",   "hp": 130, "atk": 60,  "def": 120, "spd": 40,  "art": "/assets/monsters/bubblefish/stage1.png" },
-        { "stage": 2, "name": "CoralGiant",   "hp": 180, "atk": 80,  "def": 160, "spd": 50,  "art": "/assets/monsters/bubblefish/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "ReefTitan",    "hp": 240, "atk": 100, "def": 210, "spd": 60,  "art": "/assets/monsters/bubblefish/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/bubblefish/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "BubbleFish",
+          "hp": 130,
+          "atk": 60,
+          "def": 120,
+          "spd": 40,
+          "art": "/assets/monsters/bubblefish/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "CoralGiant",
+          "hp": 180,
+          "atk": 80,
+          "def": 160,
+          "spd": 50,
+          "art": "/assets/monsters/bubblefish/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "ReefTitan",
+          "hp": 240,
+          "atk": 100,
+          "def": 210,
+          "spd": 60,
+          "art": "/assets/monsters/bubblefish/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Coral reefs and warm tropical currents",
+      "personality": "Cheerful and round, but pops out a wall of bubbles when startled.",
+      "moves": [
+        "Bubble Shield",
+        "Aqua Jet",
+        "Pressure Cannon"
       ]
     },
     {
@@ -81,10 +286,51 @@
       "role": "Rare bruiser",
       "rarity": "Legendary",
       "stages": [
-        { "stage": 0, "name": "Egg",              "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/oceandragon/stage0.png" },
-        { "stage": 1, "name": "OceanDragon",      "hp": 110, "atk": 140, "def": 85,  "spd": 70,  "art": "/assets/monsters/oceandragon/stage1.png" },
-        { "stage": 2, "name": "TidalWyrm",        "hp": 150, "atk": 180, "def": 110, "spd": 90,  "art": "/assets/monsters/oceandragon/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "Leviathan",        "hp": 200, "atk": 230, "def": 140, "spd": 110, "art": "/assets/monsters/oceandragon/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/oceandragon/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "OceanDragon",
+          "hp": 110,
+          "atk": 140,
+          "def": 85,
+          "spd": 70,
+          "art": "/assets/monsters/oceandragon/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "TidalWyrm",
+          "hp": 150,
+          "atk": 180,
+          "def": 110,
+          "spd": 90,
+          "art": "/assets/monsters/oceandragon/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "Leviathan",
+          "hp": 200,
+          "atk": 230,
+          "def": 140,
+          "spd": 110,
+          "art": "/assets/monsters/oceandragon/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "The deep abyss where light cannot reach",
+      "personality": "Slow to anger, devastating once roused. Ancient beyond measure.",
+      "moves": [
+        "Tidal Crush",
+        "Abyssal Roar",
+        "Leviathan Wave"
       ]
     },
     {
@@ -95,10 +341,51 @@
       "role": "Healer",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/leafrabbit/stage0.png" },
-        { "stage": 1, "name": "LeafRabbit",   "hp": 95,  "atk": 70,  "def": 75,  "spd": 95,  "art": "/assets/monsters/leafrabbit/stage1.png" },
-        { "stage": 2, "name": "ForestRabbit", "hp": 130, "atk": 95,  "def": 100, "spd": 120, "art": "/assets/monsters/leafrabbit/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "EmeraldHare",  "hp": 170, "atk": 120, "def": 130, "spd": 150, "art": "/assets/monsters/leafrabbit/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/leafrabbit/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "LeafRabbit",
+          "hp": 95,
+          "atk": 70,
+          "def": 75,
+          "spd": 95,
+          "art": "/assets/monsters/leafrabbit/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "ForestRabbit",
+          "hp": 130,
+          "atk": 95,
+          "def": 100,
+          "spd": 120,
+          "art": "/assets/monsters/leafrabbit/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "EmeraldHare",
+          "hp": 170,
+          "atk": 120,
+          "def": 130,
+          "spd": 150,
+          "art": "/assets/monsters/leafrabbit/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Sun-dappled forest meadows and clearings",
+      "personality": "Skittish but social, hops between friends and always shares what it finds.",
+      "moves": [
+        "Leaf Heal",
+        "Hop Kick",
+        "Clover Toss"
       ]
     },
     {
@@ -109,10 +396,51 @@
       "role": "Slow wall",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/mossgolem/stage0.png" },
-        { "stage": 1, "name": "MossGolem",    "hp": 140, "atk": 60,  "def": 130, "spd": 25,  "art": "/assets/monsters/mossgolem/stage1.png" },
-        { "stage": 2, "name": "StoneGolem",   "hp": 190, "atk": 80,  "def": 170, "spd": 35,  "art": "/assets/monsters/mossgolem/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "AncientGrove", "hp": 250, "atk": 100, "def": 220, "spd": 45,  "art": "/assets/monsters/mossgolem/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/mossgolem/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "MossGolem",
+          "hp": 140,
+          "atk": 60,
+          "def": 130,
+          "spd": 25,
+          "art": "/assets/monsters/mossgolem/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "StoneGolem",
+          "hp": 190,
+          "atk": 80,
+          "def": 170,
+          "spd": 35,
+          "art": "/assets/monsters/mossgolem/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "AncientGrove",
+          "hp": 250,
+          "atk": 100,
+          "def": 220,
+          "spd": 45,
+          "art": "/assets/monsters/mossgolem/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Old-growth forests covered in centuries of moss",
+      "personality": "Slow to befriend, but unshakeable once trusted. Carries an entire grove on its back.",
+      "moves": [
+        "Moss Wall",
+        "Vine Bind",
+        "Ancient Grasp"
       ]
     },
     {
@@ -123,10 +451,51 @@
       "role": "Balanced",
       "rarity": "Rare",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/forestdeer/stage0.png" },
-        { "stage": 1, "name": "ForestDeer",   "hp": 100, "atk": 100, "def": 100, "spd": 100, "art": "/assets/monsters/forestdeer/stage1.png" },
-        { "stage": 2, "name": "PrimalStag",   "hp": 140, "atk": 130, "def": 130, "spd": 130, "art": "/assets/monsters/forestdeer/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "WorldTree",    "hp": 180, "atk": 170, "def": 170, "spd": 160, "art": "/assets/monsters/forestdeer/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/forestdeer/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "ForestDeer",
+          "hp": 100,
+          "atk": 100,
+          "def": 100,
+          "spd": 100,
+          "art": "/assets/monsters/forestdeer/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "PrimalStag",
+          "hp": 140,
+          "atk": 130,
+          "def": 130,
+          "spd": 130,
+          "art": "/assets/monsters/forestdeer/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "WorldTree",
+          "hp": 180,
+          "atk": 170,
+          "def": 170,
+          "spd": 160,
+          "art": "/assets/monsters/forestdeer/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Deep forest clearings where sunlight breaks through",
+      "personality": "Swift and graceful, with antlers that channel nature's will.",
+      "moves": [
+        "Forest Step",
+        "Antler Charge",
+        "World Tree Blessing"
       ]
     },
     {
@@ -137,10 +506,51 @@
       "role": "Glass cannon",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/voltcat/stage0.png" },
-        { "stage": 1, "name": "VoltCat",      "hp": 70,  "atk": 110, "def": 50,  "spd": 140, "art": "/assets/monsters/voltcat/stage1.png" },
-        { "stage": 2, "name": "StormCat",     "hp": 95,  "atk": 150, "def": 70,  "spd": 175, "art": "/assets/monsters/voltcat/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "ThunderTiger", "hp": 125, "atk": 200, "def": 90,  "spd": 210, "art": "/assets/monsters/voltcat/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/voltcat/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "VoltCat",
+          "hp": 70,
+          "atk": 110,
+          "def": 50,
+          "spd": 140,
+          "art": "/assets/monsters/voltcat/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "StormCat",
+          "hp": 95,
+          "atk": 150,
+          "def": 70,
+          "spd": 175,
+          "art": "/assets/monsters/voltcat/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "ThunderTiger",
+          "hp": 125,
+          "atk": 200,
+          "def": 90,
+          "spd": 210,
+          "art": "/assets/monsters/voltcat/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Power stations and high-voltage transmission corridors",
+      "personality": "Sleek, aloof, and always on its own path. Sparks at the slightest touch.",
+      "moves": [
+        "Volt Bolt",
+        "Static Claw",
+        "Thunder Dash"
       ]
     },
     {
@@ -151,10 +561,51 @@
       "role": "Sniper",
       "rarity": "Common",
       "stages": [
-        { "stage": 0, "name": "Egg",          "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/sparkmouse/stage0.png" },
-        { "stage": 1, "name": "SparkMouse",   "hp": 60,  "atk": 90,  "def": 40,  "spd": 150, "art": "/assets/monsters/sparkmouse/stage1.png" },
-        { "stage": 2, "name": "BoltRat",      "hp": 80,  "atk": 125, "def": 55,  "spd": 185, "art": "/assets/monsters/sparkmouse/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "LightningSage","hp": 105, "atk": 170, "def": 75,  "spd": 220, "art": "/assets/monsters/sparkmouse/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/sparkmouse/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "SparkMouse",
+          "hp": 60,
+          "atk": 90,
+          "def": 40,
+          "spd": 150,
+          "art": "/assets/monsters/sparkmouse/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "BoltRat",
+          "hp": 80,
+          "atk": 125,
+          "def": 55,
+          "spd": 185,
+          "art": "/assets/monsters/sparkmouse/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "LightningSage",
+          "hp": 105,
+          "atk": 170,
+          "def": 75,
+          "spd": 220,
+          "art": "/assets/monsters/sparkmouse/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Junction boxes and old server rooms",
+      "personality": "Small, twitchy, surprisingly fast. Lives on crumbs and electricity.",
+      "moves": [
+        "Spark Bite",
+        "Wire Trap",
+        "Voltage Tongue"
       ]
     },
     {
@@ -165,10 +616,51 @@
       "role": "Legendary",
       "rarity": "Rare",
       "stages": [
-        { "stage": 0, "name": "Egg",              "hp": 0,   "atk": 0,   "def": 0,   "spd": 0,   "art": "/assets/monsters/thunderwolf/stage0.png" },
-        { "stage": 1, "name": "ThunderWolf",      "hp": 120, "atk": 130, "def": 100, "spd": 110, "art": "/assets/monsters/thunderwolf/stage1.png" },
-        { "stage": 2, "name": "StormfangAlpha",   "hp": 160, "atk": 170, "def": 130, "spd": 140, "art": "/assets/monsters/thunderwolf/stage2.png", "evolvesAtLevel": 20 },
-        { "stage": 3, "name": "ThunderDeity",     "hp": 210, "atk": 220, "def": 170, "spd": 175, "art": "/assets/monsters/thunderwolf/stage3.png", "evolvesAtLevel": 40 }
+        {
+          "stage": 0,
+          "name": "Egg",
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spd": 0,
+          "art": "/assets/monsters/thunderwolf/stage0.png"
+        },
+        {
+          "stage": 1,
+          "name": "ThunderWolf",
+          "hp": 120,
+          "atk": 130,
+          "def": 100,
+          "spd": 110,
+          "art": "/assets/monsters/thunderwolf/stage1.png"
+        },
+        {
+          "stage": 2,
+          "name": "StormfangAlpha",
+          "hp": 160,
+          "atk": 170,
+          "def": 130,
+          "spd": 140,
+          "art": "/assets/monsters/thunderwolf/stage2.png",
+          "evolvesAtLevel": 20
+        },
+        {
+          "stage": 3,
+          "name": "ThunderDeity",
+          "hp": 210,
+          "atk": 220,
+          "def": 170,
+          "spd": 175,
+          "art": "/assets/monsters/thunderwolf/stage3.png",
+          "evolvesAtLevel": 40
+        }
+      ],
+      "habitat": "Stormy mountaintops under perpetual lightning",
+      "personality": "Lone wolf, fiercely independent. Commands the very sky.",
+      "moves": [
+        "Thunder Howl",
+        "Lightning Fang",
+        "Stormfang Strike"
       ]
     }
   ]
