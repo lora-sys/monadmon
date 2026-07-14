@@ -1,7 +1,7 @@
-import "./globals.css";
 import type { Metadata } from "next";
 import { Providers } from "@/components/Providers";
-import { Header } from "@/components/Header";
+import { CreativeShell } from "@/components/CreativeShell";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "MonadMon — The first living creatures on Monad",
@@ -12,13 +12,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-[#0B0D14] text-[#F5F6FA] antialiased min-h-screen">
+      <body className="antialiased">
         <Providers>
-          <Header />
-          <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
-          <footer className="border-t border-[#232839] mt-16 py-6 text-center text-sm text-[#6E7589]">
-            MonadMon · Testnet build · 2026
-          </footer>
+          <CreativeShell>{children}</CreativeShell>
         </Providers>
       </body>
     </html>

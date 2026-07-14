@@ -16,8 +16,9 @@ export function createServer(db: DB) {
   app.get("/health", (c) => c.json({ status: "ok" }));
 
   app.get("/api/leaderboard", (c) => {
-    const limit = Number(c.req.query("limit") ?? "100");
-    return c.json(getLeaderboard(db, Math.min(limit, 1000)));
+    const limit = parseLimit(c.req.query("limit"), 100, 1000);
+    if (limit == null) return c.json({ error: "invalid limit" }, 400);
+    return c.json(getLeaderboard(db, limit));
   });
 
   app.get("/api/monsters/:id", (c) => {
@@ -39,8 +40,9 @@ export function createServer(db: DB) {
   });
 
   app.get("/api/battles/recent", (c) => {
-    const limit = Number(c.req.query("limit") ?? "20");
-    return c.json(getRecentBattles(db, Math.min(limit, 200)));
+    const limit = parseLimit(c.req.query("limit"), 20, 200);
+    if (limit == null) return c.json({ error: "invalid limit" }, 400);
+    return c.json(getRecentBattles(db, limit));
   });
 
   app.get("/api/battles/:id", (c) => {
@@ -54,4 +56,10 @@ export function createServer(db: DB) {
   });
 
   return app;
+}
+
+function parseLimit(raw: string | undefined, fallback: number, max: number): number | null {
+  const value = Number(raw ?? fallback);
+  if (!Number.isInteger(value) || value < 1) return null;
+  return Math.min(value, max);
 }

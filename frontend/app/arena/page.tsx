@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAccount, useReadContract, useReadContracts, useWriteContract } from "wagmi";
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { monsterNftAbi, battleAbi } from "@/lib/abis";
-import { MONSTER_NFT_ADDRESS, BATTLE_ADDRESS } from "@/lib/contracts";
-import { speciesById, monsterArt } from "@/lib/species";
+import { useAccount, useReadContract, useReadContracts, useWriteContract } from "wagmi";
+import { battleAbi } from "@/lib/abis";
+import { BATTLE_ADDRESS } from "@/lib/contracts";
 
 export default function ArenaPage() {
   const { address, isConnected } = useAccount();
@@ -37,7 +37,7 @@ export default function ArenaPage() {
     if (!myTokenInput || !opponentInput || !oppTokenInput) return;
     setBusy(true);
     try {
-      const cid = await battleWrite({
+      await battleWrite({
         address: BATTLE_ADDRESS,
         abi: battleAbi,
         functionName: "challenge",
@@ -70,122 +70,134 @@ export default function ArenaPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="space-y-12 pt-12">
       <header>
-        <h1 className="text-3xl font-bold">Battle Arena</h1>
-        <p className="text-[#B5BAC8]">
-          Challenge another player. Winner gets +50 XP and a leaderboard point.
+        <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
+          Arena / PvP
+        </p>
+        <h1 className="mt-3 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[0.95]">
+          The arena.
+        </h1>
+        <p className="mt-4 max-w-xl text-base text-[#B5BAC8]">
+          Challenge another trainer. Winner gets +50 XP and a leaderboard
+          point.
         </p>
       </header>
-
-      <section className="bg-[#11141D] border border-[#232839] rounded-md p-6 space-y-4">
-        <h2 className="text-xl font-semibold">Create a challenge</h2>
-        <div className="grid sm:grid-cols-3 gap-3">
-          <Field
-            label="Your tokenId"
-            value={myTokenInput}
-            onChange={setMyTokenInput}
-            placeholder="1"
-          />
-          <Field
-            label="Opponent address"
-            value={opponentInput}
-            onChange={setOpponentInput}
-            placeholder="0x..."
-          />
-          <Field
-            label="Opponent tokenId"
-            value={oppTokenInput}
-            onChange={setOppTokenInput}
-            placeholder="2"
-          />
-        </div>
-        <button
-          onClick={handleChallenge}
-          disabled={!isConnected || busy || !myTokenInput || !opponentInput || !oppTokenInput}
-          className="px-5 py-2 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      <section className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleChallenge();
+          }}
+          className="lg:col-span-5 rounded-3xl border border-[#1F2333] bg-[#0E1119] p-6"
         >
-          {busy ? "Sending..." : "Challenge"}
-        </button>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold">Recent battles</h2>
-        {total === 0 && (
-          <div className="text-[#6E7589] text-sm">No battles yet. Create the first challenge above.</div>
-        )}
-        <div className="space-y-3">
+          <h2 className="text-lg font-semibold">Create a challenge</h2>
+          <p className="mt-1 text-sm text-[#858DA1]">Two monsters. One battle.</p>
+          <div className="mt-6 grid grid-cols-1 gap-3">
+            <Field
+              label="Your tokenId"
+              value={myTokenInput}
+              onChange={setMyTokenInput}
+              placeholder="1"
+            />
+            <Field
+              label="Opponent address"
+              value={opponentInput}
+              onChange={setOpponentInput}
+              placeholder="0x..."
+            />
+            <Field
+              label="Opponent tokenId"
+              value={oppTokenInput}
+              onChange={setOppTokenInput}
+              placeholder="2"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={!isConnected || busy || !myTokenInput || !opponentInput || !oppTokenInput}
+            className="mt-6 rounded-full bg-[#7AF0BA] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
+          >
+            {busy ? "Sending..." : "Send challenge"}
+          </button>
+        </form>
+        <section className="lg:col-span-7 space-y-3">
+          <h2 className="text-lg font-semibold">Recent battles</h2>
+          {total === 0 ? (
+            <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-6 text-sm text-[#858DA1]">
+              No battles yet. Create the first challenge.
+            </div>
+          ) : null}
           {challenges?.map((c, i) => {
             if (!c.result) return null;
             const ch = c.result;
             const isPending = ch.state === 1;
             const isResolved = ch.state === 2;
             return (
-              <div key={i} className="bg-[#11141D] border border-[#232839] rounded-md p-4 space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                  <span className="text-[#6E7589]">Challenge #{recent[i].toString()}</span>
-                  <span className="text-xs">
-                    {isPending ? (
-                      <span className="px-2 py-0.5 rounded bg-yellow-900/30 text-yellow-300">
-                        PENDING
-                      </span>
-                    ) : isResolved ? (
-                      <span className="px-2 py-0.5 rounded bg-[#7AF0BA]/20 text-[#7AF0BA]">
-                        RESOLVED
-                      </span>
-                    ) : null}
+              <article
+                key={i}
+                className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-5"
+              >
+                <header className="flex items-center justify-between text-xs">
+                  <span className="font-mono text-[#858DA1]">Challenge #{recent[i].toString()}</span>
+                  <span
+                    className={
+                      isPending
+                        ? "rounded-full bg-[#3a2a14] px-2 py-0.5 text-[#FFD56B]"
+                        : isResolved
+                        ? "rounded-full bg-[#13372a] px-2 py-0.5 text-[#7AF0BA]"
+                        : "text-[#858DA1]"
+                    }
+                  >
+                    {isPending ? "Pending" : isResolved ? "Resolved" : "Unknown"}
                   </span>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                </header>
+                <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <div className="text-[#6E7589] text-xs">Challenger</div>
-                    <div className="font-mono">
-                      {ch.challenger.slice(0, 6)}…{ch.challenger.slice(-4)}
-                    </div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Challenger</p>
+                    <p className="font-mono">{ch.challenger.slice(0, 6)}…{ch.challenger.slice(-4)}</p>
                     <Link
                       href={`/monster/${ch.challengerTokenId.toString()}`}
-                      className="text-[#7AF0BA] text-xs"
+                      className="text-xs text-[#7AF0BA] hover:underline"
                     >
                       Token #{ch.challengerTokenId.toString()}
                     </Link>
                   </div>
                   <div>
-                    <div className="text-[#6E7589] text-xs">Opponent</div>
-                    <div className="font-mono">
-                      {ch.opponent.slice(0, 6)}…{ch.opponent.slice(-4)}
-                    </div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Opponent</p>
+                    <p className="font-mono">{ch.opponent.slice(0, 6)}…{ch.opponent.slice(-4)}</p>
                     <Link
                       href={`/monster/${ch.opponentTokenId.toString()}`}
-                      className="text-[#7AF0BA] text-xs"
+                      className="text-xs text-[#7AF0BA] hover:underline"
                     >
                       Token #{ch.opponentTokenId.toString()}
                     </Link>
                   </div>
                 </div>
-                {isResolved && (
-                  <div className="text-sm">
+                {isResolved ? (
+                  <p className="mt-3 text-sm">
                     {ch.draw ? (
-                      <span className="text-[#6E7589]">Draw ({ch.turns.toString()} turns)</span>
+                      <span className="text-[#858DA1]">Draw ({ch.turns.toString()} turns)</span>
                     ) : (
                       <span className="text-[#7AF0BA]">
-                        Winner: token #{ch.winnerTokenId.toString()} ({ch.turns.toString()} turns)
+                        Winner · token #{ch.winnerTokenId.toString()} ({ch.turns.toString()} turns)
                       </span>
                     )}
-                  </div>
-                )}
-                {isPending && ch.opponent.toLowerCase() === address?.toLowerCase() && (
+                  </p>
+                ) : null}
+                {isPending && ch.opponent.toLowerCase() === address?.toLowerCase() ? (
                   <button
                     onClick={() => handleAccept(recent[i])}
                     disabled={busy}
-                    className="px-4 py-1.5 bg-[#C9A7FF] text-[#0B0D14] text-sm font-semibold rounded hover:bg-[#b594e8] disabled:opacity-50"
+                    className="mt-3 rounded-full border border-[#C9A7FF] px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-[#C9A7FF] transition-colors hover:bg-[#C9A7FF] hover:text-[#0A0C13] disabled:opacity-50"
                   >
                     Accept &amp; Resolve
                   </button>
-                )}
-              </div>
+                ) : null}
+              </article>
             );
           })}
-        </div>
+        </section>
       </section>
     </div>
   );
@@ -204,13 +216,13 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-xs text-[#6E7589] block mb-1">{label}</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">{label}</span>
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-[#1A1E2A] border border-[#232839] rounded px-3 py-2 text-sm font-mono focus:border-[#7AF0BA] focus:outline-none"
+        className="mt-1 w-full rounded-xl border border-[#1F2333] bg-[#141826] px-3 py-2 font-mono text-sm focus:border-[#7AF0BA] focus:outline-none"
       />
     </label>
   );

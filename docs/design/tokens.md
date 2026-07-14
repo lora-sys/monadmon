@@ -9,7 +9,7 @@ CSS variables drive Tailwind. Final values after brand review.
 --bg-2     #1A1E2A   /* elevated */
 --ink-0    #F5F6FA   /* primary text */
 --ink-1    #B5BAC8   /* secondary */
---ink-2    #6E7589   /* tertiary */
+--ink-2    #858DA1   /* tertiary */
 --line     #232839   /* divider */
 
 --accent   #7AF0BA   /* mint/aurora — primary brand */
@@ -17,10 +17,10 @@ CSS variables drive Tailwind. Final values after brand review.
 --warn     #F2C14E
 --danger   #FF6F7D
 
---fire     #FF7A59
---water    #5BB7FF
+--fire     #E25C3A
+--water    #2E8DD0
 --nature   #5CD891
---electric #E2D24A
+--electric #C8A91F
 ```
 
 ## Typography

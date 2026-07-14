@@ -1,10 +1,15 @@
 # Project Status
 
-_Last updated: 2026-07-13 by @coordinator_
+_Last updated: 2026-07-13 by Codex_
 
-## Status: MVP complete. CI green. Testnet deploy pending user-funded wallet (#24).
+## Status: MVP recovery in progress on GitHub #33. Testnet deploy remains blocked on #24.
 
-All MVP acceptance criteria (AC1.x through AC8.x) verified on local Anvil via cast + agent-browser screenshots. CI passes on every push (Contracts / Frontend / Backend). All polish issues closed (#16, #17, #20). Landing page uses the 3 marketing posters. All 12 species have art.
+The latest E2E audit contradicted the prior completion claim. The live
+leaderboard path is not wired in the frontend, battle resolution indexing is
+incorrect, monster-detail screenshots show broken images, and the backend has
+no automated test coverage. GitHub CI is green for `main`, but it currently
+only type-checks and builds the backend. GitHub #33 is the blocking recovery
+Issue.
 
 ## MVP Acceptance Criteria Status
 | AC | Description | Status |
@@ -20,7 +25,7 @@ All MVP acceptance criteria (AC1.x through AC8.x) verified on local Anvil via ca
 | AC6.1 | Battle determinism | verified |
 | AC6.2 | Type effectiveness | golden vector |
 | AC6.3 | BattleResolved event | verified |
-| AC7.1 | Leaderboard page | verified |
+| AC7.1 | Leaderboard page | **Failed audit: static demo data, live path under repair (#33)** |
 | AC8.x | Showcase profile | verified |
 
 ## Recently Merged (this session)
@@ -51,8 +56,12 @@ Fix: regenerate from a clean `npm install`.
 - Phase 1 — Core shell — **Done**
 - Phase 2 — Genesis Egg + Hatch — **Done** (verified on Anvil)
 - Phase 3 — Training + Monster detail — **Done**
-- Phase 4 — PvP + Leaderboard — **Done** (indexer ready)
-- Phase 5 — Polish & demo — **Done** (landing, art, CI)
+- Phase 4 — PvP + Leaderboard — **Reopened** (#33)
+- Phase 5 — Polish & demo — **Reopened** (broken art/E2E evidence in #33)
+
+## Implementing
+
+- #33 / ISSUE-0021 — Rebuild live leaderboard and local E2E.
 
 ## Blocked
 - #24 — Deploy to Monad testnet (gated on user-funded wallet).

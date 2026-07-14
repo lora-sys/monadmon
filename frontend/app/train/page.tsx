@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useAccount, useReadContracts, useWriteContract } from "wagmi";
 import { monsterNftAbi } from "@/lib/abis";
 import { MONSTER_NFT_ADDRESS } from "@/lib/contracts";
@@ -57,30 +59,34 @@ export default function TrainPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-10 pt-12">
       <header>
-        <h1 className="text-3xl font-bold">Train your Monsters</h1>
-        <p className="text-[#B5BAC8]">
-          Each train grants +30 XP and +2 ATK. Cooldown is 6 hours per monster.
+        <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
+          Training / Growth
+        </p>
+        <h1 className="mt-3 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[0.95]">
+          Train your creatures.
+        </h1>
+        <p className="mt-4 max-w-xl text-base text-[#B5BAC8]">
+          Each session grants <span className="text-[#7AF0BA]">+30 XP</span> and{" "}
+          <span className="text-[#7AF0BA]">+2 ATK</span>. Cooldown is six
+          hours per monster.
         </p>
       </header>
-
-      {!isConnected && (
-        <div className="bg-[#11141D] border border-[#232839] rounded p-6 text-center text-[#B5BAC8]">
+      {!isConnected ? (
+        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-10 text-center text-sm text-[#858DA1]">
           Connect your wallet to see your monsters.
         </div>
-      )}
-
-      {isConnected && numMonsters === 0 && (
-        <div className="bg-[#11141D] border border-[#232839] rounded p-6 text-center">
-          <p className="text-[#B5BAC8] mb-3">You don&apos;t have any Monsters yet.</p>
-          <a href="/mint" className="text-[#7AF0BA] underline">
+      ) : null}
+      {isConnected && numMonsters === 0 ? (
+        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-10 text-center">
+          <p className="text-[#B5BAC8]">You don&apos;t have any monsters yet.</p>
+          <Link href="/mint" className="mt-3 inline-block text-sm text-[#7AF0BA] underline-offset-4 hover:underline">
             Mint your Genesis Egg →
-          </a>
+          </Link>
         </div>
-      )}
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ) : null}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {monsters?.map((m, i) => {
           if (!m.result) return null;
           const mon = m.result;
@@ -89,34 +95,66 @@ export default function TrainPage() {
           const cooldownRemaining =
             Number(mon.lastTrainedAt) > 0 ? Math.max(0, Number(mon.lastTrainedAt) + COOLDOWN - now) : 0;
           const canTrain = !isEgg && cooldownRemaining === 0;
+          const progress = isEgg
+            ? 0
+            : Math.min(100, (Number(mon.xp) / (Number(mon.level) * 100)) * 100);
           return (
-            <div key={i} className="bg-[#11141D] border border-[#232839] rounded p-4 space-y-3">
-              <div className="aspect-square bg-[#1A1E2A] rounded overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={isEgg ? "/assets/monsters/placeholder.png" : monsterArt(Number(mon.speciesId), Number(mon.stage), mon.dna)}
+            <article
+              key={i}
+              className="group flex flex-col gap-4 rounded-3xl border border-[#1F2333] bg-[#0E1119] p-5 transition-colors hover:border-[#7AF0BA]/60"
+            >
+              <div className="relative aspect-square overflow-hidden rounded-2xl bg-[#141826]">
+                <Image
+                  src={isEgg ? "/assets/monsters/placeholder.svg" : monsterArt(Number(mon.speciesId), Number(mon.stage), mon.dna)}
                   alt={sp?.name ?? "Egg"}
-                  className="w-full h-full object-cover"
+                  width={384}
+                  height={384}
+                  unoptimized
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
                 />
               </div>
               <div>
-                <div className="font-bold">{sp?.name ?? "Egg"}</div>
-                <div className="text-xs text-[#6E7589]">
+                <p className="text-lg font-semibold">{sp?.name ?? "Egg"}</p>
+                <p className="font-mono text-xs text-[#858DA1]">
                   Lv {mon.level.toString()} · ATK {mon.atk.toString()} · XP {mon.xp.toString()}
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center justify-between text-xs text-[#858DA1]">
+                  <span>Cooldown</span>
+                  <span className="font-mono">
+                    {isEgg
+                      ? "—"
+                      : cooldownRemaining === 0
+                      ? "Ready"
+                      : formatRemaining(cooldownRemaining)}
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1F2333]">
+                  <div
+                    className="h-full bg-[#7AF0BA]"
+                    style={{ width: `${progress}%` }}
+                    role="progressbar"
+                    aria-label="Training progress"
+                    aria-valuenow={Number(mon.xp)}
+                    aria-valuemin={0}
+                    aria-valuemax={Number(mon.level) * 100}
+                  />
                 </div>
               </div>
               {isEgg ? (
-                <a
+                <Link
                   href="/mint"
-                  className="block text-center px-3 py-2 border border-[#232839] rounded text-sm hover:border-[#7AF0BA]"
+                  className="block rounded-full border border-[#1F2333] px-4 py-2 text-center text-xs uppercase tracking-[0.18em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
                 >
                   Hatch the egg
-                </a>
+                </Link>
               ) : (
                 <button
                   onClick={() => handleTrain(BigInt(i + 1))}
                   disabled={!canTrain || busyToken === (i + 1).toString()}
-                  className="w-full px-3 py-2 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded text-sm hover:bg-[#5cd891] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label={canTrain ? "Train this monster" : `Training locked, ${formatRemaining(cooldownRemaining)} remaining`}
+                  className="rounded-full bg-[#7AF0BA] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
                 >
                   {busyToken === (i + 1).toString()
                     ? "Training..."
@@ -125,7 +163,7 @@ export default function TrainPage() {
                     : `Ready in ${formatRemaining(cooldownRemaining)}`}
                 </button>
               )}
-            </div>
+            </article>
           );
         })}
       </div>
