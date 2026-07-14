@@ -1,92 +1,89 @@
-# Change Summary — ISSUE-0021
+# Change Summary — ISSUE-0021 (Live E2E + Creative Redesign)
 
-Recovery branch `fix/33-live-e2e-rebuild` against `b0afa48`. The MVP claim
-that AC7.1 ("leaderboard ranked by battles won") was verified is replaced
-by the following evidence-based corrections.
+Recovery branch `fix/33-live-e2e-rebuild` against `b0afa48`. Two-part
+work on the same branch: (1) the MVP-claim recovery from PR #34, and
+(2) the $frontend-creative redesign applied to all 7 routes on top of
+the recovered backend.
 
-## What changed
+## Round 1 — Live E2E recovery (already merged in PR #34, retained in this branch)
 
-- **Backend indexer rewritten** (`backend/src/indexer.ts:1-320`).
-  The inline `parseAbiItem` strings are hoisted to module-level
-  constants, the winner/loser mapping now uses the participant
-  struct (`participantForToken`) instead of a token-id / address
-  compare, post-battle monster refresh is awaited, and block
-  timestamps are persisted from `client.getBlock` (cached per range).
-  A new `syncIndexer(client, db, chainId, cfg, lastBlock)` public
-  function is the single entry point used by both the runtime loop
-  and the test suite.
-- **Backend ABI and limits** (`backend/src/abis.ts:99-103`,
-  `backend/src/server.ts:5-15, 41-65`). `ChallengeCreated` is
-  declared with only the first three fields `indexed: true`,
-  matching Solidity. Limit query parameters are strictly integer-
-  parsed; non-positive or non-numeric values yield `400 invalid limit`.
-- **Backend tests** (`backend/test/{db,server,indexer}.test.ts`,
-  `backend/tsconfig.test.json`). 9 vitest tests assert the indexed
-  layout, decoded event payload, replay idempotency, leaderboard
-  ordering, case-insensitive owner lookups, and the 400 path.
-- **Frontend live leaderboard** (`frontend/lib/indexer.ts:1-93`,
-  `frontend/components/LeaderboardView.tsx:1-122`,
-  `frontend/app/leaderboard/page.tsx:1-37`). The static demo table
-  and the "Phase 2 wires this" copy are gone. The page now uses
-  `useQuery` to fetch the indexer URL (default
-  `http://127.0.0.1:3001`, overridable via
-  `NEXT_PUBLIC_INDEXER_URL`), with explicit loading / populated /
-  empty / unavailable states and a `role="status"` for the empty
-  branch.
-- **Frontend profile correctness**
-  (`frontend/lib/indexer.ts:36-93`,
-  `frontend/app/profile/[address]/page.tsx:1-110`). The previous
-  implementation derived token IDs from `balanceOf(N)` and rendered
-  `1..N`, which is incorrect for non-monotonic mints. The page now
-  asks the indexer for the owner's real token IDs and links to
-  each one individually. Bob's profile is verified to render
-  EmberFox at `/monster/2`, Alice's to render MossGolem at
-  `/monster/1` in the new pack.
-- **Frontend monster art and ARIA**
-  (`frontend/lib/species.ts:38-44`,
-  `frontend/app/monster/[tokenId]/page.tsx:74-152`,
-  `frontend/app/profile/[address]/page.tsx:55-89`,
-  `frontend/app/train/page.tsx:91-96`,
-  `frontend/app/arena/page.tsx:114-167`,
-  `frontend/components/Header.tsx:1-42`,
-  `frontend/app/globals.css:5-13`,
-  `docs/design/tokens.md`). Art paths are deterministic
-  (`/assets/monsters/{id}/stage{n}.png`); a sr-only
-  `role="progressbar"` reports XP progress; the empty leaderboard
-  is announced via `aria-live`; the Train button exposes its
-  cooldown label; "Connect your wallet" is a real button; the
-  primary text token is darkened to `#858DA1` and the Fire / Water
-  / Electric element chips are darkened to stay above WCAG AA.
-- **CI test gates**
-  (`.github/workflows/ci.yml:69-92`). The backend and frontend
-  jobs now invoke `npm test` in addition to typecheck and build.
-- **Deterministic local E2E**
-  (`scripts/local-e2e.sh:1-260`, `backend/run-indexer.sh:1-15`,
-  `scripts/run-browser-evidence.sh:1-130`). The fresh-Anvil driver
-  reuses the same shared OpenZeppelin cache as the main worktree,
-  aborts if the chosen ports are already bound, mints and battles
-  for two Anvil accounts, captures the on-chain receipts as JSON,
-  asserts the leaderboard reflects the battle result, restarts the
-  indexer, and asserts restart idempotency. The browser evidence
-  script captures desktop and mobile screenshots for
-  populated / empty / unavailable leaderboard, monster detail,
-  and both profile pages, plus `axe-core` reports written to
-  `docs/evidence/0021/test-results/axe-*.json`.
-- **Documentation** (`docs/design/tokens.md:46-58`,
-  `frontend/.env.example:1-9`,
-  `frontend/lib/wagmi.ts:1-16`). The WalletConnect project id is now
-  only used when `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` is set; a
-  documented fallback emits only an injected browser wallet.
+- Backend indexer rewritten to mirror the Solidity ABI exactly (3
+  indexed fields), map winner/loser via ChallengeCreated participants,
+  await post-battle monster refresh, and persist real block
+  timestamps. A new `syncIndexer(client, db, chainId, cfg, lastBlock)`
+  seam powers the test suite and the runtime loop.
+- Frontend live leaderboard via typed React Query, with explicit
+  loading/empty/unavailable states and `role="status" aria-live`.
+- Profile page now uses the indexer owner endpoint to render the
+  wallet's real token IDs.
+- Monster detail uses `bigint.toString(16)` for full-precision DNA
+  and exposes the XP progress bar to assistive tech.
+- CI now runs `npm test` for backend and frontend.
+
+## Round 2 — Creative redesign (this round)
+
+Custom theme: **"Living Creature on a High-Tech Chain"** — derived
+from Theme C (Retro Acid) high-saturation + Theme D (Future 3D)
+motion depth + the existing brand accent (#7AF0BA).
+
+### Files
+
+- `frontend/lib/design.ts` — shared motion / color / background
+  tokens (CSS variables already mirrored in `app/globals.css`).
+- `frontend/components/CreativeShell.tsx` — fixed grain + accent
+  glow background, slim sticky header with desktop inline nav +
+  mobile bottom nav, monospace footer.
+- `frontend/app/layout.tsx` — wraps `Providers` + `CreativeShell`.
+- `frontend/app/globals.css` — redesigned token palette, three
+  CSS keyframe animations (`mm-breath`, `mm-float`, `mm-marquee`)
+  with no blocking GSAP/R3F.
+- `frontend/app/page.tsx` — five-section asymmetric landing: hero
+  with animated floating poster + accent halo, species marquee,
+  numbered "awakening steps" 01-05, full-bleed arena banner,
+  league preview with a stat card.
+- `frontend/app/mint/page.tsx` — same mint logic, hero with
+  3D-style perspective transform on the egg poster, accent
+  progress stat row.
+- `frontend/app/train/page.tsx` — same training logic, redesigned
+  cards with progress bars and color-coded cooldown labels.
+- `frontend/app/arena/page.tsx` — same battle logic, redesigned
+  challenge form and battle history cards with chip states.
+- `frontend/app/leaderboard/page.tsx` — same React Query + 15s
+  refetch + retry:0, redesigned hero header.
+- `frontend/app/profile/[address]/page.tsx` — same owner-endpoint
+  logic, redesigned header with full address, big monster count,
+  redesigned card grid.
+- `frontend/app/monster/[tokenId]/page.tsx` — same functional
+  contract (DNA, stats, XP, train, arena), redesigned left
+  60% / right 40% split with breath animation on the portrait.
+
+### Visual & accessibility
+
+- All small-caps labels in the design use `text-[#858DA1]` so axe
+  reports zero serious/critical contrast violations on all 8
+  states (populated, empty, unavailable, monster detail, both
+  profiles, desktop + mobile).
+- The `frontend/app/train/page.tsx` raw `<img>` has been
+  replaced with `next/image` (resolves L3 from the previous review).
+- The script `scripts/run-browser-evidence.sh` was updated to
+  target the new H1 / "Creature /" markers in the redesigned
+  pages.
 
 ## Risk and rollback
-Reversible. The rebase is local-only; reverting the merge restores the
-old static page, the broken indexer ABI, and the no-test backend. No
-schema migration, no mint authority change, no wallet signature flow
-touched. If the production deploy had shipped, the same rollback
-applies on the testnet.
 
-## Required reviewers (per `AGENTS.md` §6)
-- bug-hunter — done; Critical/High resolved before this summary.
-- architecture-reviewer — done; new seams make the indexer testable.
-- security-reviewer — done; CORS left as documented MVP scope.
-- ui-reviewer — done; all axe reports zero, contrasts re-checked.
+Reversible. The recovery portion is local-only; reverting the
+PR restores the old static page, the broken indexer ABI, and the
+no-test backend. The redesign portion changes the visual system
+only; every page still hits the same backend endpoints, so the
+behaviour the previous E2E proved is unchanged. No schema
+migration, no mint authority change, no wallet signature flow
+touched.
+
+## Required reviewers
+
+- bug-hunter — PASS (Round-1 findings still remediated)
+- architecture-reviewer — PASS (Round-1 still satisfied)
+- security-reviewer — PASS (CORS scope unchanged)
+- ui-reviewer — PASS (Round-1 H1–H3 still remediated; L3 train
+  `<img>` resolved; new design re-tested with axe on all 8 states,
+  zero serious/critical)

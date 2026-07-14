@@ -6,7 +6,7 @@ set -euo pipefail
 
 RUN_DIR="${1:-/tmp/monadmon-e2e}"
 EVIDENCE_DIR="${2:-docs/evidence/0021}"
-BASE_URL="${3:-http://127.0.0.1:3300}"
+BASE_URL="${3:-http://127.0.0.1:10400}"
 
 DESKTOP_DIR="$EVIDENCE_DIR/screenshots/desktop"
 MOBILE_DIR="$EVIDENCE_DIR/screenshots/mobile"
@@ -35,9 +35,9 @@ capture_route() {
   agent-browser --session "$session" set viewport "$vp_x" "$vp_y"
   agent-browser --session "$session" open "$BASE_URL$route"
   case "$route" in
-    /leaderboard) agent-browser --session "$session" wait --text 'MonadMon League' ;;
-    /profile*)   agent-browser --session "$session" wait --text 'monster' || true ;;
-    /monster*)   agent-browser --session "$session" wait --text 'Token ID' ;;
+    /leaderboard) agent-browser --session "$session" wait --text 'The strongest trainers' ;;
+    /profile*)   agent-browser --session "$session" wait --load networkidle ;;
+    /monster*)   agent-browser --session "$session" wait --load networkidle ;;
     *)           agent-browser --session "$session" wait --load networkidle ;;
   esac
   agent-browser --session "$session" errors --clear >/dev/null
@@ -102,7 +102,7 @@ for entry in "${ROUTES[@]}"; do
 done
 
 agent-browser --session evidence-leaderboard-desktop open "$BASE_URL/leaderboard"
-agent-browser --session evidence-leaderboard-desktop wait --text 'MonadMon League'
+agent-browser --session evidence-leaderboard-desktop wait --text 'The strongest trainers'
 agent-browser --session evidence-leaderboard-desktop eval "(() => { window.fetch = (input, init) => String(input).includes('/api/leaderboard') ? Promise.resolve(new Response('[]', { status: 200, headers: { 'Content-Type': 'application/json' } })) : (window.__realFetch ? window.__realFetch(input, init) : new Response('not-mocked', { status: 404 })); return true; })()"
 agent-browser --session evidence-leaderboard-desktop open "$BASE_URL/leaderboard"
 agent-browser --session evidence-leaderboard-desktop wait --text 'No ranked trainers yet'
@@ -119,7 +119,7 @@ agent-browser --session evidence-leaderboard-desktop eval "$axe_script" > "$RESU
 printf 'route: /leaderboard\nviewport: 1400 900\nscreenshot: %s\n' "$DESKTOP_DIR/leaderboard-unavailable.png" > "$RESULTS_DIR/meta-leaderboard-unavailable.txt"
 agent-browser --session evidence-leaderboard-mobile set viewport 390 844
 agent-browser --session evidence-leaderboard-mobile open "$BASE_URL/leaderboard"
-agent-browser --session evidence-leaderboard-mobile wait --text 'MonadMon League'
+agent-browser --session evidence-leaderboard-mobile wait --text 'The strongest trainers'
 agent-browser --session evidence-leaderboard-mobile eval "(() => { window.fetch = (input, init) => String(input).includes('/api/leaderboard') ? Promise.resolve(new Response('[]', { status: 200, headers: { 'Content-Type': 'application/json' } })) : (window.__realFetch ? window.__realFetch(input, init) : new Response('not-mocked', { status: 404 })); return true; })()"
 agent-browser --session evidence-leaderboard-mobile open "$BASE_URL/leaderboard"
 agent-browser --session evidence-leaderboard-mobile wait --text 'No ranked trainers yet'

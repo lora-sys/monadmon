@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { monsterNftAbi } from "@/lib/abis";
 import { MONSTER_NFT_ADDRESS } from "@/lib/contracts";
@@ -49,8 +50,8 @@ export default function MonsterDetailPage() {
 
   if (!monster) {
     return (
-      <div className="text-center py-12 text-[#B5BAC8]">
-        Loading monster #{tokenId.toString()}...
+      <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-10 text-center text-sm text-[#858DA1]">
+        Loading monster #{tokenId.toString()}…
       </div>
     );
   }
@@ -65,141 +66,149 @@ export default function MonsterDetailPage() {
         )
       : 0;
   const canTrain = !isEgg && cooldownRemaining === 0;
+  const xpMax = Math.max(1, Number(monster.level) * 100);
+  const xpProgress = Math.min(100, (Number(monster.xp) / xpMax) * 100);
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="aspect-square bg-[#11141D] border border-[#232839] rounded-lg flex items-center justify-center overflow-hidden">
+    <div className="grid grid-cols-1 gap-10 pt-12 lg:grid-cols-12">
+      <section className="lg:col-span-7">
+        <div
+          className="relative aspect-square overflow-hidden rounded-3xl border border-[#1F2333] bg-[#0E1119]"
+          style={{ animation: "mm-breath 2.6s ease-in-out infinite" }}
+        >
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 30%, rgba(122,240,186,0.30), transparent 65%)",
+            }}
+          />
           <Image
             src={isEgg ? "/assets/monsters/placeholder.svg" : monsterArt(Number(monster.speciesId), Number(monster.stage), monster.dna)}
             alt={sp?.name ?? "Egg"}
             width={768}
             height={768}
-            sizes="(min-width: 768px) 432px, calc(100vw - 2rem)"
-            className="h-full w-full object-cover"
+            sizes="(min-width: 1024px) 600px, 100vw"
+            className="relative h-full w-full object-cover"
             priority
+            unoptimized
           />
         </div>
-
-        <div className="space-y-6">
-          <header>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-3xl font-bold">{sp?.name ?? "Egg"}</h1>
-              {sp && (
-                <span
-                  className="px-2 py-1 rounded text-xs font-semibold"
-                  style={{ backgroundColor: elementColor(sp.element), color: "#0B0D14" }}
-                >
-                  {sp.element}
-                </span>
-              )}
-              {sp && (
-                <span
-                  className="px-2 py-1 rounded text-xs font-semibold border"
-                  style={{ borderColor: rarityColor(sp.rarity), color: rarityColor(sp.rarity) }}
-                >
-                  {sp.rarity}
-                </span>
-              )}
-            </div>
-            <p className="text-[#B5BAC8] text-sm mt-2">
-              Token ID: <span className="font-mono">#{tokenId.toString()}</span>
-              {owner && (
-                <>
-                  {" "}· Owner: <span className="font-mono">{owner.slice(0, 6)}…{owner.slice(-4)}</span>
-                </>
-              )}
-            </p>
-          </header>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Stat label="HP" value={monster.hp} />
-            <Stat label="ATK" value={monster.atk} />
-            <Stat label="DEF" value={monster.def} />
-            <Stat label="SPD" value={monster.spd} />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#B5BAC8]">Level</span>
-              <span className="font-bold">{monster.level.toString()}</span>
-            </div>
-            <div className="w-full bg-[#1A1E2A] rounded-full h-2 overflow-hidden">
-              <div
-                className="h-full bg-[#7AF0BA] transition-all"
-                style={{ width: `${Math.min(100, (Number(monster.xp) / (Number(monster.level) * 100)) * 100)}%` }}
-              />
-            </div>
-            <div className="flex items-center justify-between text-xs text-[#858DA1]">
-              <span>XP</span>
-              <span>{monster.xp.toString()} / {(Number(monster.level) * 100).toString()}</span>
-            </div>
-          </div>
-          <div
-            role="progressbar"
-            aria-label="Monster experience progress"
-            aria-valuemin={0}
-            aria-valuemax={Number(monster.level) * 100}
-            aria-valuenow={Number(monster.xp)}
-            className="sr-only"
-          />
-
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-              <div className="text-[#858DA1] text-xs">Battles Won</div>
-              <div className="font-bold text-lg">{monster.battlesWon.toString()}</div>
-            </div>
-            <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-              <div className="text-[#858DA1] text-xs">Battles Lost</div>
-              <div className="font-bold text-lg">{monster.battlesLost.toString()}</div>
-            </div>
-          </div>
-
-          <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-            <div className="text-[#858DA1] text-xs">DNA</div>
-            <div className="font-mono text-sm break-all">0x{monster.dna.toString(16).padStart(16, "0")}</div>
-          </div>
-
-          {isOwner && (
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={handleTrain}
-                disabled={!canTrain}
-                aria-label={canTrain ? "Train this monster" : `Training locked, ${formatRemaining(cooldownRemaining)} remaining`}
-                className="px-5 py-2 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      </section>
+      <section className="lg:col-span-5 space-y-6">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
+            Creature / #{tokenId.toString()}
+          </p>
+          <h1 className="mt-3 text-[clamp(2.5rem,5vw,3.75rem)] font-bold leading-[0.95]">
+            {sp?.name ?? "Egg"}
+          </h1>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {sp ? (
+              <span
+                className="rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
+                style={{ backgroundColor: elementColor(sp.element), color: "#0A0C13" }}
               >
-                {isEgg ? "Hatch the egg (use Mint page)" : canTrain ? "Train" : `Train in ${formatRemaining(cooldownRemaining)}`}
-              </button>
-              {!isEgg && (
-                <a
-                  href="/arena"
-                  className="px-5 py-2 border border-[#232839] rounded-md hover:border-[#7AF0BA]"
-                >
-                  Go to Arena
-                </a>
-              )}
-            </div>
-          )}
-          {!isConnected && (
-            <button
-              type="button"
-              onClick={() => document.querySelector<HTMLElement>("[data-rk-account-button] button")?.click()}
-              className="inline-block border border-[#232839] hover:border-[#7AF0BA] rounded px-3 py-1 text-xs"
-            >
-              Connect wallet to interact
-            </button>
-          )}
+                {sp.element}
+              </span>
+            ) : null}
+            {sp ? (
+              <span
+                className="rounded-full border px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
+                style={{ borderColor: rarityColor(sp.rarity), color: rarityColor(sp.rarity) }}
+              >
+                {sp.rarity}
+              </span>
+            ) : null}
+          </div>
         </div>
-      </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Stat label="HP" value={monster.hp} />
+          <Stat label="ATK" value={monster.atk} />
+          <Stat label="DEF" value={monster.def} />
+          <Stat label="SPD" value={monster.spd} />
+        </div>
+        <div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-[#B5BAC8]">Level</span>
+            <span className="font-bold">{monster.level.toString()}</span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#1F2333]">
+            <div
+              className="h-full bg-[#7AF0BA] transition-all"
+              style={{ width: `${xpProgress}%` }}
+              role="progressbar"
+              aria-label="Monster experience progress"
+              aria-valuemin={0}
+              aria-valuemax={xpMax}
+              aria-valuenow={Number(monster.xp)}
+            />
+          </div>
+          <div className="mt-1 flex items-center justify-between font-mono text-xs text-[#858DA1]">
+            <span>XP</span>
+            <span>{monster.xp.toString()} / {xpMax.toString()}</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Wins</p>
+            <p className="mt-1 text-lg font-bold text-[#7AF0BA]">{monster.battlesWon.toString()}</p>
+          </div>
+          <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Losses</p>
+            <p className="mt-1 text-lg font-bold">{monster.battlesLost.toString()}</p>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">DNA</p>
+          <p className="mt-1 break-all font-mono text-xs">
+            0x{monster.dna.toString(16).padStart(16, "0")}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3 text-xs text-[#858DA1]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Owner</p>
+          <p className="mt-1 font-mono break-all">
+            {owner ? `${owner.slice(0, 6)}…${owner.slice(-4)}` : "—"}
+          </p>
+        </div>
+        {isOwner ? (
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={handleTrain}
+              disabled={!canTrain}
+              aria-label={canTrain ? "Train this monster" : `Training locked, ${formatRemaining(cooldownRemaining)} remaining`}
+              className="rounded-full bg-[#7AF0BA] px-5 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
+            >
+              {isEgg
+                ? "Hatch the egg"
+                : canTrain
+                ? "Train"
+                : `Ready in ${formatRemaining(cooldownRemaining)}`}
+            </button>
+            {!isEgg ? (
+              <Link
+                href="/arena"
+                className="rounded-full border border-[#1F2333] px-5 py-2 text-sm uppercase tracking-[0.18em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
+              >
+                Go to Arena
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
+        {!isConnected ? (
+          <p className="text-xs text-[#858DA1]">Connect your wallet to interact with this monster.</p>
+        ) : null}
+      </section>
     </div>
   );
 }
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-      <div className="text-[#858DA1] text-xs">{label}</div>
-      <div className="font-bold text-lg">{value.toString()}</div>
+    <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">{label}</p>
+      <p className="mt-1 text-lg font-bold">{value.toString()}</p>
     </div>
   );
 }

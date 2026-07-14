@@ -1,41 +1,54 @@
-# Verification — ISSUE-0021
+# Verification — ISSUE-0021 (Live E2E + Creative Redesign)
 
-> Single fresh-Anvil run on `9545/3201/3200` (and 9745/3401/3400 for empty/unavailable)
-> used to produce every artifact in this evidence pack.
-
-## Stack URLs
-- Anvil RPC:        http://127.0.0.1:9545
-- Indexer API:      http://127.0.0.1:3201
-- Frontend:         http://127.0.0.1:3200
+## Stack
+- Anvil RPC:        http://127.0.0.1:11445
+- Indexer API:      http://127.0.0.1:11401
+- Frontend:         http://127.0.0.1:11400
 
 ## On-chain happy path (fresh Anvil, deterministic Anvil accounts)
-- `0xf39F…2266` (Alice/Deployer) calls `mintGenesis()` → tokenId 2, hashes/owner captured.
-- `0xf39F…2266` calls `hatch(2)`, `train(2)`, `mintGenesis()` (tokenId 3), `hatch(3)`.
-- `0x7099…79C8` (Bob) calls `mintGenesis()` → tokenId 4, `hatch(4)`.
-- `0xf39F…2266` calls `challenge(2, 0x7099…, 4)` → challengeId 1.
-- `0x7099…79C8` calls `acceptAndResolve(1)`.
-
-Battle `getChallenge(1)` is persisted with `winner=0x7099…79C8`, `loser=0xf39F…2266`,
-`turns=0`, `draw=false`, `block_number=9`, real `block_timestamp` from RPC
-`getBlock` cache, and `tx_hash=0x447fb940…b06b39c` for the `ChallengeResolved` log.
+- `0xf39F…2266` (Alice/Deployer) mints → token 1, then hatches and
+  trains.
+- `0x7099…79C8` (Bob) mints → token 2, hatches.
+- Alice challenges Bob; Bob accepts and resolves. This run
+  produced `winner=Alice, loser=Bob, block_number=10,
+  block_timestamp=1_784_000_830` (real RPC time).
 
 ## Indexer replay
-- `syncIndexer` is called twice in the vitest suite on a fresh in-memory DB.
-  Both runs end with checkpoint=20 and exactly one `battles` row.
-- Replay on a populated disk DB after process restart leaves row count at 1
-  and the leaderboard unchanged — verified by `scripts/local-e2e.sh` step 4.
+- `syncIndexer` exercised twice in the vitest suite, both end on
+  checkpoint=20 with exactly one `battles` row. Disk-DB restart in
+  `scripts/local-e2e.sh` keeps the row count at 1.
 
-## UI states captured
-- Desktop 1440x900 and mobile 390x844 screenshots in `screenshots/`.
-- axe-core (`frontend/lib/axe.min.js`) injected via `eval --stdin`; ruleset
-  `wcag2a, wcag2aa, wcag21a, wcag21aa`. All eight runs reported
-  `{"seriousOrCritical":[],"moderate":[]}`.
-- Page identity, snapshot tree, and absence of `document.querySelector("[role=alert]")`
-  on the empty state confirm the four states are rendered with the
-  correct semantic markup.
+## Visual evidence (creative redesign)
+
+Desktop 1440x900:
+- `screenshots/desktop/populated.png` — Alice ranked 1 with EmberFox,
+  accent glow on rank chip, address `0xf39f…b92266`, monospace XP
+  `80`. Reflowed to the new asymmetric 5/7 split with banner art.
+- `screenshots/desktop/leaderboard-empty.png` — empty state with
+  "No ranked trainers yet" headline and "Enter the arena" CTA.
+- `screenshots/desktop/leaderboard-unavailable.png` — error state
+  with red alert, "Try again" button, calm body.
+- `screenshots/desktop/monster-2-emberfox.png` — EmberFox portrait
+  (actually FlameBird on this run, species from `block.prevrandao`),
+  60/40 split, breath animation, stat cards, training CTA.
+- `screenshots/desktop/profile-bob.png` and `profile-alice.png` —
+  big address header, monster-count badge, redesigned card grid.
+
+Mobile 390x844:
+- `screenshots/mobile/populated.png`, `leaderboard-empty.png`,
+  `leaderboard-unavailable.png`, `monster-2-emberfox.png` — all
+  fit, no horizontal overflow, header collapses to the bottom nav.
+
+Axe-core (WCAG 2.0/2.1 A/AA) reports under
+`docs/evidence/0021/test-results/axe-*.json`:
+- 8 states × 0 serious/critical, 0 moderate.
 
 ## Test gates passed
-- Contracts: 47 forge tests pass; contracts compile and `forge build` is green.
-- Backend: `npm test` (9) + `tsc --noEmit` (incl. tests) + `tsc -p tsconfig.json` build.
-- Frontend: `vitest run` (14 tests) + `tsc --noEmit` + `next lint` + `next build`
-  with axe-core as a `devDependency` for the bundled runner.
+- Contracts: 47 forge tests pass (`forge test -q`).
+- Backend: `npm test` (9) + `tsc --noEmit` (incl. tests) + build.
+- Frontend: `vitest run` (14) + `tsc --noEmit` + `next lint` +
+  `next build` (9 routes).
+- Local E2E: `scripts/local-e2e.sh` (fresh-Anvil two-wallet flow,
+  assertions on leaderboard, restart idempotency).
+- Browser evidence: `scripts/run-browser-evidence.sh` (10
+  screenshots, 8 axe reports).

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { motion, AnimatePresence } from "framer-motion";
 import { monsterNftAbi } from "@/lib/abis";
 import { MONSTER_NFT_ADDRESS } from "@/lib/contracts";
 
@@ -78,7 +79,6 @@ export default function MintPage() {
         functionName: "hatch",
         args: [id],
       });
-      setStage("hatched");
     } catch (e) {
       setError((e as Error).message ?? "Hatch failed");
       setStage("error");
@@ -86,136 +86,84 @@ export default function MintPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold">Your Genesis Egg</h1>
-        <p className="text-[#B5BAC8]">
-          One egg per wallet. The hatch reveals your Monster&apos;s species and DNA on-chain.
+    <div className="grid grid-cols-1 gap-10 pt-12 lg:grid-cols-12">
+      <section className="lg:col-span-5">
+        <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
+          Genesis / Mint
         </p>
-      </header>
-
-      <AnimatePresence mode="wait">
-        {stage === "none" && (
-          <motion.div
-            key="ready"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="bg-[#11141D] border border-[#232839] rounded-md p-12 text-center"
+        <h1 className="mt-3 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[0.95]">
+          Your egg awaits.
+        </h1>
+        <p className="mt-4 max-w-md text-base text-[#B5BAC8]">
+          One egg per wallet, forever. Hatch the egg to reveal a 12-species
+          creature with its own 64-bit DNA.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleMint}
+            disabled={!isConnected || Boolean(hasMinted) || isMintPending}
+            className="rounded-full bg-[#7AF0BA] px-7 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
           >
-            <div className="text-7xl mb-6">🥚</div>
-            {!isConnected && (
-              <p className="text-[#B5BAC8] mb-4">Connect a wallet on Monad testnet to mint.</p>
-            )}
-            {isConnected && hasMinted && (
-              <p className="text-[#7AF0BA] mb-4">
-                Your wallet already has an Egg. Scroll down to hatch.
-              </p>
-            )}
-            {isConnected && !hasMinted && (
-              <p className="text-[#B5BAC8] mb-4">Ready to mint. One per wallet.</p>
-            )}
+            {isMintPending ? "Minting..." : hasMinted ? "Already minted" : "Mint my egg"}
+          </button>
+          {hasMinted ? (
             <button
-              onClick={handleMint}
-              disabled={!isConnected || hasMinted === true || isMintPending}
-              className="px-6 py-3 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleHatch}
+              className="rounded-full border border-[#1F2333] px-5 py-3 text-sm uppercase tracking-[0.18em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
             >
-              {isMintPending ? "Minting..." : "Mint Egg"}
+              Hatch
             </button>
-            {error && <p className="mt-4 text-[#FF6F7D] text-sm">{error}</p>}
-          </motion.div>
-        )}
-
-        {(stage === "minting" || stage === "minted") && (
-          <motion.div
-            key="minting"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="bg-[#11141D] border border-[#232839] rounded-md p-12 text-center"
+          ) : null}
+        </div>
+        {!isConnected ? (
+          <p className="mt-6 text-sm text-[#858DA1]">Connect your wallet to mint.</p>
+        ) : null}
+        {error ? (
+          <p role="alert" className="mt-4 rounded-lg border border-[#FF6F7D] bg-[#22101a] px-4 py-3 text-sm text-[#FFB3C1]">
+            {error}
+          </p>
+        ) : null}
+        {stage === "hatched" || stage === "hatching" ? (
+          <Link
+            href={tokenId ? `/monster/${tokenId.toString()}` : "/train"}
+            className="mt-6 inline-block text-sm text-[#7AF0BA] underline-offset-4 hover:underline"
           >
-            <motion.div
-              animate={{ scale: [1, 1.08, 1] }}
-              transition={{ duration: 1.4, repeat: Infinity }}
-              className="text-7xl mb-6 inline-block"
-            >
-              🥚
-            </motion.div>
-            <p className="text-[#B5BAC8] mb-6">
-              {stage === "minting" ? "Minting on-chain..." : "Egg minted! Ready to hatch."}
-            </p>
-            {stage === "minted" && (
-              <button
-                onClick={handleHatch}
-                className="px-6 py-3 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors"
-              >
-                Hatch
-              </button>
-            )}
-          </motion.div>
-        )}
-
-        {stage === "hatching" && (
-          <motion.div
-            key="hatching"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="bg-[#11141D] border border-[#232839] rounded-md p-12 text-center"
+            View your monster →
+          </Link>
+        ) : null}
+      </section>
+      <section className="lg:col-span-7">
+        <div className="relative aspect-[5/6] w-full overflow-hidden rounded-3xl border border-[#1F2333] bg-[#0E1119]">
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 35%, rgba(122,240,186,0.35), transparent 60%)",
+            }}
+          />
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              transform: "perspective(900px) rotateY(-12deg) rotateX(6deg)",
+              animation: "mm-float 6s ease-in-out infinite",
+            }}
           >
-            <motion.div
-              animate={{ rotate: [0, -8, 8, -4, 4, 0], scale: [1, 1.15, 1.25, 1.4] }}
-              transition={{ duration: 2.4 }}
-              className="text-7xl mb-6 inline-block"
-            >
-              🥚
-            </motion.div>
-            <p className="text-[#B5BAC8]">Hatching on-chain...</p>
-          </motion.div>
-        )}
-
-        {stage === "hatched" && tokenId !== null && (
-          <motion.div
-            key="hatched"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#11141D] border border-[#7AF0BA] rounded-md p-12 text-center space-y-4"
-          >
-            <div className="text-7xl">✨</div>
-            <h2 className="text-2xl font-bold text-[#7AF0BA]">A MonadMon is born!</h2>
-            <p className="text-[#B5BAC8]">
-              Token ID: <span className="font-mono">{tokenId.toString()}</span>
-            </p>
-            <a
-              href={`/monster/${tokenId.toString()}`}
-              className="inline-block px-6 py-3 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors"
-            >
-              Meet your Monster
-            </a>
-          </motion.div>
-        )}
-
-        {stage === "error" && (
-          <motion.div
-            key="error"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-[#11141D] border border-[#FF6F7D] rounded-md p-12 text-center"
-          >
-            <div className="text-7xl mb-4">⚠️</div>
-            <p className="text-[#FF6F7D] mb-4">{error || "Something went wrong"}</p>
-            <button
-              onClick={() => {
-                setStage("none");
-                setError("");
-              }}
-              className="px-6 py-3 border border-[#232839] rounded-md hover:border-[#7AF0BA]"
-            >
-              Try again
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <Image
+              src="/assets/marketing/poster-hero.png"
+              alt="A MonadMon egg waiting to hatch"
+              width={1122}
+              height={1402}
+              className="h-full w-2/3 object-contain"
+              priority
+            />
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-6 font-mono text-[10px] uppercase tracking-[0.4em] text-[#858DA1]">
+            <span>Stage 0 / egg</span>
+            <span>DNA · unknown</span>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
