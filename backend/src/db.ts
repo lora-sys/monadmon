@@ -104,7 +104,7 @@ export function upsertMonster(
     spd: m.spd,
     battlesWon: m.battlesWon,
     battlesLost: m.battlesLost,
-    owner: m.owner ?? null,
+    owner: m.owner?.toLowerCase() ?? null,
     now: Date.now(),
   });
 }
@@ -140,12 +140,12 @@ export function upsertBattle(
        tx_hash          = excluded.tx_hash`,
   ).run({
     challengeId: Number(b.challengeId),
-    challenger: b.challenger,
+    challenger: b.challenger.toLowerCase(),
     challengerToken: Number(b.challengerToken),
-    opponent: b.opponent,
+    opponent: b.opponent.toLowerCase(),
     opponentToken: Number(b.opponentToken),
-    winner: b.winner ?? null,
-    loser: b.loser ?? null,
+    winner: b.winner?.toLowerCase() ?? null,
+    loser: b.loser?.toLowerCase() ?? null,
     turns: b.turns,
     draw: b.draw ? 1 : 0,
     blockNumber: Number(b.blockNumber),
@@ -177,23 +177,33 @@ export type LeaderboardRow = {
 };
 
 export function getLeaderboard(db: DB, limit: number): LeaderboardRow[] {
-  // Aggregate from battles table: wins = count where address is the winner.
   return db
     .prepare(
-      `SELECT
-         winner AS address,
-         COUNT(*) AS wins,
-         COALESCE(SUM(m.xp), 0) AS total_xp,
-         RANK() OVER (ORDER BY COUNT(*) DESC, COALESCE(SUM(m.xp), 0) DESC) AS rank
-       FROM battles b
-       LEFT JOIN monsters m
-         ON m.token_id = CASE
-           WHEN b.winner = b.challenger THEN b.challenger_token
-           WHEN b.winner = b.opponent    THEN b.opponent_token
-         END
-       WHERE b.winner IS NOT NULL AND b.draw = 0
-       GROUP BY b.winner
-       ORDER BY wins DESC, total_xp DESC
+      `WITH win_totals AS (
+         SELECT LOWER(winner) AS address, COUNT(*) AS wins
+         FROM battles
+         WHERE winner IS NOT NULL AND draw = 0
+         GROUP BY LOWER(winner)
+       ), xp_totals AS (
+         SELECT LOWER(owner) AS address, SUM(xp) AS total_xp
+         FROM monsters
+         WHERE owner IS NOT NULL
+         GROUP BY LOWER(owner)
+       ), scores AS (
+         SELECT
+           w.address,
+           w.wins,
+           COALESCE(x.total_xp, 0) AS total_xp
+         FROM win_totals w
+         LEFT JOIN xp_totals x ON x.address = w.address
+       )
+       SELECT
+         address,
+         wins,
+         total_xp,
+         RANK() OVER (ORDER BY wins DESC, total_xp DESC) AS rank
+       FROM scores
+       ORDER BY wins DESC, total_xp DESC, address ASC
        LIMIT ?`,
     )
     .all(limit) as LeaderboardRow[];
@@ -223,7 +233,7 @@ export function getMonster(db: DB, tokenId: number): MonsterRow | undefined {
 export function getMonstersByOwner(db: DB, owner: string): MonsterRow[] {
   return db
     .prepare(`SELECT * FROM monsters WHERE owner = ? ORDER BY token_id`)
-    .all(owner) as MonsterRow[];
+    .all(owner.toLowerCase()) as MonsterRow[];
 }
 
 export type BattleRow = {

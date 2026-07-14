@@ -66,6 +66,8 @@ jobs:
       - name: Install
         working-directory: frontend
         run: cd "$GITHUB_WORKSPACE/frontend" && rm -rf node_modules && npm ci --no-audit --no-fund
+      - name: Test
+        run: cd "${GITHUB_WORKSPACE}/frontend" && npm test
       - name: Type check
         run: cd "${GITHUB_WORKSPACE}/frontend" && npm run typecheck
       - name: Lint
@@ -74,7 +76,7 @@ jobs:
         run: cd "${GITHUB_WORKSPACE}/frontend" && npm run build
 
   backend:
-    name: Backend (type-check + build)
+    name: Backend (test + type-check + build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,6 +86,8 @@ jobs:
       - name: Install
         working-directory: backend
         run: cd "$GITHUB_WORKSPACE/backend" && rm -rf node_modules && npm ci --no-audit --no-fund
+      - name: Test
+        run: cd "${GITHUB_WORKSPACE}/backend" && npm test
       - name: Type check
         run: cd "${GITHUB_WORKSPACE}/backend" && npm run typecheck
       - name: Build

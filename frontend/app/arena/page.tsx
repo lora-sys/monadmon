@@ -112,7 +112,7 @@ export default function ArenaPage() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Recent battles</h2>
         {total === 0 && (
-          <div className="text-[#6E7589] text-sm">No battles yet. Create the first challenge above.</div>
+          <div className="text-[#858DA1] text-sm">No battles yet. Create the first challenge above.</div>
         )}
         <div className="space-y-3">
           {challenges?.map((c, i) => {
@@ -123,7 +123,7 @@ export default function ArenaPage() {
             return (
               <div key={i} className="bg-[#11141D] border border-[#232839] rounded-md p-4 space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                  <span className="text-[#6E7589]">Challenge #{recent[i].toString()}</span>
+                  <span className="text-[#858DA1]">Challenge #{recent[i].toString()}</span>
                   <span className="text-xs">
                     {isPending ? (
                       <span className="px-2 py-0.5 rounded bg-yellow-900/30 text-yellow-300">
@@ -138,7 +138,7 @@ export default function ArenaPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <div className="text-[#6E7589] text-xs">Challenger</div>
+                    <div className="text-[#858DA1] text-xs">Challenger</div>
                     <div className="font-mono">
                       {ch.challenger.slice(0, 6)}…{ch.challenger.slice(-4)}
                     </div>
@@ -150,7 +150,7 @@ export default function ArenaPage() {
                     </Link>
                   </div>
                   <div>
-                    <div className="text-[#6E7589] text-xs">Opponent</div>
+                    <div className="text-[#858DA1] text-xs">Opponent</div>
                     <div className="font-mono">
                       {ch.opponent.slice(0, 6)}…{ch.opponent.slice(-4)}
                     </div>
@@ -165,7 +165,7 @@ export default function ArenaPage() {
                 {isResolved && (
                   <div className="text-sm">
                     {ch.draw ? (
-                      <span className="text-[#6E7589]">Draw ({ch.turns.toString()} turns)</span>
+                      <span className="text-[#858DA1]">Draw ({ch.turns.toString()} turns)</span>
                     ) : (
                       <span className="text-[#7AF0BA]">
                         Winner: token #{ch.winnerTokenId.toString()} ({ch.turns.toString()} turns)
@@ -204,7 +204,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-xs text-[#6E7589] block mb-1">{label}</span>
+      <span className="text-xs text-[#858DA1] block mb-1">{label}</span>
       <input
         type="text"
         value={value}

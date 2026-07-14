@@ -2,77 +2,103 @@ import {
   createPublicClient,
   http,
   parseAbiItem,
-  type Log,
+  type Address,
+  type Hash,
   type PublicClient,
 } from "viem";
 import { anvil, monadTestnet } from "./chains.js";
 import {
-  openDB,
-  type DB,
+  getBattle,
   getLastIndexedBlock,
+  openDB,
   setLastIndexedBlock,
+  type DB,
   upsertBattle,
   upsertMonster,
 } from "./db.js";
-import { monsterNftAbi, battleAbi } from "./abis.js";
+import { battleAbi, monsterNftAbi } from "./abis.js";
 
 export type IndexerConfig = {
   rpcUrl: string;
   chainId: number;
-  monsterNftAddress: `0x${string}`;
-  battleAddress: `0x${string}`;
+  monsterNftAddress: Address;
+  battleAddress: Address;
   confirmations: number;
   pollIntervalMs: number;
   db: DB;
 };
+
+type RuntimeConfig = Omit<IndexerConfig, "chainId" | "db">;
 
 export type IndexerHandle = {
   stop: () => void;
   status: () => { lastBlock: number; chainId: number };
 };
 
-const isLocal = (url: string) => url.includes("127.0.0.1") || url.includes("localhost");
+type ChainLog<TArgs> = {
+  args: TArgs;
+  blockNumber?: bigint | null;
+  transactionHash?: Hash | null;
+};
+
+type MonsterState = {
+  speciesId: number;
+  level: number;
+  xp: number;
+  stage: number;
+  _reserved0: number;
+  _reserved1: number;
+  dna: bigint;
+  hp: number;
+  atk: number;
+  def: number;
+  spd: number;
+  lastTrainedAt: bigint;
+  battlesWon: number;
+  battlesLost: number;
+};
+
+const eggMintedEvent = parseAbiItem(
+  "event EggMinted(address indexed to, uint256 indexed tokenId)",
+);
+const monsterHatchedEvent = parseAbiItem(
+  "event MonsterHatched(uint256 indexed tokenId, uint16 speciesId, uint64 dna, uint8 rarity)",
+);
+const trainedEvent = parseAbiItem(
+  "event Trained(uint256 indexed tokenId, uint32 newXp, uint16 newAtk, uint64 trainedAt)",
+);
+const challengeCreatedEvent = battleAbi[0];
+const challengeResolvedEvent = battleAbi[2];
+
+const isLocal = (url: string) =>
+  url.includes("127.0.0.1") || url.includes("localhost");
 
 function pickChain(rpcUrl: string) {
   return isLocal(rpcUrl) ? anvil : monadTestnet;
 }
 
 export async function startIndexer(
-  cfg: Omit<IndexerConfig, "chainId" | "db"> & { dbPath: string },
+  cfg: RuntimeConfig & { dbPath: string },
 ): Promise<IndexerHandle> {
   const chain = pickChain(cfg.rpcUrl);
-  const client: PublicClient = createPublicClient({
+  const client = createPublicClient({
     chain,
     transport: http(cfg.rpcUrl),
   }) as PublicClient;
   const db = openDB(cfg.dbPath);
   const chainId = chain.id;
-
-  const stored = getLastIndexedBlock(db, chainId);
-  // First run: start from genesis (block -1 so the first tick processes from 0).
-  // Subsequent runs: resume from the last indexed block.
-  let lastBlock: number = stored != null ? stored : -1;
-
+  let lastBlock = getLastIndexedBlock(db, chainId) ?? -1;
   let running = true;
   let timer: ReturnType<typeof setTimeout> | null = null;
 
   async function tick() {
     if (!running) return;
     try {
-      const head = await client.getBlockNumber();
-      const target = Math.max(0, Number(head) - cfg.confirmations);
-      if (target > lastBlock) {
-        await processRange(client, db, chainId, cfg, lastBlock + 1, target);
-        lastBlock = target;
-        setLastIndexedBlock(db, chainId, lastBlock);
-        console2(`[indexer] advanced to block ${lastBlock}`);
-      }
-    } catch (err) {
-      console2(`[indexer] tick error: ${(err as Error).message}`);
+      lastBlock = await syncIndexer(client, db, chainId, cfg, lastBlock);
+    } catch (error) {
+      log(`[indexer] tick error: ${(error as Error).message}`);
     }
-    if (running) {
-      timer = setTimeout(tick, cfg.pollIntervalMs);
-    }
+    if (running) timer = setTimeout(tick, cfg.pollIntervalMs);
   }
 
   void tick();
@@ -87,298 +113,272 @@ export async function startIndexer(
   };
 }
 
+export async function syncIndexer(
+  client: PublicClient,
+  db: DB,
+  chainId: number,
+  cfg: RuntimeConfig,
+  lastBlock: number,
+): Promise<number> {
+  const head = Number(await client.getBlockNumber());
+  const target = head - cfg.confirmations;
+  if (target < 0 || target <= lastBlock) return lastBlock;
+
+  await processRange(client, db, cfg, lastBlock + 1, target);
+  setLastIndexedBlock(db, chainId, target);
+  log(`[indexer] advanced to block ${target}`);
+  return target;
+}
+
 async function processRange(
   client: PublicClient,
   db: DB,
-  _chainId: number,
-  cfg: Omit<IndexerConfig, "chainId" | "db">,
+  cfg: RuntimeConfig,
   fromBlock: number,
   toBlock: number,
 ): Promise<void> {
+  const range = { fromBlock: BigInt(fromBlock), toBlock: BigInt(toBlock) };
+  const timestampCache = new Map<bigint, Promise<bigint>>();
+  const getTimestamp = (blockNumber: bigint | null | undefined) => {
+    if (blockNumber == null) return Promise.resolve(0n);
+    const cached = timestampCache.get(blockNumber);
+    if (cached) return cached;
+    const timestamp = client
+      .getBlock({ blockNumber })
+      .then((block) => block.timestamp);
+    timestampCache.set(blockNumber, timestamp);
+    return timestamp;
+  };
+
   const mintEvents = await client.getLogs({
     address: cfg.monsterNftAddress,
-    event: parseAbiItem(
-      "event EggMinted(address indexed to, uint256 indexed tokenId)",
-    ),
-    fromBlock: BigInt(fromBlock),
-    toBlock: BigInt(toBlock),
+    event: eggMintedEvent,
+    ...range,
   });
-  for (const log of mintEvents) {
-    handleEggMinted(db, log);
+  for (const logEntry of mintEvents) {
+    handleEggMinted(db, logEntry as ChainLog<{ to?: Address; tokenId?: bigint }>);
   }
 
   const hatchEvents = await client.getLogs({
     address: cfg.monsterNftAddress,
-    event: parseAbiItem(
-      "event MonsterHatched(uint256 indexed tokenId, uint16 speciesId, uint64 dna, uint8 rarity)",
-    ),
-    fromBlock: BigInt(fromBlock),
-    toBlock: BigInt(toBlock),
+    event: monsterHatchedEvent,
+    ...range,
   });
-  for (const log of hatchEvents) {
-    handleMonsterHatched(client, db, cfg, log);
+  for (const logEntry of hatchEvents) {
+    const eventLog = logEntry as ChainLog<{ tokenId?: bigint }>;
+    if (eventLog.args.tokenId != null) {
+      await syncMonster(client, db, cfg, eventLog.args.tokenId);
+    }
   }
 
   const trainEvents = await client.getLogs({
     address: cfg.monsterNftAddress,
-    event: parseAbiItem(
-      "event Trained(uint256 indexed tokenId, uint32 newXp, uint16 newAtk, uint64 trainedAt)",
-    ),
-    fromBlock: BigInt(fromBlock),
-    toBlock: BigInt(toBlock),
+    event: trainedEvent,
+    ...range,
   });
-  for (const log of trainEvents) {
-    handleTrained(client, db, cfg, log);
+  for (const logEntry of trainEvents) {
+    const eventLog = logEntry as ChainLog<{ tokenId?: bigint }>;
+    if (eventLog.args.tokenId != null) {
+      await syncMonster(client, db, cfg, eventLog.args.tokenId);
+    }
   }
 
-  const battleEvents = await client.getLogs({
+  const createdEvents = await client.getLogs({
     address: cfg.battleAddress,
-    event: parseAbiItem(
-      "event ChallengeCreated(uint256 indexed challengeId, address indexed challenger, uint256 indexed challengerTokenId, address indexed opponent, uint256 indexed opponentTokenId)",
-    ),
-    fromBlock: BigInt(fromBlock),
-    toBlock: BigInt(toBlock),
+    event: challengeCreatedEvent,
+    ...range,
   });
-  for (const log of battleEvents) {
-    handleChallengeCreated(db, log);
+  for (const logEntry of createdEvents) {
+    const eventLog = logEntry as ChainLog<{
+      challengeId?: bigint;
+      challenger?: Address;
+      challengerTokenId?: bigint;
+      opponent?: Address;
+      opponentTokenId?: bigint;
+    }>;
+    await handleChallengeCreated(db, eventLog, await getTimestamp(eventLog.blockNumber));
   }
 
   const resolvedEvents = await client.getLogs({
     address: cfg.battleAddress,
-    event: parseAbiItem(
-      "event ChallengeResolved(uint256 indexed challengeId, uint256 winnerTokenId, uint256 loserTokenId, bool draw, uint8 turns)",
-    ),
-    fromBlock: BigInt(fromBlock),
-    toBlock: BigInt(toBlock),
+    event: challengeResolvedEvent,
+    ...range,
   });
-  for (const log of resolvedEvents) {
-    handleChallengeResolved(client, db, cfg, log);
+  for (const logEntry of resolvedEvents) {
+    const eventLog = logEntry as ChainLog<{
+      challengeId?: bigint;
+      winnerTokenId?: bigint;
+      loserTokenId?: bigint;
+      draw?: boolean;
+      turns?: number;
+    }>;
+    await handleChallengeResolved(
+      client,
+      db,
+      cfg,
+      eventLog,
+      await getTimestamp(eventLog.blockNumber),
+    );
   }
 }
 
-function handleEggMinted(db: DB, log: any): void {
-  const { to, tokenId } = log.args;
+function handleEggMinted(
+  db: DB,
+  eventLog: ChainLog<{ to?: Address; tokenId?: bigint }>,
+): void {
+  const { to, tokenId } = eventLog.args;
   if (!to || tokenId == null) return;
-  // Token exists with egg state — owner set, everything else 0.
-  // Use a no-op upsert that just sets the owner.
   db.prepare(
     `INSERT INTO monsters (token_id, species_id, level, xp, dna, hp, atk, def, spd, battles_won, battles_lost, owner, updated_at)
      VALUES (?, 0, 1, 0, '0x0', 0, 0, 0, 0, 0, 0, ?, ?)
      ON CONFLICT(token_id) DO UPDATE SET owner = excluded.owner, updated_at = excluded.updated_at`,
-  ).run(Number(tokenId), to, Date.now());
+  ).run(Number(tokenId), to.toLowerCase(), Date.now());
 }
 
-async function handleMonsterHatched(client: PublicClient, db: DB, cfg: Omit<IndexerConfig, "chainId" | "db">, log: any): Promise<void> {
-  const { tokenId } = log.args;
-  if (tokenId == null) return;
-  const m = (await client.readContract({
-    address: cfg.monsterNftAddress,
-    abi: monsterNftAbi,
-    functionName: "getMonster",
-    args: [tokenId],
-  })) as unknown as unknown as { speciesId: number; level: number; xp: number; stage: number; _reserved0: number; _reserved1: number; dna: bigint; hp: number; atk: number; def: number; spd: number; lastTrainedAt: bigint; battlesWon: number; battlesLost: number; };
-  let owner: string | undefined;
-  try {
-    owner = (await client.readContract({
-      address: cfg.monsterNftAddress,
-      abi: monsterNftAbi,
-      functionName: "ownerOf",
-      args: [tokenId],
-    })) as string;
-  } catch {
-    // Token may have been burned; skip owner.
+async function handleChallengeCreated(
+  db: DB,
+  eventLog: ChainLog<{
+    challengeId?: bigint;
+    challenger?: Address;
+    challengerTokenId?: bigint;
+    opponent?: Address;
+    opponentTokenId?: bigint;
+  }>,
+  blockTimestamp: bigint,
+): Promise<void> {
+  const { challengeId, challenger, challengerTokenId, opponent, opponentTokenId } =
+    eventLog.args;
+  if (
+    challengeId == null ||
+    !challenger ||
+    challengerTokenId == null ||
+    !opponent ||
+    opponentTokenId == null
+  ) {
+    throw new Error("ChallengeCreated log is missing decoded arguments");
   }
-  upsertMonster(db, {
-    tokenId,
-    speciesId: m.speciesId,
-    level: m.level,
-    xp: m.xp,
-    dna: "0x" + (m.dna ?? 0n).toString(16).padStart(16, "0"),
-    hp: m.hp,
-    atk: m.atk,
-    def: m.def,
-    spd: m.spd,
-    battlesWon: m.battlesWon,
-    battlesLost: m.battlesLost,
-    owner,
-  });
-}
 
-async function handleTrained(client: PublicClient, db: DB, cfg: Omit<IndexerConfig, "chainId" | "db">, log: any): Promise<void> {
-  const { tokenId } = log.args;
-  if (tokenId == null) return;
-  const m = (await client.readContract({
-    address: cfg.monsterNftAddress,
-    abi: monsterNftAbi,
-    functionName: "getMonster",
-    args: [tokenId],
-  })) as unknown as unknown as { speciesId: number; level: number; xp: number; stage: number; _reserved0: number; _reserved1: number; dna: bigint; hp: number; atk: number; def: number; spd: number; lastTrainedAt: bigint; battlesWon: number; battlesLost: number; };
-  let owner: string | undefined;
-  try {
-    owner = (await client.readContract({
-      address: cfg.monsterNftAddress,
-      abi: monsterNftAbi,
-      functionName: "ownerOf",
-      args: [tokenId],
-    })) as string;
-  } catch {}
-  upsertMonster(db, {
-    tokenId,
-    speciesId: m.speciesId,
-    level: m.level,
-    xp: m.xp,
-    dna: "0x" + (m.dna ?? 0n).toString(16).padStart(16, "0"),
-    hp: m.hp,
-    atk: m.atk,
-    def: m.def,
-    spd: m.spd,
-    battlesWon: m.battlesWon,
-    battlesLost: m.battlesLost,
-    owner,
-  });
-}
-
-function handleChallengeCreated(db: DB, log: any): void {
-  console2(`[idx] handleChallengeCreated log.args keys=${Object.keys(log.args).join(",")} raw=${JSON.stringify(log.args, (_k, v) => typeof v === "bigint" ? v.toString() : v)}`);
-  const args = (log.args ?? {}) as Record<string, unknown>;
-  const challengeId = args.challengeId as bigint | undefined;
-  const challenger = args.challenger as string | undefined;
-  const opponent = args.opponent as string | undefined;
-  // ChallengeCreated has 5 indexed args; only the first 3 land in topics.
-  // The other two (challengerTokenId, opponentTokenId) are in log.data.
-  const data = ((log.data ?? "0x") as string).slice(2);
-  const challengerTokenId = data ? BigInt("0x" + data.slice(0, 64)).toString() : "0";
-  const opponentTokenId = data ? BigInt("0x" + data.slice(64, 128)).toString() : "0";
-  if (challengeId == null || !challenger || !opponent) return;
-  db.prepare(
-    `INSERT INTO battles
-       (challenge_id, challenger, challenger_token, opponent, opponent_token, winner, loser, turns, draw, block_number, block_timestamp, tx_hash, ingested_at)
-     VALUES (?, ?, ?, ?, ?, NULL, NULL, 0, 0, ?, ?, ?, ?)
-     ON CONFLICT(challenge_id) DO NOTHING`,
-  ).run(
-    Number(challengeId),
+  upsertBattle(db, {
+    challengeId,
     challenger,
-    Number(challengerTokenId),
+    challengerToken: challengerTokenId,
     opponent,
-    Number(opponentTokenId),
-    Number(log.blockNumber ?? 0),
-    Number(log.blockTimestamp ?? 0),
-    log.transactionHash ?? "",
-    Date.now(),
-  );
+    opponentToken: opponentTokenId,
+    turns: 0,
+    draw: false,
+    blockNumber: eventLog.blockNumber ?? 0n,
+    blockTimestamp,
+    txHash: eventLog.transactionHash ?? "0x",
+  });
 }
 
-async function handleChallengeResolved(client: PublicClient, db: DB, cfg: Omit<IndexerConfig, "chainId" | "db">, log: any): Promise<void> {
-  const { challengeId } = log.args;
-  if (challengeId == null) return;
-  // Read the full Challenge struct to get winner/loser addresses.
-  let winner: string | undefined;
-  let loser: string | undefined;
-  let turns = 0;
-  let draw = false;
-  try {
-    const c = (await client.readContract({
-      address: cfg.battleAddress,
-      abi: battleAbi,
-      functionName: "getChallenge",
-      args: [challengeId],
-    })) as unknown as { challenger: string; challengerTokenId: bigint; opponent: string; opponentTokenId: bigint; state: number; winnerTokenId: bigint; loserTokenId: bigint; turns: number; draw: boolean };
-    const winnerTokenId = c.winnerTokenId;
-    const loserTokenId = c.loserTokenId;
-    if (winnerTokenId !== 0n) {
-      winner = c.challenger.toLowerCase() === (winnerTokenId as any).toString().toLowerCase() ? c.challenger : c.opponent;
-    }
-    if (loserTokenId !== 0n) {
-      loser = c.challenger.toLowerCase() === (loserTokenId as any).toString().toLowerCase() ? c.challenger : c.opponent;
-    }
-    turns = Number(c.turns ?? 0);
-    draw = Boolean(c.draw ?? false);
-  } catch {
-    // Fall through — we still record with whatever we have.
-  }
-  // Read the existing battle row to keep challenger/opponent tokens.
-  const existing = db
-    .prepare(`SELECT challenger, challenger_token, opponent, opponent_token FROM battles WHERE challenge_id = ?`)
-    .get(Number(challengeId)) as
-    | { challenger: string; challenger_token: number; opponent: string; opponent_token: number }
-    | undefined;
-  if (!existing) {
-    // If the indexer missed the ChallengeCreated (out-of-range), skip.
-    return;
-  }
-  db.prepare(
-    `UPDATE battles SET
-       winner = COALESCE(?, winner),
-       loser  = COALESCE(?, loser),
-       turns  = ?,
-       draw   = ?,
-       block_number = ?,
-       block_timestamp = ?,
-       tx_hash = ?
-     WHERE challenge_id = ?`,
-  ).run(
-    winner ?? null,
-    loser ?? null,
-    turns,
-    draw ? 1 : 0,
-    Number(log.blockNumber ?? 0),
-    Number(log.blockTimestamp ?? 0),
-    log.transactionHash ?? "",
-    Number(challengeId),
-  );
-  // Also sync both monsters' battle counts + XP.
-  if (winner && loser && !draw) {
-    syncAfterBattle(client, db, cfg, existing.challenger_token, existing.opponent_token, winner, loser);
-  }
-  void upsertBattle; // unused, kept for future
-}
-
-async function syncAfterBattle(
+async function handleChallengeResolved(
   client: PublicClient,
   db: DB,
-  cfg: Omit<IndexerConfig, "chainId" | "db">,
-  tokenA: number,
-  tokenB: number,
-  winner: string,
-  loser: string,
+  cfg: RuntimeConfig,
+  eventLog: ChainLog<{
+    challengeId?: bigint;
+    winnerTokenId?: bigint;
+    loserTokenId?: bigint;
+    draw?: boolean;
+    turns?: number;
+  }>,
+  blockTimestamp: bigint,
 ): Promise<void> {
-  // Re-read both monsters' state so XP/battles counters reflect post-battle.
-  for (const tokenId of [tokenA, tokenB]) {
-    const m = (await client.readContract({
-      address: cfg.monsterNftAddress,
-      abi: monsterNftAbi,
-      functionName: "getMonster",
-      args: [BigInt(tokenId)],
-    })) as unknown as unknown as { speciesId: number; level: number; xp: number; stage: number; _reserved0: number; _reserved1: number; dna: bigint; hp: number; atk: number; def: number; spd: number; lastTrainedAt: bigint; battlesWon: number; battlesLost: number; };
-    let owner: string | undefined;
-    try {
-      owner = (await client.readContract({
-        address: cfg.monsterNftAddress,
-        abi: monsterNftAbi,
-        functionName: "ownerOf",
-        args: [BigInt(tokenId)],
-      })) as string;
-    } catch {}
-    upsertMonster(db, {
-      tokenId: BigInt(tokenId),
-      speciesId: m.speciesId,
-      level: m.level,
-      xp: m.xp,
-      dna: "0x" + (m.dna ?? 0n).toString(16).padStart(16, "0"),
-      hp: m.hp,
-      atk: m.atk,
-      def: m.def,
-      spd: m.spd,
-      battlesWon: m.battlesWon,
-      battlesLost: m.battlesLost,
-      owner,
-    });
+  const { challengeId, winnerTokenId, loserTokenId, draw, turns } = eventLog.args;
+  if (
+    challengeId == null ||
+    winnerTokenId == null ||
+    loserTokenId == null ||
+    draw == null ||
+    turns == null
+  ) {
+    throw new Error("ChallengeResolved log is missing decoded arguments");
   }
-  // Touch winner/loser for clarity
-  void winner; void loser;
+
+  const existing = getBattle(db, Number(challengeId));
+  if (!existing) {
+    throw new Error(`Challenge ${challengeId} resolved before it was indexed`);
+  }
+
+  const winner = draw ? undefined : participantForToken(existing, winnerTokenId);
+  const loser = draw ? undefined : participantForToken(existing, loserTokenId);
+  if (!draw && (!winner || !loser)) {
+    throw new Error(`Challenge ${challengeId} resolved with an unknown token`);
+  }
+
+  upsertBattle(db, {
+    challengeId,
+    challenger: existing.challenger,
+    challengerToken: BigInt(existing.challenger_token),
+    opponent: existing.opponent,
+    opponentToken: BigInt(existing.opponent_token),
+    winner,
+    loser,
+    turns,
+    draw,
+    blockNumber: eventLog.blockNumber ?? 0n,
+    blockTimestamp,
+    txHash: eventLog.transactionHash ?? "0x",
+  });
+
+  if (!draw) {
+    await Promise.all([
+      syncMonster(client, db, cfg, BigInt(existing.challenger_token)),
+      syncMonster(client, db, cfg, BigInt(existing.opponent_token)),
+    ]);
+  }
 }
 
-function console2(msg: string) {
-  // eslint-disable-next-line no-console
-  console.log(msg);
+function participantForToken(
+  battle: ReturnType<typeof getBattle> & {},
+  tokenId: bigint,
+): string | undefined {
+  if (BigInt(battle.challenger_token) === tokenId) return battle.challenger;
+  if (BigInt(battle.opponent_token) === tokenId) return battle.opponent;
+  return undefined;
+}
+
+async function syncMonster(
+  client: PublicClient,
+  db: DB,
+  cfg: RuntimeConfig,
+  tokenId: bigint,
+): Promise<void> {
+  const monster = (await client.readContract({
+    address: cfg.monsterNftAddress,
+    abi: monsterNftAbi,
+    functionName: "getMonster",
+    args: [tokenId],
+  })) as MonsterState;
+  let owner: string | undefined;
+  try {
+    owner = (await client.readContract({
+      address: cfg.monsterNftAddress,
+      abi: monsterNftAbi,
+      functionName: "ownerOf",
+      args: [tokenId],
+    })) as string;
+  } catch {
+    // The token may have been burned between the event and this read.
+  }
+
+  upsertMonster(db, {
+    tokenId,
+    speciesId: monster.speciesId,
+    level: monster.level,
+    xp: monster.xp,
+    dna: `0x${monster.dna.toString(16).padStart(16, "0")}`,
+    hp: monster.hp,
+    atk: monster.atk,
+    def: monster.def,
+    spd: monster.spd,
+    battlesWon: monster.battlesWon,
+    battlesLost: monster.battlesLost,
+    owner,
+  });
+}
+
+function log(message: string): void {
+  console.log(message);
 }

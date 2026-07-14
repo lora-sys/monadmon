@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Header />
           <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
-          <footer className="border-t border-[#232839] mt-16 py-6 text-center text-sm text-[#6E7589]">
+          <footer className="border-t border-[#232839] mt-16 py-6 text-center text-sm text-[#858DA1]">
             MonadMon · Testnet build · 2026
           </footer>
         </Providers>

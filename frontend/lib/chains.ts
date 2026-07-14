@@ -1,5 +1,16 @@
 import { defineChain } from "viem";
 
+const configuredRpcUrl = process.env.NEXT_PUBLIC_MONAD_RPC_URL;
+const isLocal =
+  configuredRpcUrl?.includes("127.0.0.1") ||
+  configuredRpcUrl?.includes("localhost");
+const testnetRpcUrl =
+  !isLocal && configuredRpcUrl
+    ? configuredRpcUrl
+    : "https://testnet-rpc.monad.xyz";
+const localRpcUrl =
+  isLocal && configuredRpcUrl ? configuredRpcUrl : "http://127.0.0.1:8545";
+
 // Monad testnet — chain ID 10143 (0x279f), verified 2026-07-11.
 // RPC: https://testnet-rpc.monad.xyz (also https://monad-testnet.drpc.org).
 export const monadTestnet = defineChain({
@@ -7,7 +18,7 @@ export const monadTestnet = defineChain({
   name: "Monad Testnet",
   nativeCurrency: { name: "Monad", symbol: "MON", decimals: 18 },
   rpcUrls: {
-    default: { http: ["https://testnet-rpc.monad.xyz"] },
+    default: { http: [testnetRpcUrl] },
   },
   blockExplorers: {
     default: { name: "Monad Explorer", url: "https://testnet.monadscan.com" },
@@ -21,7 +32,7 @@ export const anvil = defineChain({
   name: "Anvil",
   nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
   rpcUrls: {
-    default: { http: ["http://127.0.0.1:8545"] },
+    default: { http: [localRpcUrl] },
   },
   blockExplorers: {
     default: { name: "(local)", url: "http://127.0.0.1:8545" },
@@ -29,7 +40,4 @@ export const anvil = defineChain({
   testnet: true,
 });
 
-// Auto-select chain based on NEXT_PUBLIC_MONAD_RPC_URL.
-const isLocal = process.env.NEXT_PUBLIC_MONAD_RPC_URL?.includes("127.0.0.1") ||
-  process.env.NEXT_PUBLIC_MONAD_RPC_URL?.includes("localhost");
 export const activeChain = isLocal ? anvil : monadTestnet;

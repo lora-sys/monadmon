@@ -97,9 +97,9 @@ export const battleAbi = [
     inputs: [
       { name: "challengeId", type: "uint256", indexed: true },
       { name: "challenger", type: "address", indexed: true },
-      { name: "challengerTokenId", type: "uint256", indexed: true },
+      { name: "challengerTokenId", type: "uint256", indexed: false },
       { name: "opponent", type: "address", indexed: true },
-      { name: "opponentTokenId", type: "uint256", indexed: true },
+      { name: "opponentTokenId", type: "uint256", indexed: false },
     ],
     anonymous: false,
   },

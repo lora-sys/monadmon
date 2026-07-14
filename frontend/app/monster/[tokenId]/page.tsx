@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { monsterNftAbi } from "@/lib/abis";
 import { MONSTER_NFT_ADDRESS } from "@/lib/contracts";
@@ -69,11 +70,14 @@ export default function MonsterDetailPage() {
     <div className="max-w-4xl mx-auto">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="aspect-square bg-[#11141D] border border-[#232839] rounded-lg flex items-center justify-center overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={isEgg ? "/assets/monsters/placeholder.png" : monsterArt(Number(monster.speciesId), Number(monster.stage), monster.dna)}
+          <Image
+            src={isEgg ? "/assets/monsters/placeholder.svg" : monsterArt(Number(monster.speciesId), Number(monster.stage), monster.dna)}
             alt={sp?.name ?? "Egg"}
-            className="w-full h-full object-cover"
+            width={768}
+            height={768}
+            sizes="(min-width: 768px) 432px, calc(100vw - 2rem)"
+            className="h-full w-full object-cover"
+            priority
           />
         </div>
 
@@ -126,26 +130,34 @@ export default function MonsterDetailPage() {
                 style={{ width: `${Math.min(100, (Number(monster.xp) / (Number(monster.level) * 100)) * 100)}%` }}
               />
             </div>
-            <div className="flex items-center justify-between text-xs text-[#6E7589]">
+            <div className="flex items-center justify-between text-xs text-[#858DA1]">
               <span>XP</span>
               <span>{monster.xp.toString()} / {(Number(monster.level) * 100).toString()}</span>
             </div>
           </div>
+          <div
+            role="progressbar"
+            aria-label="Monster experience progress"
+            aria-valuemin={0}
+            aria-valuemax={Number(monster.level) * 100}
+            aria-valuenow={Number(monster.xp)}
+            className="sr-only"
+          />
 
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-              <div className="text-[#6E7589] text-xs">Battles Won</div>
+              <div className="text-[#858DA1] text-xs">Battles Won</div>
               <div className="font-bold text-lg">{monster.battlesWon.toString()}</div>
             </div>
             <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-              <div className="text-[#6E7589] text-xs">Battles Lost</div>
+              <div className="text-[#858DA1] text-xs">Battles Lost</div>
               <div className="font-bold text-lg">{monster.battlesLost.toString()}</div>
             </div>
           </div>
 
           <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-            <div className="text-[#6E7589] text-xs">DNA</div>
-            <div className="font-mono text-sm break-all">0x{Number(monster.dna).toString(16).padStart(16, "0")}</div>
+            <div className="text-[#858DA1] text-xs">DNA</div>
+            <div className="font-mono text-sm break-all">0x{monster.dna.toString(16).padStart(16, "0")}</div>
           </div>
 
           {isOwner && (
@@ -153,6 +165,7 @@ export default function MonsterDetailPage() {
               <button
                 onClick={handleTrain}
                 disabled={!canTrain}
+                aria-label={canTrain ? "Train this monster" : `Training locked, ${formatRemaining(cooldownRemaining)} remaining`}
                 className="px-5 py-2 bg-[#7AF0BA] text-[#0B0D14] font-semibold rounded-md hover:bg-[#5cd891] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isEgg ? "Hatch the egg (use Mint page)" : canTrain ? "Train" : `Train in ${formatRemaining(cooldownRemaining)}`}
@@ -168,7 +181,13 @@ export default function MonsterDetailPage() {
             </div>
           )}
           {!isConnected && (
-            <p className="text-[#B5BAC8] text-sm">Connect your wallet to interact with this Monster.</p>
+            <button
+              type="button"
+              onClick={() => document.querySelector<HTMLElement>("[data-rk-account-button] button")?.click()}
+              className="inline-block border border-[#232839] hover:border-[#7AF0BA] rounded px-3 py-1 text-xs"
+            >
+              Connect wallet to interact
+            </button>
           )}
         </div>
       </div>
@@ -179,7 +198,7 @@ export default function MonsterDetailPage() {
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="bg-[#11141D] border border-[#232839] rounded p-3">
-      <div className="text-[#6E7589] text-xs">{label}</div>
+      <div className="text-[#858DA1] text-xs">{label}</div>
       <div className="font-bold text-lg">{value.toString()}</div>
     </div>
   );

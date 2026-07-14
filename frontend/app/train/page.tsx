@@ -101,7 +101,7 @@ export default function TrainPage() {
               </div>
               <div>
                 <div className="font-bold">{sp?.name ?? "Egg"}</div>
-                <div className="text-xs text-[#6E7589]">
+                <div className="text-xs text-[#858DA1]">
                   Lv {mon.level.toString()} · ATK {mon.atk.toString()} · XP {mon.xp.toString()}
                 </div>
               </div>

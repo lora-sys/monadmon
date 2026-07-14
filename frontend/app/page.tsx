@@ -108,7 +108,7 @@ export default function HomePage() {
         >
           Mint your Genesis Egg
         </Link>
-        <p className="text-xs text-[#6E7589]">
+        <p className="text-xs text-[#858DA1]">
           One per wallet · On Monad testnet · Forever yours
         </p>
       </section>

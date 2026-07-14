@@ -35,13 +35,13 @@ export const speciesBySlug: Record<string, Species> = Object.fromEntries(
 export function elementColor(element: string): string {
   switch (element) {
     case "Fire":
-      return "#FF7A59";
+      return "#E25C3A";
     case "Water":
-      return "#5BB7FF";
+      return "#2E8DD0";
     case "Nature":
       return "#5CD891";
     case "Electric":
-      return "#E2D24A";
+      return "#C8A91F";
     default:
       return "#888";
   }
@@ -60,24 +60,13 @@ export function rarityColor(rarity: string): string {
   }
 }
 
-/**
- * Pick the art path for a Monster's DNA. Falls back to the stage hero if the
- * DNA variant isn't available. Accepts bigint or number for dna.
- */
-export function monsterArt(speciesId: number, stage: number, dna: bigint | number): string {
+export function monsterArt(speciesId: number, stage: number, _dna: bigint | number): string {
   const sp = speciesById[speciesId];
   if (!sp) return "/assets/monsters/placeholder.svg";
-  const stageData = sp.stages.find((s) => s.stage === stage) ?? sp.stages[1];
-  const dnaNum = typeof dna === "bigint" ? Number(dna) : dna;
-  if (stage === 0 || dnaNum === 0) return stageData.art;
-  // DNA top 16 bits select the 4x4 variant grid.
-  const trait_a = Number((BigInt(dnaNum) >> 56n) & 0xffn) % 4;
-  const trait_b = Number((BigInt(dnaNum) >> 48n) & 0xffn) % 4;
-  const variantPath = stageData.art.replace(
-    /stage(\d+)\.png$/,
-    `stage$1_dna_${trait_a}_${trait_b}.png`,
-  );
-  return variantPath;
+  const resolvedStage = sp.stages.some((candidate) => candidate.stage === stage)
+    ? stage
+    : 1;
+  return `/assets/monsters/${speciesId}/stage${resolvedStage}.png`;
 }
 
 export function elementOf(speciesId: number): string {
