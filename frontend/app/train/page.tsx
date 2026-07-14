@@ -7,6 +7,8 @@ import { useAccount, useReadContracts, useWriteContract } from "wagmi";
 import { monsterNftAbi } from "@/lib/abis";
 import { MONSTER_NFT_ADDRESS } from "@/lib/contracts";
 import { speciesById, monsterArt } from "@/lib/species";
+import { SectionLabel } from "@/components/SectionLabel";
+import { typeScale } from "@/lib/design";
 
 const COOLDOWN = 6 * 60 * 60;
 
@@ -59,41 +61,50 @@ export default function TrainPage() {
   }
 
   return (
-    <div className="space-y-10 pt-12">
-      <header>
-        <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
-          Training / Growth
-        </p>
-        <h1 className="mt-3 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[0.95]">
-          Train your creatures.
-        </h1>
-        <p className="mt-4 max-w-xl text-base text-[#B5BAC8]">
-          Each session grants <span className="text-[#7AF0BA]">+30 XP</span> and{" "}
+    <div className="mx-auto w-full max-w-[1400px] px-6 pt-24 sm:px-10 lg:pt-32">
+      <header className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-7">
+          <SectionLabel index="Issue 03">Training / Growth</SectionLabel>
+          <h1
+            className="mt-6 font-bold leading-[0.85] tracking-[-0.04em]"
+            style={{ fontSize: typeScale.displayMd }}
+          >
+            Train your creatures.
+          </h1>
+        </div>
+        <p className="col-span-12 lg:col-span-5 self-end text-sm text-[#B5BAC8] sm:text-base">
+          Each session grants{" "}
+          <span className="text-[#7AF0BA]">+30 XP</span> and{" "}
           <span className="text-[#7AF0BA]">+2 ATK</span>. Cooldown is six
           hours per monster.
         </p>
       </header>
       {!isConnected ? (
-        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-10 text-center text-sm text-[#858DA1]">
+        <div className="mt-20 border border-[#1F2333] bg-[#04060B] p-16 text-center text-sm text-[#858DA1]">
           Connect your wallet to see your monsters.
         </div>
       ) : null}
       {isConnected && numMonsters === 0 ? (
-        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-10 text-center">
+        <div className="mt-20 border border-[#1F2333] bg-[#04060B] p-16 text-center">
           <p className="text-[#B5BAC8]">You don&apos;t have any monsters yet.</p>
-          <Link href="/mint" className="mt-3 inline-block text-sm text-[#7AF0BA] underline-offset-4 hover:underline">
+          <Link
+            href="/mint"
+            className="mt-4 inline-block text-sm text-[#7AF0BA] underline-offset-4 hover:underline"
+          >
             Mint your Genesis Egg →
           </Link>
         </div>
       ) : null}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-16 grid grid-cols-12 gap-3 sm:grid-cols-6 lg:grid-cols-8">
         {monsters?.map((m, i) => {
           if (!m.result) return null;
           const mon = m.result;
           const sp = mon.speciesId === 0 ? null : speciesById[Number(mon.speciesId)];
           const isEgg = mon.speciesId === 0;
           const cooldownRemaining =
-            Number(mon.lastTrainedAt) > 0 ? Math.max(0, Number(mon.lastTrainedAt) + COOLDOWN - now) : 0;
+            Number(mon.lastTrainedAt) > 0
+              ? Math.max(0, Number(mon.lastTrainedAt) + COOLDOWN - now)
+              : 0;
           const canTrain = !isEgg && cooldownRemaining === 0;
           const progress = isEgg
             ? 0
@@ -101,16 +112,16 @@ export default function TrainPage() {
           return (
             <article
               key={i}
-              className="group flex flex-col gap-4 rounded-3xl border border-[#1F2333] bg-[#0E1119] p-5 transition-colors hover:border-[#7AF0BA]/60"
+              className="group col-span-12 flex flex-col gap-4 border border-[#1F2333] bg-[#04060B] p-5 transition-colors hover:border-[#7AF0BA] sm:col-span-3 lg:col-span-2"
             >
-              <div className="relative aspect-square overflow-hidden rounded-2xl bg-[#141826]">
+              <div className="relative aspect-square overflow-hidden border border-[#1F2333] bg-[#10131C]">
                 <Image
                   src={isEgg ? "/assets/monsters/placeholder.svg" : monsterArt(Number(mon.speciesId), Number(mon.stage), mon.dna)}
                   alt={sp?.name ?? "Egg"}
                   width={384}
                   height={384}
                   unoptimized
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
               <div>
@@ -120,17 +131,13 @@ export default function TrainPage() {
                 </p>
               </div>
               <div>
-                <div className="flex items-center justify-between text-xs text-[#858DA1]">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">
                   <span>Cooldown</span>
                   <span className="font-mono">
-                    {isEgg
-                      ? "—"
-                      : cooldownRemaining === 0
-                      ? "Ready"
-                      : formatRemaining(cooldownRemaining)}
+                    {isEgg ? "—" : cooldownRemaining === 0 ? "Ready" : formatRemaining(cooldownRemaining)}
                   </span>
                 </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1F2333]">
+                <div className="mt-1 h-1 w-full overflow-hidden bg-[#1F2333]">
                   <div
                     className="h-full bg-[#7AF0BA]"
                     style={{ width: `${progress}%` }}
@@ -145,7 +152,7 @@ export default function TrainPage() {
               {isEgg ? (
                 <Link
                   href="/mint"
-                  className="block rounded-full border border-[#1F2333] px-4 py-2 text-center text-xs uppercase tracking-[0.18em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
+                  className="block border border-[#1F2333] px-3 py-2 text-center text-[10px] uppercase tracking-[0.3em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
                 >
                   Hatch the egg
                 </Link>
@@ -154,7 +161,7 @@ export default function TrainPage() {
                   onClick={() => handleTrain(BigInt(i + 1))}
                   disabled={!canTrain || busyToken === (i + 1).toString()}
                   aria-label={canTrain ? "Train this monster" : `Training locked, ${formatRemaining(cooldownRemaining)} remaining`}
-                  className="rounded-full bg-[#7AF0BA] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
+                  className="w-full border border-[#7AF0BA] bg-[#7AF0BA]/5 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#7AF0BA] transition-colors hover:bg-[#7AF0BA] hover:text-[#04060B] disabled:opacity-40"
                 >
                   {busyToken === (i + 1).toString()
                     ? "Training..."

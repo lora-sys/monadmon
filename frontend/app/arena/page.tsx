@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useAccount, useReadContract, useReadContracts, useWriteContract } from "wagmi";
 import { battleAbi } from "@/lib/abis";
 import { BATTLE_ADDRESS } from "@/lib/contracts";
+import { SectionLabel } from "@/components/SectionLabel";
+import { typeScale } from "@/lib/design";
 
 export default function ArenaPage() {
   const { address, isConnected } = useAccount();
@@ -70,62 +72,49 @@ export default function ArenaPage() {
   }
 
   return (
-    <div className="space-y-12 pt-12">
-      <header>
-        <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
-          Arena / PvP
-        </p>
-        <h1 className="mt-3 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[0.95]">
-          The arena.
-        </h1>
-        <p className="mt-4 max-w-xl text-base text-[#B5BAC8]">
-          Challenge another trainer. Winner gets +50 XP and a leaderboard
-          point.
+    <div className="mx-auto w-full max-w-[1400px] px-6 pt-24 sm:px-10 lg:pt-32">
+      <header className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-7">
+          <SectionLabel index="Issue 04">Arena / PvP</SectionLabel>
+          <h1
+            className="mt-6 font-bold leading-[0.85] tracking-[-0.04em]"
+            style={{ fontSize: typeScale.displayMd }}
+          >
+            The arena.
+          </h1>
+        </div>
+        <p className="col-span-12 lg:col-span-5 self-end text-sm text-[#B5BAC8] sm:text-base">
+          Challenge another trainer. Winner gets +50 XP and a
+          leaderboard point.
         </p>
       </header>
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+      <section className="mt-16 grid grid-cols-12 gap-3">
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleChallenge();
-          }}
-          className="lg:col-span-5 rounded-3xl border border-[#1F2333] bg-[#0E1119] p-6"
+          onSubmit={(e) => { e.preventDefault(); handleChallenge(); }}
+          className="col-span-12 lg:col-span-5 border border-[#1F2333] bg-[#04060B] p-8"
         >
-          <h2 className="text-lg font-semibold">Create a challenge</h2>
-          <p className="mt-1 text-sm text-[#858DA1]">Two monsters. One battle.</p>
-          <div className="mt-6 grid grid-cols-1 gap-3">
-            <Field
-              label="Your tokenId"
-              value={myTokenInput}
-              onChange={setMyTokenInput}
-              placeholder="1"
-            />
-            <Field
-              label="Opponent address"
-              value={opponentInput}
-              onChange={setOpponentInput}
-              placeholder="0x..."
-            />
-            <Field
-              label="Opponent tokenId"
-              value={oppTokenInput}
-              onChange={setOppTokenInput}
-              placeholder="2"
-            />
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#5B6378]">01 / Create</p>
+          <h2 className="mt-3 text-2xl font-semibold">Send a challenge</h2>
+          <p className="mt-2 text-sm text-[#858DA1]">Two monsters. One battle.</p>
+          <div className="mt-8 space-y-3">
+            <Field label="Your tokenId" value={myTokenInput} onChange={setMyTokenInput} placeholder="1" />
+            <Field label="Opponent address" value={opponentInput} onChange={setOpponentInput} placeholder="0x..." />
+            <Field label="Opponent tokenId" value={oppTokenInput} onChange={setOppTokenInput} placeholder="2" />
           </div>
           <button
             type="submit"
             disabled={!isConnected || busy || !myTokenInput || !opponentInput || !oppTokenInput}
-            className="mt-6 rounded-full bg-[#7AF0BA] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
+            className="mt-8 inline-flex items-center gap-3 border border-[#7AF0BA] bg-[#7AF0BA]/5 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#7AF0BA] transition-colors hover:bg-[#7AF0BA] hover:text-[#04060B] disabled:opacity-40"
           >
             {busy ? "Sending..." : "Send challenge"}
           </button>
         </form>
-        <section className="lg:col-span-7 space-y-3">
-          <h2 className="text-lg font-semibold">Recent battles</h2>
+        <section className="col-span-12 lg:col-span-7 space-y-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#5B6378]">02 / Recent</p>
+          <h2 className="text-2xl font-semibold">Recent battles</h2>
           {total === 0 ? (
-            <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-6 text-sm text-[#858DA1]">
-              No battles yet. Create the first challenge.
+            <div className="border border-[#1F2333] bg-[#04060B] p-8 text-sm text-[#858DA1]">
+              No battles yet. Create the first challenge above.
             </div>
           ) : null}
           {challenges?.map((c, i) => {
@@ -134,27 +123,24 @@ export default function ArenaPage() {
             const isPending = ch.state === 1;
             const isResolved = ch.state === 2;
             return (
-              <article
-                key={i}
-                className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-5"
-              >
-                <header className="flex items-center justify-between text-xs">
-                  <span className="font-mono text-[#858DA1]">Challenge #{recent[i].toString()}</span>
+              <article key={i} className="border border-[#1F2333] bg-[#04060B] p-6">
+                <header className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em]">
+                  <span className="text-[#5B6378]">Challenge #{recent[i].toString()}</span>
                   <span
                     className={
                       isPending
-                        ? "rounded-full bg-[#3a2a14] px-2 py-0.5 text-[#FFD56B]"
+                        ? "border border-yellow-700/50 bg-yellow-900/30 px-2 py-0.5 text-[#FFD56B]"
                         : isResolved
-                        ? "rounded-full bg-[#13372a] px-2 py-0.5 text-[#7AF0BA]"
+                        ? "border border-[#7AF0BA]/40 bg-[#7AF0BA]/15 px-2 py-0.5 text-[#7AF0BA]"
                         : "text-[#858DA1]"
                     }
                   >
                     {isPending ? "Pending" : isResolved ? "Resolved" : "Unknown"}
                   </span>
                 </header>
-                <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
+                <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Challenger</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">Challenger</p>
                     <p className="font-mono">{ch.challenger.slice(0, 6)}…{ch.challenger.slice(-4)}</p>
                     <Link
                       href={`/monster/${ch.challengerTokenId.toString()}`}
@@ -164,7 +150,7 @@ export default function ArenaPage() {
                     </Link>
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Opponent</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">Opponent</p>
                     <p className="font-mono">{ch.opponent.slice(0, 6)}…{ch.opponent.slice(-4)}</p>
                     <Link
                       href={`/monster/${ch.opponentTokenId.toString()}`}
@@ -175,7 +161,7 @@ export default function ArenaPage() {
                   </div>
                 </div>
                 {isResolved ? (
-                  <p className="mt-3 text-sm">
+                  <p className="mt-4 text-sm">
                     {ch.draw ? (
                       <span className="text-[#858DA1]">Draw ({ch.turns.toString()} turns)</span>
                     ) : (
@@ -189,7 +175,7 @@ export default function ArenaPage() {
                   <button
                     onClick={() => handleAccept(recent[i])}
                     disabled={busy}
-                    className="mt-3 rounded-full border border-[#C9A7FF] px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-[#C9A7FF] transition-colors hover:bg-[#C9A7FF] hover:text-[#0A0C13] disabled:opacity-50"
+                    className="mt-4 border border-[#C9A7FF] px-4 py-1.5 text-[10px] uppercase tracking-[0.3em] text-[#C9A7FF] transition-colors hover:bg-[#C9A7FF] hover:text-[#04060B] disabled:opacity-40"
                   >
                     Accept &amp; Resolve
                   </button>
@@ -216,13 +202,13 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">{label}</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">{label}</span>
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="mt-1 w-full rounded-xl border border-[#1F2333] bg-[#141826] px-3 py-2 font-mono text-sm focus:border-[#7AF0BA] focus:outline-none"
+        className="mt-1 w-full border border-[#1F2333] bg-[#10131C] px-3 py-2 font-mono text-sm focus:border-[#7AF0BA] focus:outline-none"
       />
     </label>
   );

@@ -7,6 +7,9 @@ import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { monsterNftAbi } from "@/lib/abis";
 import { MONSTER_NFT_ADDRESS } from "@/lib/contracts";
 import { speciesById, monsterArt, elementColor, rarityColor } from "@/lib/species";
+import { ParticleField } from "@/components/ParticleField";
+import { SectionLabel } from "@/components/SectionLabel";
+import { accentMesh, typeScale } from "@/lib/design";
 
 const TRAIN_COOLDOWN_SECONDS = 6 * 60 * 60;
 
@@ -50,7 +53,7 @@ export default function MonsterDetailPage() {
 
   if (!monster) {
     return (
-      <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-10 text-center text-sm text-[#858DA1]">
+      <div className="mx-auto mt-32 max-w-md border border-[#1F2333] bg-[#04060B] p-10 text-center text-sm text-[#858DA1]">
         Loading monster #{tokenId.toString()}…
       </div>
     );
@@ -60,30 +63,25 @@ export default function MonsterDetailPage() {
   const isEgg = monster.speciesId === 0;
   const cooldownRemaining =
     Number(monster.lastTrainedAt) > 0
-      ? Math.max(
-          0,
-          Number(monster.lastTrainedAt) + TRAIN_COOLDOWN_SECONDS - Math.floor(Date.now() / 1000),
-        )
+      ? Math.max(0, Number(monster.lastTrainedAt) + TRAIN_COOLDOWN_SECONDS - Math.floor(Date.now() / 1000))
       : 0;
   const canTrain = !isEgg && cooldownRemaining === 0;
   const xpMax = Math.max(1, Number(monster.level) * 100);
   const xpProgress = Math.min(100, (Number(monster.xp) / xpMax) * 100);
 
   return (
-    <div className="grid grid-cols-1 gap-10 pt-12 lg:grid-cols-12">
-      <section className="lg:col-span-7">
+    <div className="relative grid min-h-[100svh] grid-cols-12 gap-6 overflow-hidden px-6 pt-24 sm:px-10 lg:pt-32">
+      <ParticleField height="100%" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{ background: accentMesh.detail }}
+      />
+      <section className="col-span-12 lg:col-span-7 flex flex-col justify-center">
         <div
-          className="relative aspect-square overflow-hidden rounded-3xl border border-[#1F2333] bg-[#0E1119]"
+          className="relative aspect-square w-full max-w-[640px] border border-[#1F2333] bg-[#04060B]"
           style={{ animation: "mm-breath 2.6s ease-in-out infinite" }}
         >
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 30%, rgba(122,240,186,0.30), transparent 65%)",
-            }}
-          />
           <Image
             src={isEgg ? "/assets/monsters/placeholder.svg" : monsterArt(Number(monster.speciesId), Number(monster.stage), monster.dna)}
             alt={sp?.name ?? "Egg"}
@@ -96,32 +94,31 @@ export default function MonsterDetailPage() {
           />
         </div>
       </section>
-      <section className="lg:col-span-5 space-y-6">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.4em] text-[#7AF0BA]">
-            Creature / #{tokenId.toString()}
-          </p>
-          <h1 className="mt-3 text-[clamp(2.5rem,5vw,3.75rem)] font-bold leading-[0.95]">
-            {sp?.name ?? "Egg"}
-          </h1>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {sp ? (
-              <span
-                className="rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
-                style={{ backgroundColor: elementColor(sp.element), color: "#0A0C13" }}
-              >
-                {sp.element}
-              </span>
-            ) : null}
-            {sp ? (
-              <span
-                className="rounded-full border px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
-                style={{ borderColor: rarityColor(sp.rarity), color: rarityColor(sp.rarity) }}
-              >
-                {sp.rarity}
-              </span>
-            ) : null}
-          </div>
+      <section className="col-span-12 lg:col-span-5 flex flex-col justify-center space-y-6">
+        <SectionLabel index={`Creature / #${tokenId.toString()}`}>Dossier</SectionLabel>
+        <h1
+          className="font-bold leading-[0.85] tracking-[-0.04em]"
+          style={{ fontSize: typeScale.displayMd }}
+        >
+          {sp?.name ?? "Egg"}
+        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          {sp ? (
+            <span
+              className="px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]"
+              style={{ backgroundColor: elementColor(sp.element), color: "#04060B" }}
+            >
+              {sp.element}
+            </span>
+          ) : null}
+          {sp ? (
+            <span
+              className="border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]"
+              style={{ borderColor: rarityColor(sp.rarity), color: rarityColor(sp.rarity) }}
+            >
+              {sp.rarity}
+            </span>
+          ) : null}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Stat label="HP" value={monster.hp} />
@@ -134,9 +131,9 @@ export default function MonsterDetailPage() {
             <span className="text-[#B5BAC8]">Level</span>
             <span className="font-bold">{monster.level.toString()}</span>
           </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#1F2333]">
+          <div className="mt-2 h-1 w-full overflow-hidden bg-[#1F2333]">
             <div
-              className="h-full bg-[#7AF0BA] transition-all"
+              className="h-full bg-[#7AF0BA]"
               style={{ width: `${xpProgress}%` }}
               role="progressbar"
               aria-label="Monster experience progress"
@@ -145,30 +142,30 @@ export default function MonsterDetailPage() {
               aria-valuenow={Number(monster.xp)}
             />
           </div>
-          <div className="mt-1 flex items-center justify-between font-mono text-xs text-[#858DA1]">
+          <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-[#858DA1]">
             <span>XP</span>
             <span>{monster.xp.toString()} / {xpMax.toString()}</span>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Wins</p>
-            <p className="mt-1 text-lg font-bold text-[#7AF0BA]">{monster.battlesWon.toString()}</p>
+          <div className="border border-[#1F2333] bg-[#04060B] p-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">Wins</p>
+            <p className="mt-1 text-2xl font-bold text-[#7AF0BA]">{monster.battlesWon.toString()}</p>
           </div>
-          <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Losses</p>
-            <p className="mt-1 text-lg font-bold">{monster.battlesLost.toString()}</p>
+          <div className="border border-[#1F2333] bg-[#04060B] p-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">Losses</p>
+            <p className="mt-1 text-2xl font-bold">{monster.battlesLost.toString()}</p>
           </div>
         </div>
-        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">DNA</p>
+        <div className="border border-[#1F2333] bg-[#04060B] p-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">DNA</p>
           <p className="mt-1 break-all font-mono text-xs">
             0x{monster.dna.toString(16).padStart(16, "0")}
           </p>
         </div>
-        <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3 text-xs text-[#858DA1]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">Owner</p>
-          <p className="mt-1 font-mono break-all">
+        <div className="border border-[#1F2333] bg-[#04060B] p-3 text-xs text-[#858DA1]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">Owner</p>
+          <p className="mt-1 break-all font-mono">
             {owner ? `${owner.slice(0, 6)}…${owner.slice(-4)}` : "—"}
           </p>
         </div>
@@ -178,7 +175,7 @@ export default function MonsterDetailPage() {
               onClick={handleTrain}
               disabled={!canTrain}
               aria-label={canTrain ? "Train this monster" : `Training locked, ${formatRemaining(cooldownRemaining)} remaining`}
-              className="rounded-full bg-[#7AF0BA] px-5 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#0A0C13] transition-transform hover:scale-[1.04] disabled:opacity-50"
+              className="border border-[#7AF0BA] bg-[#7AF0BA]/5 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#7AF0BA] transition-colors hover:bg-[#7AF0BA] hover:text-[#04060B] disabled:opacity-40"
             >
               {isEgg
                 ? "Hatch the egg"
@@ -189,7 +186,7 @@ export default function MonsterDetailPage() {
             {!isEgg ? (
               <Link
                 href="/arena"
-                className="rounded-full border border-[#1F2333] px-5 py-2 text-sm uppercase tracking-[0.18em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
+                className="border border-[#1F2333] px-6 py-3 text-[10px] uppercase tracking-[0.3em] text-[#B5BAC8] transition-colors hover:border-[#7AF0BA] hover:text-[#7AF0BA]"
               >
                 Go to Arena
               </Link>
@@ -206,9 +203,9 @@ export default function MonsterDetailPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-[#1F2333] bg-[#0E1119] p-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#858DA1]">{label}</p>
-      <p className="mt-1 text-lg font-bold">{value.toString()}</p>
+    <div className="border border-[#1F2333] bg-[#04060B] p-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5B6378]">{label}</p>
+      <p className="mt-1 text-2xl font-bold">{value.toString()}</p>
     </div>
   );
 }
