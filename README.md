@@ -3,330 +3,279 @@
 > **The first living creatures on Monad.**
 > Catch them. Train them. Battle them. Yours forever.
 
-MonadMon is a fully on-chain creature-raising + PvP battle game on the Monad testnet.
-Each player mints a Genesis Egg, hatches it into one of 12 species (50/30/20 Common/Rare/Legendary),
-trains + evolves it, and battles other players — all with verifiable state on Monad.
+MonadMon is an on-chain creature-raising and PvP battle game deployed on
+**Monad** (EVM-compatible L1). Each player connects a wallet, mints a
+**Genesis Egg**, hatches it into a **Monster** bound to an ERC-721 with
+a deterministic 64-bit DNA, and enters a deterministic 1-vs-1 arena where
+wins climb a leaderboard powered by an off-chain indexer.
 
-<table>
-<tr>
-  <td rowspan="4" width="60%"><img src="frontend/public/assets/monsters/1/stage3.png" alt="EmberFox stage 3 — InfernoFox, the ascended form" width="100%"/></td>
-  <td align="center" width="20%"><img src="frontend/public/assets/monsters/1/stage3.png" alt="InfernoFox" width="100%"/><br/><sub>🔥 Fire</sub></td>
-</tr>
-<tr><td align="center"><img src="frontend/public/assets/monsters/6/stage3.png" alt="Water" width="100%"/><br/><sub>💧 Water</sub></td></tr>
-<tr><td align="center"><img src="frontend/public/assets/monsters/9/stage3.png" alt="Nature" width="100%"/><br/><sub>🌱 Nature</sub></td></tr>
-<tr><td align="center"><img src="frontend/public/assets/monsters/12/stage3.png" alt="Electric" width="100%"/><br/><sub>⚡ Electric</sub></td></tr>
-</table>
+This repository contains the full MVP:
 
----
+- **Smart contracts** — Foundry (Solidity 0.8.24, OpenZeppelin v5).
+- **Off-chain indexer** — TypeScript + viem + better-sqlite3 + Hono.
+- **Frontend** — Next.js 14 + wagmi v2 + RainbowKit v2 + framer-motion v12.
+- **End-to-end driver** — fresh Anvil two-wallet flow + axe-core WCAG 2.0/2.1
+  A/AA visual evidence.
 
-## The 12 species
+| Layer | Stack |
+| --- | --- |
+| Contracts | Solidity 0.8.24, OpenZeppelin v5, Foundry (forge / cast / anvil) |
+| Indexer | TypeScript, viem, better-sqlite3, Hono |
+| Frontend | Next.js 14, React 18, TypeScript strict, Tailwind v3, framer-motion v12 |
+| Web3 | wagmi v2, viem v2, RainbowKit v2 |
+| Test / E2E | forge test, vitest, agent-browser, axe-core |
+| CI | GitHub Actions (contracts / backend / frontend) |
 
-Four elements, three species each. Rarity comes from a deterministic on-chain RNG
-(`block.prevrandao + tokenId + msg.sender`); the same inputs always hatch the same monster.
+## Gameplay
 
-| Element | Common (50%) | Common (50%) | Common (50%) | Rare (30%) | Rare (30%) | Legendary (20%) |
-|---|---|---|---|---|---|---|
-| 🔥 **Fire** | EmberFox | MagmaTurtle | — | FlameBird | — | — |
-| 💧 **Water** | AquaPup | BubbleFish | — | — | — | OceanDragon |
-| 🌱 **Nature** | LeafRabbit | MossGolem | — | — | ForestDeer | — |
-| ⚡ **Electric** | VoltCat | SparkMouse | — | ThunderWolf | — | — |
+A complete session is **five steps and five minutes**:
 
-*Each species hatches at stage 1 and evolves to stage 2 at Lv 20, then stage 3 at Lv 40. Stage 0 is the egg.*
+1. **Connect** your wallet. RainbowKit handles MetaMask, Rabby, or any
+   WalletConnect peer.
+2. **Mint** a Genesis Egg. One egg per wallet, forever.
+3. **Hatch** the egg on-chain. A species (1–12) and a 64-bit DNA are
+   derived from `block.prevrandao` + the egg's tokenId, so each hatch is
+   deterministic and irreproducible.
+4. **Train** the creature. Every train costs a 6-hour cooldown and grants
+   +30 XP and +2 ATK. Level up when XP ≥ level × 100.
+5. **Duel** another trainer. Alice challenges Bob; Bob accepts; the battle
+   resolves deterministically on-chain. Wins climb the league.
 
----
+### Species (12) × Stages (4)
 
-## Species codex
-
-Each species has a distinct habitat, personality, and three signature moves used in
-the on-chain battle formula. The codex is the source of truth for the in-game
-collection view.
-
-### Fire
-
-#### EmberFox · Common · stage 1 = juvenile · stage 2 = FlameFox · stage 3 = InfernoFox
-![EmberFox stage 1](frontend/public/assets/monsters/1/stage1.png)
-
-- **Habitat:** Volcanic cliffs and lava rivers of the Burning Peaks.
-- **Personality:** Hot-headed but fiercely loyal. Curiosity always outpaces caution.
-- **Moves:** *Flame Tail* (physical, +ATK) · *Lava Burst* (special, sets 2-turn burn) · *Ember Charge* (status, +1 SPD).
-
-#### MagmaTurtle · Common · stage 2 = LavaTurtle · stage 3 = VolcanoTurtle
-![MagmaTurtle stage 1](frontend/public/assets/monsters/2/stage1.png)
-
-- **Habitat:** Sulfur springs deep in the Emberwilds.
-- **Personality:** Patient and slow-burning. Carries the weight of the earth on its back.
-- **Moves:** *Magma Shell* (status, halves damage taken for 2 turns) · *Eruption* (special, ignores 30% of target's DEF) · *Stoneskin* (status, +1 DEF).
-
-#### FlameBird · Rare · stage 2 = Phoenix · stage 3 = SunPhoenix
-![FlameBird stage 1](frontend/public/assets/monsters/3/stage1.png)
-
-- **Habitat:** High-altitude thermal updrafts above the Sacred Volcano.
-- **Personality:** Playful and quick, but fiercely territorial about the sky.
-- **Moves:** *Sky Dive* (physical, +1 crit) · *Flame Wing* (special, hits all enemies in a line) · *Searing Peck* (physical, +20% if target is burned).
-
-### Water
-
-#### AquaPup · Common · stage 2 = TidalHound · stage 3 = OceanWolf
-![AquaPup stage 1](frontend/public/assets/monsters/4/stage1.png)
-
-- **Habitat:** Shallow tide pools and warm reefs along the Singing Coast.
-- **Personality:** Loyal, eager, always looking up at you with bright eyes.
-- **Moves:** *Aqua Howl* (status, +1 ATK to all allies) · *Tidal Wave* (special, hits all enemies) · *Water Pulse* (physical, +10% damage if target is wet).
-
-#### BubbleFish · Common · stage 2 = CoralGiant · stage 3 = ReefTitan
-![BubbleFish stage 1](frontend/public/assets/monsters/5/stage1.png)
-
-- **Habitat:** Coral reefs and warm tropical currents.
-- **Personality:** Cheerful and round, pops out a wall of bubbles when startled.
-- **Moves:** *Bubble Shield* (status, +2 DEF) · *Aqua Jet* (physical, ignores 25% of target's DEF) · *Pressure Cannon* (special, +30% damage at low HP).
-
-#### OceanDragon · Legendary · stage 2 = TidalWyrm · stage 3 = Leviathan
-![OceanDragon stage 1](frontend/public/assets/monsters/6/stage1.png)
-
-- **Habitat:** The deep abyss where light cannot reach.
-- **Personality:** Slow to anger, devastating once roused. Ancient beyond measure.
-- **Moves:** *Tidal Crush* (physical, +1.5× vs targets below 50% HP) · *Abyssal Roar* (status, lowers target ATK by 1 for 2 turns) · *Leviathan Wave* (special, hits all enemies, ignores type effectiveness).
-
-### Nature
-
-#### LeafRabbit · Common · stage 2 = ForestRabbit · stage 3 = EmeraldHare
-![LeafRabbit stage 1](frontend/public/assets/monsters/7/stage1.png)
-
-- **Habitat:** Sun-dappled forest meadows and clearings.
-- **Personality:** Skittish but social, hops between friends and always shares what it finds.
-- **Moves:** *Leaf Heal* (status, restores 25% HP) · *Hop Kick* (physical, +1 crit) · *Clover Toss* (special, 10% chance to inflict sleep).
-
-#### MossGolem · Common · stage 2 = StoneGolem · stage 3 = AncientGrove
-![MossGolem stage 1](frontend/public/assets/monsters/8/stage1.png)
-
-- **Habitat:** Old-growth forests covered in centuries of moss.
-- **Personality:** Slow to befriend, but unshakeable once trusted. Carries an entire grove on its back.
-- **Moves:** *Moss Wall* (status, +2 DEF for 2 turns) · *Vine Bind* (special, target SPD -1 for 2 turns) · *Ancient Grasp* (physical, ignores 50% of target's DEF).
-
-#### ForestDeer · Rare · stage 2 = PrimalStag · stage 3 = WorldTree
-![ForestDeer stage 1](frontend/public/assets/monsters/9/stage1.png)
-
-- **Habitat:** Deep forest clearings where sunlight breaks through.
-- **Personality:** Swift and graceful, with antlers that channel nature's will.
-- **Moves:** *Forest Step* (status, +1 SPD, +1 EVA) · *Antler Charge* (physical, +25% damage if target attacked first) · *World Tree Blessing* (status, heals 5% HP per turn for 3 turns).
-
-### Electric
-
-#### VoltCat · Common · stage 2 = StormCat · stage 3 = ThunderTiger
-![VoltCat stage 1](frontend/public/assets/monsters/10/stage1.png)
-
-- **Habitat:** Power stations and high-voltage transmission corridors.
-- **Personality:** Sleek, aloof, and always on its own path. Sparks at the slightest touch.
-- **Moves:** *Volt Bolt* (physical, 15% chance to paralyze for 1 turn) · *Static Claw* (physical, deals bonus damage to wet targets) · *Thunder Dash* (status, +2 SPD for 2 turns).
-
-#### SparkMouse · Common · stage 2 = BoltRat · stage 3 = LightningSage
-![SparkMouse stage 1](frontend/public/assets/monsters/11/stage1.png)
-
-- **Habitat:** Junction boxes and old server rooms.
-- **Personality:** Small, twitchy, surprisingly fast. Lives on crumbs and electricity.
-- **Moves:** *Spark Bite* (physical, hits twice with 60% power each) · *Wire Trap* (status, target SPD -1 for 2 turns) · *Voltage Tongue* (special, 20% chance to inflict shock).
-
-#### ThunderWolf · Rare · stage 2 = StormfangAlpha · stage 3 = ThunderDeity
-![ThunderWolf stage 1](frontend/public/assets/monsters/12/stage1.png)
-
-- **Habitat:** Stormy mountaintops under perpetual lightning.
-- **Personality:** Lone wolf, fiercely independent. Commands the very sky.
-- **Moves:** *Thunder Howl* (status, +1 ATK to all allies) · *Lightning Fang* (physical, crit rate +15%) · *Stormfang Strike* (special, +1.5× vs targets in rain/lightning).
-
----
-
-## Full evolution: all 12 species × 4 stages
-
-Every Monster goes through the same life cycle. The four stages show
-the visual progression from unhatched egg → juvenile → evolved form
-→ ascended form. Each species has its own unique look at every stage.
-
-### Fire
-
-<table>
-<tr>
-  <th align="center">EmberFox</th>
-  <td align="center"><img src="frontend/public/assets/monsters/1/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/1/stage1.png" width="100"/><br/>EmberFox</td>
-  <td align="center"><img src="frontend/public/assets/monsters/1/stage2.png" width="100"/><br/>FlameFox</td>
-  <td align="center"><img src="frontend/public/assets/monsters/1/stage3.png" width="100"/><br/>InfernoFox</td>
-</tr>
-<tr>
-  <th align="center">MagmaTurtle</th>
-  <td align="center"><img src="frontend/public/assets/monsters/2/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/2/stage1.png" width="100"/><br/>MagmaTurtle</td>
-  <td align="center"><img src="frontend/public/assets/monsters/2/stage2.png" width="100"/><br/>LavaTurtle</td>
-  <td align="center"><img src="frontend/public/assets/monsters/2/stage3.png" width="100"/><br/>VolcanoTurtle</td>
-</tr>
-<tr>
-  <th align="center">FlameBird</th>
-  <td align="center"><img src="frontend/public/assets/monsters/3/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/3/stage1.png" width="100"/><br/>FlameBird</td>
-  <td align="center"><img src="frontend/public/assets/monsters/3/stage2.png" width="100"/><br/>Phoenix</td>
-  <td align="center"><img src="frontend/public/assets/monsters/3/stage3.png" width="100"/><br/>SunPhoenix</td>
-</tr>
-</table>
-
-### Water
-
-<table>
-<tr>
-  <th align="center">AquaPup</th>
-  <td align="center"><img src="frontend/public/assets/monsters/4/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/4/stage1.png" width="100"/><br/>AquaPup</td>
-  <td align="center"><img src="frontend/public/assets/monsters/4/stage2.png" width="100"/><br/>TidalHound</td>
-  <td align="center"><img src="frontend/public/assets/monsters/4/stage3.png" width="100"/><br/>OceanWolf</td>
-</tr>
-<tr>
-  <th align="center">BubbleFish</th>
-  <td align="center"><img src="frontend/public/assets/monsters/5/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/5/stage1.png" width="100"/><br/>BubbleFish</td>
-  <td align="center"><img src="frontend/public/assets/monsters/5/stage2.png" width="100"/><br/>CoralGiant</td>
-  <td align="center"><img src="frontend/public/assets/monsters/5/stage3.png" width="100"/><br/>ReefTitan</td>
-</tr>
-<tr>
-  <th align="center">OceanDragon</th>
-  <td align="center"><img src="frontend/public/assets/monsters/6/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/6/stage1.png" width="100"/><br/>OceanDragon</td>
-  <td align="center"><img src="frontend/public/assets/monsters/6/stage2.png" width="100"/><br/>TidalWyrm</td>
-  <td align="center"><img src="frontend/public/assets/monsters/6/stage3.png" width="100"/><br/>Leviathan</td>
-</tr>
-</table>
-
-### Nature
-
-<table>
-<tr>
-  <th align="center">LeafRabbit</th>
-  <td align="center"><img src="frontend/public/assets/monsters/7/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/7/stage1.png" width="100"/><br/>LeafRabbit</td>
-  <td align="center"><img src="frontend/public/assets/monsters/7/stage2.png" width="100"/><br/>ForestRabbit</td>
-  <td align="center"><img src="frontend/public/assets/monsters/7/stage3.png" width="100"/><br/>EmeraldHare</td>
-</tr>
-<tr>
-  <th align="center">MossGolem</th>
-  <td align="center"><img src="frontend/public/assets/monsters/8/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/8/stage1.png" width="100"/><br/>MossGolem</td>
-  <td align="center"><img src="frontend/public/assets/monsters/8/stage2.png" width="100"/><br/>StoneGolem</td>
-  <td align="center"><img src="frontend/public/assets/monsters/8/stage3.png" width="100"/><br/>AncientGrove</td>
-</tr>
-<tr>
-  <th align="center">ForestDeer</th>
-  <td align="center"><img src="frontend/public/assets/monsters/9/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/9/stage1.png" width="100"/><br/>ForestDeer</td>
-  <td align="center"><img src="frontend/public/assets/monsters/9/stage2.png" width="100"/><br/>PrimalStag</td>
-  <td align="center"><img src="frontend/public/assets/monsters/9/stage3.png" width="100"/><br/>WorldTree</td>
-</tr>
-</table>
-
-### Electric
-
-<table>
-<tr>
-  <th align="center">VoltCat</th>
-  <td align="center"><img src="frontend/public/assets/monsters/10/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/10/stage1.png" width="100"/><br/>VoltCat</td>
-  <td align="center"><img src="frontend/public/assets/monsters/10/stage2.png" width="100"/><br/>StormCat</td>
-  <td align="center"><img src="frontend/public/assets/monsters/10/stage3.png" width="100"/><br/>ThunderTiger</td>
-</tr>
-<tr>
-  <th align="center">SparkMouse</th>
-  <td align="center"><img src="frontend/public/assets/monsters/11/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/11/stage1.png" width="100"/><br/>SparkMouse</td>
-  <td align="center"><img src="frontend/public/assets/monsters/11/stage2.png" width="100"/><br/>BoltRat</td>
-  <td align="center"><img src="frontend/public/assets/monsters/11/stage3.png" width="100"/><br/>LightningSage</td>
-</tr>
-<tr>
-  <th align="center">ThunderWolf</th>
-  <td align="center"><img src="frontend/public/assets/monsters/12/stage0.png" width="100"/><br/>egg</td>
-  <td align="center"><img src="frontend/public/assets/monsters/12/stage1.png" width="100"/><br/>ThunderWolf</td>
-  <td align="center"><img src="frontend/public/assets/monsters/12/stage2.png" width="100"/><br/>StormfangAlpha</td>
-  <td align="center"><img src="frontend/public/assets/monsters/12/stage3.png" width="100"/><br/>ThunderDeity</td>
-</tr>
-</table>
-
----
-
-## How a round plays
-
-```
-Connect wallet  →  Mint Egg (1 per wallet)
-       ↓
-   Hatch Egg  →  Species + DNA + stats (on-chain, from prevrandao)
-       ↓
-   Train      →  +30 XP, +2 ATK per session (6h cooldown)
-       ↓
-  Level up    →  Stage 2 at Lv 20, Stage 3 at Lv 40
-       ↓
-   Battle     →  Pick opponent, accept, deterministic formula resolves on-chain
-       ↓
-  Leaderboard →  Ranked by wins (live indexer)
-```
-
-### Battle formula (deterministic)
-For each turn: pick the faster monster, compute damage = `ATK * effectiveness * random(0.85-1.15) * crit(1.5x with 12% chance)`, then `damage *= (1 - DEF/(DEF+200))`. First to 0 HP loses. 50-turn cap → draw.
+The hatch reveals a species and a 1-3 stage. Each species has a unique
+element (Fire / Water / Nature / Electric), role (attacker / tank /
+support / crit striker), and rarity (Common / Rare / Legendary).
+The 12 species × 4 stages × 4 DNA variants × 2 origin = 384 visual
+configurations, all generated deterministically from on-chain entropy.
 
 ### Type effectiveness
 
-| Attacker \ Defender | 🔥 Fire | 💧 Water | 🌱 Nature | ⚡ Electric |
-|---|---|---|---|---|
-| 🔥 **Fire** | 1.0× | 0.5× | 1.5× | 1.0× |
-| 💧 **Water** | 1.5× | 1.0× | 0.5× | 0.5× |
-| 🌱 **Nature** | 0.5× | 1.5× | 1.0× | 0.5× |
-| ⚡ **Electric** | 1.0× | 1.5× | 0.5× | 1.0× |
+Fire > Nature > Water > Electric > Fire. The same chart that drives the
+battle damage calculation also drives the `RarityRoll.roll` seed
+distribution. See `docs/design/battle-formula.md` for the full math.
 
----
+### Battle outcome
 
-## Tech stack
+`Battle.acceptAndResolve` reads both monsters, derives a per-block
+seed, simulates up to 50 attack turns with type effectiveness and a
+12% critical-hit rate, and emits `ChallengeResolved` with the
+winnerTokenId, loserTokenId, draw flag, and turn count. The off-chain
+indexer materializes every battle into the leaderboard within one
+block confirmation.
 
-| Layer | Choice |
-|---|---|
-| Smart contracts | Solidity 0.8.24 · OpenZeppelin v5.1.0 · Foundry |
-| RNG | `block.prevrandao` (swappable behind `IRandomSource`) |
-| Frontend | Next.js 14 (App Router) · wagmi v2 · viem v2 · RainbowKit v2 · Tailwind v3 · framer-motion v11 |
-| Indexer | TypeScript · Hono · better-sqlite3 · viem |
-| Art | Pollinations.ai `flux` model, 12 species × 4 stages = 48 hero images |
-| CI | GitHub Actions: forge fmt + test, npm typecheck + lint + build |
-| Tests | 48 contract tests passing · 90% line coverage · 10k fuzz on rarity |
+## Routes
 
----
+| Path | Description |
+| --- | --- |
+| `/` | Five-section landing with hero, species marquee, awakening steps 01–05, full-bleed arena, league preview |
+| `/mint` | One-egg-per-wallet mint + cinematic 3D-style egg hatch |
+| `/train` | 6-hour cooldown training with XP progress bars |
+| `/arena` | Create challenge form + recent battles history |
+| `/leaderboard` | Live ranked league with loading / empty / unavailable states |
+| `/profile/[address]` | Public showroom driven by the indexer owner endpoint |
+| `/monster/[tokenId]` | Bigint-precision DNA, stats, breath animation |
 
-## Try it
+## Local development
+
+### Prerequisites
+
+- Node 20+ (`.nvmrc` recommended)
+- Foundry (`curl -L https://foundry.paradigm.xyz | bash`)
+- Anvil is part of Foundry
+- Python 3 (used by the local E2E harness only)
+
+### Install
 
 ```bash
-# 1. Get testnet MON from https://faucet.monad.xyz
-# 2. Clone + install
-git clone https://github.com/lora-sys/monadmon
+git clone https://github.com/lora-sys/monadmon.git
 cd monadmon
-cd contracts && forge install && forge test
-cd ../frontend && npm install
-cd ../backend && npm install
-
-# 3. Deploy to testnet
-cd ../contracts
-DEPLOYER_PRIVATE_KEY=0x... forge script script/Deploy.s.sol \
-  --rpc-url https://testnet-rpc.monad.xyz --broadcast
-
-# 4. Paste the 5 addresses into frontend/.env.local, then:
-cd ../frontend && npm run dev          # http://localhost:3000
-cd ../backend && PORT=3002 npm start    # indexer at :3002
+cd contracts && forge install foundry-rs/forge-std --no-git && forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 --no-git && cd ..
+cd frontend && npm install --no-audit --no-fund
+cd ../backend && npm install --no-audit --no-fund
 ```
 
-Full demo walkthrough in [DEMO.md](./DEMO.md).
+### Run the deterministic two-wallet flow
 
----
+`scripts/local-e2e.sh` boots a fresh Anvil, deploys the contracts, runs
+two Anvil accounts (Alice = deployer, Bob = account #1) through
+mint → hatch → train → challenge → accept-and-resolve, asserts the
+leaderboard reflects the battle, restarts the indexer to prove
+restart idempotency, and leaves the stack running for browser
+inspection:
 
-## Project status
+```bash
+# 1. pick free ports; we use 8545 / 8101 / 8100 below
+ANVIL_PORT=8545 RPC_URL=http://127.0.0.1:8545 \
+BACKEND_PORT=8101 FRONTEND_PORT=8100 \
+KEEP_RUNNING=1 ./scripts/local-e2e.sh
+```
 
-- ✅ All 14 Phase-1 issues closed
-- ✅ 9 PRs merged, each with adversarial review
-- ✅ CI green on every push
-- ✅ Local Anvil end-to-end proven (cast + 7 agent-browser screenshots)
-- ⏳ Testnet deploy pending user-funded wallet ([#24](https://github.com/lora-sys/monadmon/issues/24))
+The script picks different ports automatically if the above are taken.
+`KEEP_RUNNING=1` is required to keep the stack alive in the foreground
+for the next step; omit it to run as a one-shot.
 
-See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for the full table.
-See [README.zh.md](./README.zh.md) for the Chinese version.
+### Open the site
+
+Once the script prints the stack URLs, point a browser at
+`http://127.0.0.1:8100/`. RainbowKit will offer MetaMask / Rabby in
+the header; pick one and connect to the local Anvil RPC.
+
+### Capture accessibility evidence
+
+```bash
+BASE_URL=http://127.0.0.1:8100 ./scripts/run-browser-evidence.sh
+```
+
+This renders populated, empty, and unavailable leaderboard plus monster
+detail and both profiles at 1440×900 and 390×844, injecting
+`axe-core` (WCAG 2.0/2.1 A/AA) on every route. Outputs land in
+`docs/evidence/0021/screenshots/` and `docs/evidence/0021/test-results/axe-*.json`.
+
+## Tests
+
+| Suite | Command | Count |
+| --- | --- | --- |
+| Contracts | `cd contracts && forge test -q` | 47 |
+| Backend | `cd backend && npm test` | 9 |
+| Frontend | `cd frontend && npm test` | 14 |
+| Backend typecheck (incl. tests) | `cd backend && npm run typecheck` | green |
+| Frontend typecheck | `cd frontend && npm run typecheck` | green |
+| Frontend lint | `cd frontend && npm run lint` | clean |
+| Frontend production build | `cd frontend && npm run build` | 9 routes |
+| Backend production build | `cd backend && npm run build` | green |
+| Contracts fmt | `cd contracts && forge fmt --check` | clean |
+
+All three CI jobs run on every push and PR via
+`.github/workflows/ci.yml`.
+
+## Project structure
+
+```
+monadmon/
+├── AGENTS.md                # L0 operating contract for AI agents
+├── CLAUDE.md                # mirror of AGENTS.md for Claude-family tools
+├── CONTRIBUTING.md          # issue-first workflow, PR template
+├── DEMO.md                  # 5-minute demo script
+├── ENGINEERING.md           # style, deps, review rules
+├── LICENSE                  # MIT
+├── PROJECT_STATUS.md        # live kanban
+├── README.md                # this file
+├── README.zh.md             # 中文版 README
+├── TESTING.md               # test strategy
+├── backend/                 # Phase 2 indexer (TS + Hono + SQLite)
+│   ├── package.json
+│   ├── run-indexer.sh       # thin env wrapper
+│   ├── src/{abis,chains,db,indexer,server,index}.ts
+│   └── test/                # vitest fixtures
+├── contracts/               # Foundry workspace
+│   ├── foundry.toml
+│   ├── src/{MonsterNFT,GenesisMinter,Battle,ItemNFT,interfaces,lib}/
+│   ├── test/                # forge tests (47 total)
+│   └── script/Deploy.s.sol
+├── docs/                     # product / arch / design / decisions / evidence
+│   ├── INDEX.md
+│   ├── architecture/        # system, FE, BE, contracts, monad, storage, security, deploy
+│   ├── design/              # brand, tokens, components, ui-patterns, monster-system, battle-formula
+│   ├── product/             # prd, mvp, roadmap, user-stories, feature-specs
+│   ├── decisions/           # ADR-0001..0004
+│   └── evidence/0021/       # live E2E + creative redesign pack
+├── frontend/                # Next.js 14 app router
+│   ├── app/                 # /, /mint, /train, /arena, /leaderboard, /profile/[address], /monster/[tokenId]
+│   ├── components/          # CreativeShell, Header, Providers, LeaderboardView
+│   ├── lib/                 # wagmi, abis, contracts, species, design, indexer, axe.min
+│   ├── public/assets/       # species art + marketing posters
+│   └── test/                # vitest
+├── memory/                  # project + lessons
+├── scripts/                 # local-e2e.sh, run-browser-evidence.sh
+├── sessions/                # per-session logs
+└── skills/                  # project-local skill additions
+```
+
+## Architecture summary
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  Next.js 14  │───▶│ Monad RPC    │───▶│  Contracts   │
+│  + wagmi/viem │    │ (viem JSON-  │    │  - MonsterNFT│
+│  + RainbowKit│    │  RPC)        │    │  - Genesis   │
+└──────┬───────┘    └──────────────┘    │  - Battle    │
+       │                                │  - IRandomSrc│
+       │                                └──────┬───────┘
+       │ events via logs                      │ events
+       │                                      ▼
+       │                              ┌──────────────┐
+       │                              │   Indexer    │
+       │                              │ TS + Hono +  │
+       ▼                              │   SQLite     │
+  read /api/leaderboard              └──────┬───────┘
+  read /api/monsters/owner/:addr           ▲
+  read /api/monsters/:id                  │
+                                           │
+                                  poll every 250 ms
+                                  and await 0 confirmations
+                                  for instant leaderboard updates
+```
+
+See `docs/architecture/` for full data flow, event schema, and
+security model.
+
+## Environment variables
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `RPC_URL` | `http://127.0.0.1:8545` | Backend → Anvil/Monad RPC |
+| `PORT` (backend) | `3001` | Hono HTTP port |
+| `MONSTER_NFT_ADDRESS` | (set per run) | Indexer reads the `EggMinted` / `MonsterHatched` / `Trained` events |
+| `BATTLE_ADDRESS` | (set per run) | Indexer reads the `ChallengeCreated` / `ChallengeResolved` events |
+| `CONFIRMATIONS` | `5` | Wait N confirmations before persisting (reorg safety) |
+| `POLL_INTERVAL_MS` | `2000` | RPC poll cadence |
+| `DB_PATH` | `data/monadmon.db` | Indexer SQLite file |
+| `NEXT_PUBLIC_INDEXER_URL` | `http://127.0.0.1:3001` | Frontend → indexer base URL |
+| `NEXT_PUBLIC_MONAD_RPC_URL` | (testnet) | Frontend → wallet RPC |
+| `NEXT_PUBLIC_MONSTER_NFT_ADDRESS` | (set per run) | Frontend reads `getMonster` / `ownerOf` |
+| `NEXT_PUBLIC_BATTLE_ADDRESS` | (set per run) | Frontend reads `getChallenge` / `challengeCount` |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | _empty_ | When set, enables full RainbowKit (incl. WalletConnect). Empty → injected-wallet only. |
+| `NEXT_PUBLIC_GENESIS_MINTER_ADDRESS` | (set per run) | Optional convenience for the Mint page |
+
+`scripts/local-e2e.sh` writes all of the above automatically. The
+backend `.env.example` and frontend `.env.example` are checked-in
+templates.
+
+## Roadmap (post-MVP)
+
+- #24 — Deploy to Monad testnet (gated on a user-funded wallet).
+- Marketplace + trading.
+- Item NFT integration (ERC-1155 scaffold already shipped).
+- Exploration encounters.
+- Guilds and tournaments.
+- Spectator / replay mode with the 3D pipeline.
+
+## Contributing
+
+`AGENTS.md` is the source of truth for AI agents working on this
+repository. `CONTRIBUTING.md` is the same workflow written for human
+contributors. Both reference the **Issue-first** model:
+
+1. Pick or open an Issue.
+2. Branch in a worktree (`git worktree add -b fix/<id>-<slug>`).
+3. Implement with tests + evidence.
+4. Open a PR; pass the 5 cold-start reviewers (bug-hunter,
+   behavior-reviewer, architecture-reviewer, security-reviewer,
+   ui-reviewer) and the three CI gates.
+5. Squash-merge when human review approves.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+[MIT](./LICENSE)
+
+## Credits
+
+- **Brand & design language**: living creature on a high-tech chain
+  (see `docs/design/brand.md`).
+- **Species art**: 12 species × 4 stages generated by `scripts/generate-monsters.mjs`
+  via Pollinations.ai (`flux`), no API key required, deterministic seeds.
+- **Marketing posters**: three 1402×1122 PNGs in
+  `frontend/public/assets/marketing/` (`poster-hero.png`, `poster-arena.png`, `poster-team.png`).
+- **Type system**: Space Grotesk (display) + Inter (body) + JetBrains Mono
+  (addresses / DNA). Loaded via `next/font` for production.
